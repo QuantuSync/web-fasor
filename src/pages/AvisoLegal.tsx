@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 // Aviso legal: identificación del titular, condiciones de uso, propiedad
 // intelectual, enlaces externos y legislación aplicable.
-// [NIF-FASOR] y [EMAIL-FASOR] son placeholders pendientes de los datos reales.
+// [EMAIL-FASOR] es un placeholder pendiente del dato real.
 export default function AvisoLegal() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -51,7 +51,7 @@ export default function AvisoLegal() {
                 22 de marzo)
               </p>
               <p>
-                <strong className="text-parchment-100">NIF:</strong> [NIF-FASOR]
+                <strong className="text-parchment-100">NIF:</strong> G93758183
               </p>
               <p>
                 <strong className="text-parchment-100">Domicilio social:</strong> C/ Ribera de
