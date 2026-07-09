@@ -1,4 +1,4 @@
-import { Mail, MapPin, FileCheck, Shield, ArrowUp, ExternalLink } from 'lucide-react';
+import { Mail, Fingerprint, FileCheck, Shield, ArrowUp, ExternalLink } from 'lucide-react';
 
 // Datos registrales resumidos de la entidad
 const RegistryInfo = () => (
@@ -16,8 +16,8 @@ const RegistryInfo = () => (
     </div>
 
     <div className="flex items-center space-x-3 text-sm text-parchment-300">
-      <MapPin className="w-4 h-4 text-alanizGold-600 flex-shrink-0" aria-hidden="true" />
-      <span>C/ Ribera de Castronuño 12 – Aldeamayor de San Martín (Valladolid)</span>
+      <Fingerprint className="w-4 h-4 text-alanizGold-600 flex-shrink-0" aria-hidden="true" />
+      <span>NIF G93758183</span>
     </div>
 
     <div className="flex items-center space-x-3 text-sm text-parchment-300">

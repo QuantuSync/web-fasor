@@ -5,8 +5,8 @@ import { categoriasSocios, derechosSocios, deberesSocios } from '../data/socios'
 import { unidades } from '../data/unidades';
 
 // Access key de Web3Forms: es pública por diseño (identifica el buzón de destino,
-// no da acceso a nada). Sustituir el placeholder por la clave real.
-const WEB3FORMS_ACCESS_KEY = 'WEB3FORMS_ACCESS_KEY';
+// no da acceso a nada). El buzón receptor es privado y no se muestra en la web.
+const WEB3FORMS_ACCESS_KEY = 'bae25a86-7969-4709-b895-fac73950ae82';
 
 type EstadoEnvio = 'inicial' | 'enviando' | 'exito' | 'error';
 
@@ -130,7 +130,7 @@ function FormularioAlistamiento() {
             id="localidad"
             type="text"
             required
-            placeholder="Valladolid / Aldeamayor de San Martín"
+            placeholder="Valladolid / Tordesillas"
             value={solicitud.localidad}
             onChange={(e) => actualizar('localidad', e.target.value)}
           />

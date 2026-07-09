@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 // Aviso legal: identificación del titular, condiciones de uso, propiedad
 // intelectual, enlaces externos y legislación aplicable.
-// [EMAIL-FASOR] es un placeholder pendiente del dato real.
 export default function AvisoLegal() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -54,16 +53,18 @@ export default function AvisoLegal() {
                 <strong className="text-parchment-100">NIF:</strong> G93758183
               </p>
               <p>
-                <strong className="text-parchment-100">Domicilio social:</strong> C/ Ribera de
-                Castronuño 12 – Aldeamayor de San Martín (Valladolid)
-              </p>
-              <p>
                 <strong className="text-parchment-100">Inscripción registral:</strong> Registro de
                 Asociaciones de la Delegación Territorial de Valladolid (Junta de Castilla y León),
                 número 0006429, sección Primera
               </p>
               <p>
-                <strong className="text-parchment-100">Contacto:</strong> [EMAIL-FASOR]
+                <strong className="text-parchment-100">Contacto:</strong>{' '}
+                <a
+                  href="mailto:contacto@fasor.es"
+                  className="text-alanizGold-500 underline underline-offset-2 hover:text-alanizGold-400"
+                >
+                  contacto@fasor.es
+                </a>
               </p>
             </div>
           </div>

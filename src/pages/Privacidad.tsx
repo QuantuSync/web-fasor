@@ -2,7 +2,16 @@ import { useEffect } from 'react';
 
 // Política de privacidad (RGPD) en lenguaje claro: responsable, finalidad,
 // base jurídica, destinatarios, conservación y derechos.
-// [EMAIL-FASOR] es un placeholder pendiente del dato real.
+
+// Enlace mailto reutilizado en varias secciones
+const EmailContacto = () => (
+  <a
+    href="mailto:contacto@fasor.es"
+    className="text-alanizGold-500 underline underline-offset-2 hover:text-alanizGold-400"
+  >
+    contacto@fasor.es
+  </a>
+);
 export default function Privacidad() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -48,8 +57,7 @@ export default function Privacidad() {
               <p>
                 FASOR – Fuerza de Auxilio, Soporte y Rescate, asociación inscrita en el Registro de
                 Asociaciones de la Delegación Territorial de Valladolid con el número 0006429,
-                sección Primera, con domicilio en C/ Ribera de Castronuño 12 – Aldeamayor de San
-                Martín (Valladolid). Contacto: [EMAIL-FASOR].
+                sección Primera. Contacto: <EmailContacto />.
               </p>
             </div>
           </div>
@@ -81,8 +89,8 @@ export default function Privacidad() {
             <div className="space-y-3 text-sm leading-relaxed text-parchment-300">
               <p>
                 Tu consentimiento: la casilla que marcas antes de enviar el formulario. Puedes
-                retirarlo en cualquier momento escribiendo a [EMAIL-FASOR], sin que ello afecte a lo
-                tratado hasta entonces.
+                retirarlo en cualquier momento escribiendo a <EmailContacto />, sin que ello afecte
+                a lo tratado hasta entonces.
               </p>
             </div>
           </div>
@@ -128,8 +136,8 @@ export default function Privacidad() {
             <div className="space-y-3 text-sm leading-relaxed text-parchment-300">
               <p>
                 Puedes pedirnos acceso a tus datos, corregirlos, suprimirlos, oponerte a su
-                tratamiento, limitarlo o llevártelos (portabilidad). Basta con escribir a
-                [EMAIL-FASOR] indicando qué derecho quieres ejercer.
+                tratamiento, limitarlo o llevártelos (portabilidad). Basta con escribir a{' '}
+                <EmailContacto /> indicando qué derecho quieres ejercer.
               </p>
               <p>
                 Si crees que no te hemos atendido bien, puedes reclamar ante la Agencia Española de

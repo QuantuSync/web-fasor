@@ -14,13 +14,6 @@ const DATOS_ORGANIZACION = JSON.stringify({
   url: SITE_URL,
   logo: `${SITE_URL}/favicon.png`,
   foundingDate: '2025-08-29',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'C/ Ribera de Castronuño 12',
-    addressLocality: 'Aldeamayor de San Martín',
-    addressRegion: 'Valladolid',
-    addressCountry: 'ES',
-  },
   identifier: [
     {
       '@type': 'PropertyValue',
