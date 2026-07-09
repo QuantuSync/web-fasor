@@ -16,10 +16,10 @@ type RouteMeta = { title: string; description: string; noindex?: boolean };
 
 // Componente de carga para transiciones (fallback de Suspense)
 const PageLoader = () => (
-  <div className="min-h-[60vh] flex items-center justify-center">
-    <div className="text-center space-y-4">
-      <div className="w-8 h-8 border-2 border-alanizGold-600 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-alanizGold-600 font-medium">Cargando página...</p>
+  <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <div className="h-8 w-8 animate-spin rounded-full border border-fasor-gold border-t-transparent"></div>
+      <p className="font-mono text-xs tracking-widest text-fasor-gold">CARGANDO...</p>
     </div>
   </div>
 );

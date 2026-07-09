@@ -1,30 +1,41 @@
 import { Link } from 'react-router-dom';
-import { Compass } from 'lucide-react';
+import Galon from '../components/Galon';
 
-// Página 404 temática: la posición solicitada queda fuera del mapa operativo.
+// 404 temática: la posición solicitada queda fuera del mapa operativo.
 // window.history solo se toca en el handler (regla SSG).
 export default function NotFound() {
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4 py-16">
-      <div className="stack-centered space-y-5">
-        <div className="inline-flex items-center justify-center w-24 h-24 border-2 border-alanizGold-600 bg-transparent rounded-full">
-          <Compass className="h-12 w-12 text-alanizGold-600" aria-hidden="true" />
+    <div className="content-container flex min-h-[70vh] items-center py-16">
+      <div className="max-w-2xl">
+        <div className="mb-4 flex items-center gap-3">
+          <span className="font-mono text-xs tracking-widest text-fasor-gold">ERROR</span>
+          <Galon />
+          <p className="etiqueta m-0">Zona no cartografiada</p>
         </div>
-        <p className="eyebrow text-alanizGold-600/70">Zona no cartografiada</p>
-        <h1 className="font-display text-3xl font-bold text-alanizGold-600 md:text-4xl">
+        <p
+          className="m-0 font-display text-8xl font-bold leading-none tracking-tight text-fasor-gold/60 md:text-9xl"
+          aria-hidden="true"
+        >
+          404
+        </p>
+        <h1 className="mt-4 font-display text-3xl font-bold uppercase tracking-tight text-fasor-bone md:text-4xl">
           Página No Encontrada
         </h1>
-        <div className="rule-gold" aria-hidden="true"></div>
-        <p className="max-w-md text-center text-parchment-300">
+        <div className="linea-fade mt-6" aria-hidden="true"></div>
+        <p className="mt-6 max-w-md leading-relaxed text-fasor-sage">
           Esta posición queda fuera del mapa operativo de FASOR. Revisa la dirección o vuelve a la
           base para reorientarte.
         </p>
-        <div className="flex flex-col items-center gap-4 pt-2 sm:flex-row sm:justify-center">
-          <Link to="/" className="btn-alaniz">
+        <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <Link to="/" className="btn-contorno">
             Volver al Inicio
           </Link>
-          <button onClick={() => window.history.back()} className="btn-secondary">
+          <button
+            onClick={() => window.history.back()}
+            className="group inline-flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-[0.15em] text-fasor-gold"
+          >
             Volver Atrás
+            <Galon className="h-3 w-2 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
         </div>
       </div>

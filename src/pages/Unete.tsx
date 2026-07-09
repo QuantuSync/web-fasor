@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ScrollText, ClipboardCheck, Send, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Send, CheckCircle2, AlertTriangle } from 'lucide-react';
+import TituloSeccion from '../components/TituloSeccion';
+import Galon from '../components/Galon';
 import { categoriasSocios, derechosSocios, deberesSocios } from '../data/socios';
 import { unidades } from '../data/unidades';
 
@@ -34,6 +36,22 @@ const SOLICITUD_VACIA: Solicitud = {
   mayorEdad: false,
   botcheck: '',
 };
+
+// Pasos del proceso de alistamiento
+const PASOS = [
+  {
+    titulo: 'Envía tu solicitud',
+    descripcion: 'Rellena el formulario de alistamiento con tus datos y tu motivación.',
+  },
+  {
+    titulo: 'Valoración',
+    descripcion: 'La Junta Directiva valora tu solicitud y te contacta para conocerte.',
+  },
+  {
+    titulo: 'Incorporación',
+    descripcion: 'Ingresas como Cadete en Formación y comienzas tu instrucción.',
+  },
+];
 
 // Formulario de alistamiento: envío a Web3Forms con fetch en el handler (regla SSG),
 // validación en cliente y estados de envío anunciados en una región aria-live.
@@ -81,14 +99,13 @@ function FormularioAlistamiento() {
     }
   };
 
-  const clasesCampo =
-    'w-full px-4 py-3 bg-alanizGreen-800/50 border border-alanizGold-600/30 rounded-lg ' +
-    'text-parchment-100 placeholder-parchment-400 focus:border-alanizGold-600 ' +
-    'focus:bg-alanizGreen-800/70 transition-all duration-300';
+  // Los checkboxes no llevan el estilo de etiqueta técnica de .form-tactico label
+  const claseOpcionLegal =
+    'items-start gap-3 !font-sans !normal-case !tracking-normal !text-fasor-sage font-normal cursor-pointer';
 
   return (
-    <form className="form-elegant" onSubmit={handleSubmit} noValidate={false}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form className="form-tactico max-w-3xl" onSubmit={handleSubmit} noValidate={false}>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <label htmlFor="nombre">Nombre completo *</label>
           <input
@@ -141,7 +158,6 @@ function FormularioAlistamiento() {
         <label htmlFor="unidad">Unidad de interés</label>
         <select
           id="unidad"
-          className={clasesCampo}
           value={solicitud.unidad}
           onChange={(e) => actualizar('unidad', e.target.value)}
         >
@@ -176,61 +192,55 @@ function FormularioAlistamiento() {
       />
 
       <div className="space-y-3">
-        {/* display:flex inline: .form-elegant label (block) gana a la utilidad flex */}
-        <label
-          className="items-start gap-3 !text-parchment-300 font-normal cursor-pointer"
-          style={{ display: 'flex' }}
-        >
+        {/* display:flex inline: .form-tactico label (block) gana a la utilidad flex */}
+        <label className={claseOpcionLegal} style={{ display: 'flex' }}>
           <input
             type="checkbox"
             required
             checked={solicitud.aceptaPrivacidad}
             onChange={(e) => actualizar('aceptaPrivacidad', e.target.checked)}
-            className="mt-1 !w-4 h-4 !p-0 shrink-0 accent-[#d4af37]"
+            className="mt-1 !w-4 h-4 !p-0 shrink-0 accent-[#C9A54A]"
           />
           <span className="text-sm">
             He leído y acepto la{' '}
             <Link
               to="/privacidad"
-              className="text-alanizGold-500 underline underline-offset-2 hover:text-alanizGold-400"
+              className="text-fasor-gold underline underline-offset-2 hover:text-fasor-bone"
             >
               Política de Privacidad
             </Link>{' '}
             *
           </span>
         </label>
-        <label
-          className="items-start gap-3 !text-parchment-300 font-normal cursor-pointer"
-          style={{ display: 'flex' }}
-        >
+        <label className={claseOpcionLegal} style={{ display: 'flex' }}>
           <input
             type="checkbox"
             required
             checked={solicitud.mayorEdad}
             onChange={(e) => actualizar('mayorEdad', e.target.checked)}
-            className="mt-1 !w-4 h-4 !p-0 shrink-0 accent-[#d4af37]"
+            className="mt-1 !w-4 h-4 !p-0 shrink-0 accent-[#C9A54A]"
           />
           <span className="text-sm">Declaro ser mayor de 18 años *</span>
         </label>
       </div>
 
-      <div className="stack-centered space-y-4">
-        <button type="submit" className="btn-alaniz" disabled={estado === 'enviando'}>
-          <Send className="mr-2 h-5 w-5" aria-hidden="true" />
+      <div className="space-y-4">
+        <button type="submit" className="btn-solido" disabled={estado === 'enviando'}>
+          <Send className="h-4 w-4" aria-hidden="true" />
           {estado === 'enviando' ? 'Enviando solicitud...' : 'Enviar solicitud'}
         </button>
 
         {/* Región viva: anuncia el resultado del envío a lectores de pantalla */}
-        <div aria-live="polite" role="status" className="min-h-[1.5rem] text-center">
+        <div aria-live="polite" role="status" className="min-h-[1.5rem]">
           {estado === 'exito' && (
-            <p className="inline-flex items-center gap-2 text-sm text-alanizGold-500">
+            <p className="m-0 inline-flex items-center gap-2 text-sm text-fasor-gold">
               <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
               Solicitud enviada correctamente. Te contactaremos en cuanto la Junta Directiva la
               valore.
             </p>
           )}
           {estado === 'error' && (
-            <p className="inline-flex items-center gap-2 text-sm text-red-300/80">
+            <p className="m-0 inline-flex items-center gap-2 text-sm text-estado-rojo">
               <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
               No se pudo enviar la solicitud. Inténtalo de nuevo en unos minutos.
             </p>
@@ -241,8 +251,8 @@ function FormularioAlistamiento() {
   );
 }
 
-// Página de Únete: categorías de socios (art. 15), derechos y deberes (arts. 16-17)
-// según el texto literal de los estatutos, cómo alistarse y formulario de alistamiento.
+// Únete: categorías de socios (art. 15), derechos y deberes (arts. 16-17)
+// según el texto literal de los estatutos, cómo alistarse y formulario.
 export default function Unete() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -263,159 +273,128 @@ export default function Unete() {
   }, []);
 
   return (
-    <div className="min-h-screen py-16 md:py-24">
-      <div className="content-container">
-        <div className="stack-centered mb-12 observe-me opacity-0 translate-y-8">
-          <h1 className="font-display text-4xl font-bold text-alanizGold-600 md:text-5xl">Únete</h1>
-          <div className="rule-gold mt-4" aria-hidden="true"></div>
-          <p className="mt-4 max-w-2xl text-center text-lg leading-relaxed text-parchment-300">
+    <div>
+      {/* Cabecera de página */}
+      <header className="content-container pt-14 md:pt-20">
+        <div className="observe-me opacity-0 translate-y-8">
+          <p className="etiqueta mb-3">FASOR</p>
+          <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-fasor-bone md:text-6xl">
+            Únete
+          </h1>
+          <div className="linea-fade mt-6" aria-hidden="true"></div>
+          <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
             FASOR crece con personas dispuestas a servir. Conoce las categorías de socios, tus
             derechos y deberes, y envía tu solicitud de alistamiento.
           </p>
         </div>
+      </header>
 
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '200ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-2">
-              Categorías de Socios
-            </h2>
-            <p className="text-sm text-parchment-400 mb-6">
-              Según el artículo 15 de los estatutos.
-            </p>
+      {/* Categorías de socios */}
+      <section className="content-container py-14 md:py-20">
+        <div className="observe-me opacity-0 translate-y-8">
+          <TituloSeccion
+            numero="01"
+            titulo="Categorías de Socios"
+            intro="Según el artículo 15 de los estatutos."
+          />
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {categoriasSocios.map((categoria) => (
-                <div
-                  key={categoria.nombre}
-                  className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6"
-                >
-                  <div className="inline-flex items-center justify-center w-12 h-12 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                    <categoria.icono className="w-5 h-5 text-alanizGold-600" aria-hidden="true" />
-                  </div>
-                  <h3 className="font-display font-semibold text-alanizGold-500 mb-2">
-                    {categoria.nombre}
-                  </h3>
-                  <p className="text-sm text-parchment-300 text-center">{categoria.descripcion}</p>
-                </div>
-              ))}
+        <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+          {categoriasSocios.map((categoria) => (
+            <div key={categoria.nombre} className="border-t-2 border-fasor-gold pt-5">
+              <categoria.icono className="mb-3 h-6 w-6 text-fasor-gold" aria-hidden="true" />
+              <h3 className="mb-2 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                {categoria.nombre}
+              </h3>
+              <p className="m-0 text-sm leading-relaxed text-fasor-sage">{categoria.descripcion}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Derechos y deberes */}
+      <section className="banda-superficie">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion
+              numero="02"
+              titulo="Derechos y Deberes"
+              intro="Según los artículos 16 y 17 de los estatutos."
+            />
           </div>
 
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '400ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-2">
-              Derechos y Deberes
-            </h2>
-            <p className="text-sm text-parchment-400 mb-6">
-              Según los artículos 16 y 17 de los estatutos.
-            </p>
+          <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-10 md:grid-cols-2">
+            <div>
+              <h3 className="mb-5 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                Derechos de los socios
+              </h3>
+              <ul className="m-0 list-none space-y-3 p-0">
+                {derechosSocios.map((derecho) => (
+                  <li key={derecho} className="flex items-start gap-3">
+                    <Galon className="mt-1 h-3 w-2" />
+                    <span className="text-sm leading-relaxed text-fasor-sage">{derecho}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-alanizGreen-900/50 rounded-lg p-6 border border-alanizGold-600/30">
-                <h3 className="font-display font-semibold text-alanizGold-500 mb-4 flex items-center">
-                  <ScrollText className="w-5 h-5 mr-2 text-alanizGold-600" aria-hidden="true" />
-                  Derechos de los socios
-                </h3>
-                <ul className="space-y-3">
-                  {derechosSocios.map((derecho) => (
-                    <li key={derecho} className="flex items-start gap-3">
-                      <span
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-alanizGold-600"
-                        aria-hidden="true"
-                      ></span>
-                      <span className="text-sm leading-relaxed text-parchment-300">{derecho}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-alanizGreen-900/50 rounded-lg p-6 border border-alanizGold-600/30">
-                <h3 className="font-display font-semibold text-alanizGold-500 mb-4 flex items-center">
-                  <ClipboardCheck className="w-5 h-5 mr-2 text-alanizGold-600" aria-hidden="true" />
-                  Deberes de los socios
-                </h3>
-                <ul className="space-y-3">
-                  {deberesSocios.map((deber) => (
-                    <li key={deber} className="flex items-start gap-3">
-                      <span
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-alanizGold-600"
-                        aria-hidden="true"
-                      ></span>
-                      <span className="text-sm leading-relaxed text-parchment-300">{deber}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div>
+              <h3 className="mb-5 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                Deberes de los socios
+              </h3>
+              <ul className="m-0 list-none space-y-3 p-0">
+                {deberesSocios.map((deber) => (
+                  <li key={deber} className="flex items-start gap-3">
+                    <Galon className="mt-1 h-3 w-2" />
+                    <span className="text-sm leading-relaxed text-fasor-sage">{deber}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '600ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6 text-center">
-              Cómo Alistarse
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <span className="text-alanizGold-600 text-xl font-bold">1</span>
-                </div>
-                <h3 className="font-display font-semibold text-alanizGold-500 mb-3">
-                  Envía tu solicitud
-                </h3>
-                <p className="text-sm text-parchment-300 text-center">
-                  Rellena el formulario de alistamiento con tus datos y tu motivación.
-                </p>
-              </div>
-
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <span className="text-alanizGold-600 text-xl font-bold">2</span>
-                </div>
-                <h3 className="font-display font-semibold text-alanizGold-500 mb-3">Valoración</h3>
-                <p className="text-sm text-parchment-300 text-center">
-                  La Junta Directiva valora tu solicitud y te contacta para conocerte.
-                </p>
-              </div>
-
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <span className="text-alanizGold-600 text-xl font-bold">3</span>
-                </div>
-                <h3 className="font-display font-semibold text-alanizGold-500 mb-3">
-                  Incorporación
-                </h3>
-                <p className="text-sm text-parchment-300 text-center">
-                  Ingresas como Cadete en Formación y comienzas tu instrucción.
-                </p>
-              </div>
-            </div>
+      {/* Cómo alistarse */}
+      <section className="banda">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion numero="03" titulo="Cómo Alistarse" />
           </div>
 
-          <div
-            className="card-elegant border-2 border-alanizGold-600/40 observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '800ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6 text-center">
-              Formulario de Alistamiento
-            </h2>
+          <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-10 md:grid-cols-3">
+            {PASOS.map((paso, i) => (
+              <div key={paso.titulo} className="border-t border-fasor-line pt-5">
+                <p className="m-0 mb-3 font-display text-5xl font-bold leading-none text-fasor-gold/60">
+                  {String(i + 1).padStart(2, '0')}
+                </p>
+                <h3 className="mb-2 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                  {paso.titulo}
+                </h3>
+                <p className="m-0 text-sm leading-relaxed text-fasor-sage">{paso.descripcion}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* Formulario de alistamiento */}
+      <section className="banda-superficie">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion numero="04" titulo="Formulario de Alistamiento" />
+          </div>
+
+          <div className="observe-me opacity-0 translate-y-8">
             <FormularioAlistamiento />
 
-            <p className="mt-8 text-center text-xs leading-relaxed text-parchment-400">
+            <p className="mt-10 max-w-3xl text-xs leading-relaxed text-fasor-sage">
               La admisión de socios corresponde a la Junta Directiva. La pertenencia a FASOR está
               sujeta al régimen disciplinario previsto en los estatutos (arts. 11, 18 y 19).
             </p>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Swords } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 // Error boundary para capturar errores de React
 export default class ErrorBoundary extends React.Component<
@@ -16,24 +16,25 @@ export default class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error en Casa Alaniz:', error, errorInfo);
+    console.error('Error en FASOR:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-alanizGreen-950 px-4">
-          <div className="stack-centered max-w-md space-y-5">
-            <Swords className="h-16 w-16 text-alanizGold-600" aria-hidden="true" />
-            <h1 className="font-display text-2xl font-bold text-alanizGold-600">
-              Error en el Archivo
+        <div className="flex min-h-screen items-center justify-center bg-fasor-bg px-4">
+          <div className="max-w-md">
+            <AlertTriangle className="mb-4 h-12 w-12 text-fasor-gold" aria-hidden="true" />
+            <h1 className="font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone">
+              Error inesperado
             </h1>
-            <p className="text-parchment-200">
-              Ha ocurrido un error inesperado en el archivo heráldico. Los custodios han sido
-              notificados.
+            <div className="linea-fade mt-4" aria-hidden="true"></div>
+            <p className="mt-4 leading-relaxed text-fasor-sage">
+              Ha ocurrido un error inesperado en el sitio de FASOR. Recarga la página para volver a
+              la posición.
             </p>
-            <button onClick={() => window.location.reload()} className="btn-alaniz">
-              Restaurar Archivo
+            <button onClick={() => window.location.reload()} className="btn-contorno mt-6">
+              Recargar la página
             </button>
           </div>
         </div>
