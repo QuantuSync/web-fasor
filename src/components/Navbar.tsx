@@ -206,7 +206,8 @@ const MobileMenu = React.memo(({ isOpen, onClose }: { isOpen: boolean; onClose: 
           className="absolute bottom-0 left-0 right-0 p-6
                         border-t border-alanizGold-600/20"
         >
-          <p className="text-xs text-alanizGold-600/60 text-center italic">
+          {/* /80 y no /60: con /60 el contraste queda en 3.4:1, por debajo de AA */}
+          <p className="text-xs text-alanizGold-600/80 text-center italic">
             Disciplina • Valor • Servicio
           </p>
         </div>

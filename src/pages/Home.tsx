@@ -1,7 +1,36 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Head } from 'vite-react-ssg';
 import { Scale, Handshake, Zap, Shield } from 'lucide-react';
+import { SITE_URL } from '../config';
 import fasorLogo from '../assets/fasor.jpg';
+
+// Datos estructurados de la organización (JSON-LD, solo en la home)
+const DATOS_ORGANIZACION = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'NGO',
+  name: 'FASOR – Fuerza de Auxilio, Soporte y Rescate',
+  alternateName: 'FASOR',
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.png`,
+  foundingDate: '2025-08-29',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'C/ Ribera de Castronuño 12',
+    addressLocality: 'Aldeamayor de San Martín',
+    addressRegion: 'Valladolid',
+    addressCountry: 'ES',
+  },
+  identifier: [
+    {
+      '@type': 'PropertyValue',
+      propertyID:
+        'Registro de Asociaciones de la Delegación Territorial de Valladolid (sección Primera)',
+      value: '0006429',
+    },
+    { '@type': 'PropertyValue', propertyID: 'NIF', value: 'G93758183' },
+  ],
+});
 
 // Página de Inicio: hero completo (sello, wordmark, presentación, badge operativo),
 // Misión Principal con los cuatro valores y CTAs a Unidades y Únete.
@@ -27,6 +56,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen py-16 md:py-24">
+      <Head>
+        <script type="application/ld+json">{DATOS_ORGANIZACION}</script>
+      </Head>
       <div className="content-container">
         <div className="stack-centered mb-16 observe-me opacity-0 translate-y-8">
           <div className="inline-flex items-center justify-center w-60 h-60 border-4 border-alanizGold-600/40 bg-transparent rounded-full mb-8 overflow-hidden">
@@ -39,7 +71,7 @@ export default function Home() {
           </div>
 
           <h1
-            className="text-5xl md:text-7xl font-bold text-alanizGold-600 mb-4 tracking-wider drop-shadow-lg"
+            className="text-4xl xs:text-5xl md:text-7xl font-bold text-alanizGold-600 mb-4 tracking-wider drop-shadow-lg"
             style={{ fontFamily: 'Impact, "Arial Black", sans-serif' }}
           >
             FASOR
@@ -74,8 +106,12 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="inline-flex items-center px-6 py-3 border border-alanizGold-600/40 bg-alanizGreen-900/60 text-alanizGold-500 rounded-full font-bold text-lg shadow-lg">
-            <span className="w-3 h-3 bg-alanizGold-500 rounded-full mr-3 animate-ping"></span>
+          <div className="inline-flex items-center px-5 sm:px-6 py-3 border border-alanizGold-600/40 bg-alanizGreen-900/60 text-alanizGold-500 rounded-full font-bold text-base sm:text-lg shadow-lg">
+            <span
+              className="w-3 h-3 shrink-0 bg-alanizGold-500 rounded-full mr-3 animate-ping"
+              aria-hidden="true"
+            ></span>
+            <span className="sr-only">Estado actual: </span>
             OPERATIVO - EN SERVICIO
           </div>
         </div>

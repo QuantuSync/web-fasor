@@ -4,12 +4,15 @@ import { Head, type RouteRecord } from 'vite-react-ssg';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotFound from './pages/NotFound';
+import { SITE_URL } from './config';
 
 const DEFAULT_TITLE = 'FASOR - Fuerza de Auxilio, Soporte y Rescate';
 const DEFAULT_DESCRIPTION =
   'FASOR, asociación sin ánimo de lucro de protección civil y respuesta ante emergencias impulsada por la Casa Alaniz.';
 
-type RouteMeta = { title: string; description: string };
+const OG_IMAGE = `${SITE_URL}/og/portada.png`;
+
+type RouteMeta = { title: string; description: string; noindex?: boolean };
 
 // Componente de carga para transiciones (fallback de Suspense)
 const PageLoader = () => (
@@ -26,16 +29,30 @@ const PageLoader = () => (
 // lo actualiza también al navegar en cliente.
 function RouteHead() {
   const matches = useMatches();
+  const location = useLocation();
   const meta = [...matches].reverse().find((m) => m.handle)?.handle as RouteMeta | undefined;
   const title = meta?.title ?? DEFAULT_TITLE;
   const description = meta?.description ?? DEFAULT_DESCRIPTION;
+  // Canonical por ruta sobre el dominio de producción ('/': con barra final)
+  const canonical = location.pathname === '/' ? `${SITE_URL}/` : SITE_URL + location.pathname;
 
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <link rel="canonical" href={canonical} />
+      {meta?.noindex && <meta name="robots" content="noindex" />}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
+      <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={OG_IMAGE} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="Sello de FASOR sobre fondo verde institucional" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={OG_IMAGE} />
     </Head>
   );
 }
@@ -157,6 +174,7 @@ export const routes: RouteRecord[] = [
         handle: {
           title: 'Página no encontrada - FASOR',
           description: 'La página solicitada no existe en el sitio de FASOR.',
+          noindex: true,
         } satisfies RouteMeta,
       },
       { path: '*', element: <Navigate to="/404" replace /> },

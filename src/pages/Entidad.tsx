@@ -99,8 +99,9 @@ export default function Entidad() {
               </div>
 
               <div className="text-center mt-8">
-                <div className="inline-flex items-center px-8 py-4 bg-alanizGold-600 text-alanizGreen-950 rounded-full font-bold text-lg shadow-lg">
-                  <Flame className="w-5 h-5 mr-3" aria-hidden="true" />
+                {/* text-base + px-6 en móvil: con text-lg/px-8 el badge desborda a 360px */}
+                <div className="inline-flex items-center px-6 sm:px-8 py-4 bg-alanizGold-600 text-alanizGreen-950 rounded-full font-bold text-base sm:text-lg shadow-lg">
+                  <Flame className="w-5 h-5 mr-3 shrink-0" aria-hidden="true" />
                   DISCIPLINA • VALOR • SERVICIO
                 </div>
               </div>
@@ -110,6 +111,8 @@ export default function Entidad() {
                   <img
                     src={equipoImg}
                     alt="Equipo FASOR - Fuerza de Auxilio, Soporte y Rescate Casa Alaniz"
+                    width={1536}
+                    height={962}
                     className="w-full h-auto rounded-xl shadow-2xl border-2 border-alanizGold-600/30"
                     loading="lazy"
                   />

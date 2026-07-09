@@ -59,7 +59,8 @@ export default function AccreditationSeal({ eyebrow, title, children }: Accredit
           </div>
           <div className="flex-1">
             <p className="eyebrow mb-1 text-alanizGold-600/70">{eyebrow}</p>
-            <h3 className="font-display text-2xl font-semibold text-alanizGold-600">{title}</h3>
+            {/* h2 (en Casa Alaniz era h3): aquí el panel cuelga directamente del h1 de la página */}
+            <h2 className="m-0 font-display text-2xl font-semibold text-alanizGold-600">{title}</h2>
             <div className="rule-gold mt-4" aria-hidden="true"></div>
           </div>
         </div>
