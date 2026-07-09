@@ -1,386 +1,185 @@
+/* ────────────────────────────────────────────────────────────────────────────
+   FASOR — sistema de diseño «Verde Táctico Evolucionado»
+   Verde profundo + dorado como TINTA (líneas 1px, texto, contornos).
+   Sin glows, sin sombras doradas, sin degradados de relleno.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Tipografía autoalojada (subset latin, sin hotlink — RGPD).
+   Inter llega como fuente variable: un solo archivo cubre 400-500. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/saira-condensed-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Saira Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/saira-condensed-700.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Tipografía propia Quantic Sci (OFL 1.1), autoalojada en /public/fonts */
-@font-face {
-  font-family: 'Quantic Sci';
-  src: url('/fonts/QuanticSci-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Quantic Sci';
-  src: url('/fonts/QuanticSci-Italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Quantic Sci';
-  src: url('/fonts/QuanticSci-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Quantic Sci';
-  src: url('/fonts/QuanticSci-BoldItalic.woff2') format('woff2');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Quantic Sci Display';
-  src: url('/fonts/QuanticSciDisplay-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Variables CSS personalizadas */
-:root {
-  --alaniz-green: #0d1e12;
-  --alaniz-gold: #d4af37;
-  --parchment: #f9f6ef;
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --shadow-elegant: 0 10px 25px -3px rgba(13, 30, 18, 0.3), 0 4px 6px -2px rgba(13, 30, 18, 0.05);
-}
-
-/* Base styles mejorados */
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
-
   html {
-    @apply scroll-smooth;
     scroll-behavior: smooth;
-    /* Mejor renderizado de fuentes */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
   }
 
   body {
-    @apply bg-gradient-green text-parchment-100 font-serif antialiased;
-    background-attachment: fixed;
-    min-height: 100vh;
-    line-height: 1.7;
-    /* Cifras old-style por defecto en el cuerpo */
-    font-feature-settings: 'onum' 1;
-    /* Patrón sutil de fondo */
-    background-image:
-      radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.02) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
+    @apply bg-fasor-bg font-sans text-fasor-bone antialiased;
   }
 
-  /* Tipografía mejorada */
+  /* Titulares: Saira Condensed en mayúsculas, tracking apretado en cuerpos grandes */
   h1,
   h2,
-  h3,
+  h3 {
+    @apply font-display font-semibold uppercase tracking-tight text-fasor-bone;
+  }
+
   h4,
   h5,
   h6 {
-    @apply font-display text-alanizGold-600;
-    font-feature-settings:
-      'liga' 1,
-      'kern' 1;
-    text-rendering: optimizeLegibility;
-    /* Glow casi imperceptible: el oro y el peso de la fuente ya dan presencia */
-    text-shadow: 0 0 3px rgba(212, 175, 55, 0.15);
+    @apply font-sans font-medium text-fasor-bone;
   }
 
-  h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6;
-  }
-  h2 {
-    @apply text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight mb-5;
-  }
-  h3 {
-    @apply text-2xl md:text-3xl font-medium leading-snug mb-4;
-  }
-  h4 {
-    @apply text-xl md:text-2xl font-medium leading-snug mb-3;
-  }
-
-  p {
-    @apply text-base md:text-lg leading-relaxed mb-4;
-    text-align: left;
+  ::selection {
+    @apply bg-fasor-gold text-fasor-bg;
   }
 
   a {
-    @apply transition-all duration-300 ease-in-out;
+    @apply transition-colors duration-200;
     text-decoration: none;
   }
 
-  /* Elementos de formulario mejorados */
-  input,
-  textarea,
-  select {
-    @apply transition-all duration-300 ease-in-out;
+  /* Focus visible con teclado en todo el sitio */
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid #c9a54a;
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 
   input:focus,
   textarea:focus,
   select:focus {
-    @apply outline-none ring-2 ring-alanizGold-600 ring-opacity-50;
+    @apply outline-none border-fasor-gold ring-1 ring-fasor-gold/50;
   }
 
-  /* Focus visible con teclado en todo el sitio (enlaces, botones, controles) */
-  a:focus-visible,
-  button:focus-visible,
-  [tabindex]:focus-visible {
-    outline: 2px solid #d4af37;
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  /* Scrollbar personalizado */
+  /* Scrollbar sobrio */
   ::-webkit-scrollbar {
     width: 8px;
   }
-
   ::-webkit-scrollbar-track {
-    @apply bg-alanizGreen-900;
+    @apply bg-fasor-bg;
   }
-
   ::-webkit-scrollbar-thumb {
-    @apply bg-alanizGold-600 rounded-full;
-    transition: var(--transition-smooth);
+    @apply bg-fasor-line rounded-full;
   }
-
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-alanizGold-500;
+    @apply bg-fasor-gold/50;
   }
-
-  /* Firefox scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #d4af37 #0d1e12;
+    scrollbar-color: #24382c #0c1710;
   }
 }
 
-/* Componentes reutilizables */
 @layer components {
-  /* Botón principal Casa Alaniz */
-  .btn-alaniz {
-    @apply inline-flex items-center justify-center px-6 py-3 
-           bg-alanizGold-600 text-alanizGreen-950 font-semibold
-           rounded-lg shadow-lg hover:shadow-glow
-           transition-all duration-300 ease-in-out
-           hover:bg-alanizGold-500 hover:scale-105
-           active:scale-95 focus:outline-none focus:ring-2 
-           focus:ring-alanizGold-600 focus:ring-opacity-50;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .btn-alaniz:disabled {
-    @apply opacity-50 cursor-not-allowed hover:scale-100;
-  }
-
-  /* Botón secundario */
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3
-           bg-transparent text-alanizGold-600 font-semibold
-           border-2 border-alanizGold-600 rounded-lg
-           transition-all duration-300 ease-in-out
-           hover:bg-alanizGold-600 hover:text-alanizGreen-950
-           hover:shadow-glow hover:scale-105
-           active:scale-95 focus:outline-none focus:ring-2
-           focus:ring-alanizGold-600 focus:ring-opacity-50;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  /* Tarjeta elegante */
-  .card-elegant {
-    @apply bg-gradient-to-br from-alanizGreen-800/90 to-alanizGreen-900/90
-           backdrop-blur-sm border border-alanizGold-600/20
-           rounded-xl shadow-elegant p-6
-           transition-all duration-300 ease-in-out
-           hover:shadow-glow-lg hover:border-alanizGold-600/40;
-  }
-
-  /* Contenedor de contenido principal */
   .content-container {
     @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Antetítulo en versalitas (detalle editorial heráldico) */
-  .eyebrow {
-    @apply text-xs font-semibold;
-    font-variant-caps: small-caps;
-    letter-spacing: 0.18em;
+  /* Bandas de sección a ancho completo, separadas por línea dorada de 1px */
+  .banda {
+    @apply border-t border-fasor-gold/25 bg-fasor-bg py-16 md:py-24;
   }
 
-  /* Filete dorado fino */
-  .rule-gold {
-    @apply h-px w-16 bg-gradient-to-r from-transparent via-alanizGold-600/70 to-transparent;
+  .banda-superficie {
+    @apply border-t border-fasor-gold/25 bg-fasor-surface py-16 md:py-24;
   }
 
-  /* Bloque centrado: icono + título + mensaje + acción sobre el MISMO eje central.
-     Centra también los párrafos, que por defecto van alineados a la izquierda. */
-  .stack-centered {
-    @apply flex flex-col items-center text-center;
-  }
-  .stack-centered p {
-    text-align: center;
+  /* Etiqueta técnica: mayúsculas con tracking amplio, en dorado */
+  .etiqueta {
+    @apply font-display text-xs font-semibold uppercase text-fasor-gold;
+    letter-spacing: 0.25em;
   }
 
-  /* Texto con efecto dorado */
-  .text-gold-glow {
-    @apply text-alanizGold-600;
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-  }
-
-  /* Línea divisoria ornamental */
-  .divider-ornamental {
-    @apply relative flex items-center justify-center my-8;
-  }
-
-  .divider-ornamental::before {
-    content: '';
-    @apply flex-1 h-px bg-gradient-to-r from-transparent via-alanizGold-600 to-transparent;
-  }
-
-  .divider-ornamental::after {
-    content: '❦';
-    @apply px-4 text-alanizGold-600 text-xl;
-  }
-
-  /* Animaciones de entrada */
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .animate-on-scroll.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Fix para elementos observe-me */
-  .observe-me {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .observe-me.animate-fade-in-up {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-  }
-
-  /* Asegurar visibilidad después de animaciones */
-  .animate-fade-in,
-  .animate-fade-in-up,
-  .animate-fade-in-down,
-  .animate-slide-in-right,
-  .animate-slide-in-left {
-    animation-fill-mode: forwards;
-  }
-
-  /* Efecto de resplandor para imágenes */
-  .image-glow {
-    @apply transition-all duration-500 ease-in-out;
-    filter: brightness(0.9) contrast(1.1);
-  }
-
-  .image-glow:hover {
-    filter: brightness(1.1) contrast(1.2) drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
-  }
-
-  /* Navbar mejorado */
-  .navbar-glass {
-    @apply bg-alanizGreen-950/90 backdrop-blur-md border-b border-alanizGold-600/20;
-    background-image: linear-gradient(
-      135deg,
-      rgba(13, 30, 18, 0.95) 0%,
-      rgba(36, 58, 43, 0.9) 50%,
-      rgba(13, 30, 18, 0.95) 100%
+  /* Línea dorada que se desvanece (tinta, no brillo) */
+  .linea-fade {
+    @apply h-px w-full;
+    background: linear-gradient(
+      to right,
+      rgba(201, 165, 74, 0.6),
+      rgba(201, 165, 74, 0.25) 55%,
+      transparent
     );
   }
 
-  /* Formulario estilizado */
-  .form-elegant {
+  /* CTA de contorno dorado */
+  .btn-contorno {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-fasor-gold
+           px-6 py-3 font-display text-sm font-semibold uppercase text-fasor-gold
+           transition-colors duration-200 hover:bg-fasor-gold/10;
+    letter-spacing: 0.15em;
+  }
+
+  /* Botón sólido (acción principal del formulario) */
+  .btn-solido {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm border border-fasor-gold
+           bg-fasor-gold px-6 py-3 font-display text-sm font-semibold uppercase text-fasor-bg
+           transition-colors duration-200 hover:bg-fasor-gold/90;
+    letter-spacing: 0.15em;
+  }
+
+  .btn-solido:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  /* Formulario táctico: campos planos, radio 2px, focus dorado */
+  .form-tactico {
     @apply space-y-6;
   }
 
-  .form-elegant input,
-  .form-elegant textarea {
-    @apply w-full px-4 py-3 bg-alanizGreen-800/50 
-           border border-alanizGold-600/30 rounded-lg
-           text-parchment-100 placeholder-parchment-400
-           focus:border-alanizGold-600 focus:bg-alanizGreen-800/70
-           transition-all duration-300;
+  .form-tactico label {
+    @apply mb-2 block font-display text-xs font-semibold uppercase text-fasor-gold;
+    letter-spacing: 0.15em;
   }
 
-  .form-elegant label {
-    @apply block text-sm font-medium text-alanizGold-600 mb-2;
+  .form-tactico input,
+  .form-tactico textarea,
+  .form-tactico select {
+    @apply w-full rounded-sm border border-fasor-line bg-fasor-surface px-4 py-3
+           text-fasor-bone placeholder-fasor-sage/70 transition-colors duration-200;
   }
 }
 
-/* Utilidades personalizadas */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Gradientes personalizados */
-  .bg-heraldic {
-    background: linear-gradient(135deg, #0d1e12 0%, #243a2b 50%, #0d1e12 100%);
-    background-size: 400% 400%;
-    animation: heraldic-shift 8s ease-in-out infinite;
-  }
-
-  @keyframes heraldic-shift {
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  /* Estados de carga */
-  .loading-dots::after {
-    content: '';
-    animation: loading-dots 1.5s steps(4, end) infinite;
-  }
-
-  @keyframes loading-dots {
-    0%,
-    20% {
-      content: '';
-    }
-    40% {
-      content: '.';
-    }
-    60% {
-      content: '..';
-    }
-    80%,
-    100% {
-      content: '...';
-    }
+  /* Detalle de fondo: patrón de galones a opacidad muy baja */
+  .fondo-galones {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpath d='M8 6l8 8-8 8' fill='none' stroke='%23C9A54A' stroke-opacity='0.07' stroke-width='1.5'/%3E%3C/svg%3E");
   }
 }
 
-/* Mejoras de accesibilidad */
+/* Movimiento reducido: sin animaciones ni parpadeos */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -388,249 +187,13 @@
     transition-duration: 0.01ms !important;
   }
 
-  /* Sin parpadeos: el punto del badge OPERATIVO y la insignia del Nivel Rojo
-     quedan estáticos (y visibles) si el usuario prefiere menos movimiento */
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* El punto del indicador de estado queda estático (y visible) */
   .animate-ping,
   .animate-pulse {
     animation: none !important;
-  }
-}
-
-/* Responsive typography */
-@media (min-width: 640px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 1024px) {
-  html {
-    font-size: 18px;
-  }
-}
-
-@media (min-width: 1280px) {
-  html {
-    font-size: 20px;
-  }
-}
-
-/* Estilos del Navbar (antes inyectados en runtime con document.createElement).
-   Se colocan al final para conservar la precedencia que tenían al inyectarse. */
-.subtle-glow {
-  position: relative;
-  overflow: visible;
-}
-
-.subtle-glow::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: none;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
-  border-radius: 50%;
-  opacity: 0.7;
-  animation: subtleGlow 4s ease-in-out infinite;
-  z-index: -1;
-  pointer-events: none;
-}
-
-@keyframes subtleGlow {
-  0%,
-  100% {
-    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
-    opacity: 0.7;
-  }
-  50% {
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
-    opacity: 1;
-  }
-}
-
-.group:hover .subtle-glow::before {
-  animation-duration: 2s;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-  opacity: 1;
-}
-
-.animate-fade-in-down {
-  animation: fadeInDown 0.3s ease-out;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 1024px) {
-  .subtle-glow::before {
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    box-shadow: 0 0 6px rgba(212, 175, 55, 0.15);
-  }
-
-  .group:hover .subtle-glow::before {
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .subtle-glow::before {
-    animation: none;
-  }
-  .animate-fade-in-down {
-    animation: none;
-  }
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   Bloques de ACREDITACIÓN OFICIAL (Símbolos / FASOR)
-   Resalte PERMANENTE en gama oro: borde dorado grueso y luminoso, aura que late
-   en bucle infinito, shimmer que recorre el panel cada pocos segundos y sello
-   con brillo propio permanente. El efecto está SIEMPRE activo mientras el bloque
-   es visible (no solo al aparecer). Respeta prefers-reduced-motion (sin bucles,
-   con un resplandor estático fuerte para que siga destacando).
-   Fuera de @layer (al final) para tener precedencia sobre .card-elegant.
-   ─────────────────────────────────────────────────────────────────────────── */
-
-/* Sello en relieve + BRILLO dorado propio en bucle continuo */
-.official-seal {
-  filter: drop-shadow(0 3px 4px rgba(13, 30, 18, 0.5));
-}
-.official-seal-icon {
-  filter: drop-shadow(0 1px 1px rgba(13, 30, 18, 0.55));
-}
-.accred-panel .official-seal {
-  animation: seal-glow 3.2s ease-in-out infinite;
-}
-@keyframes seal-glow {
-  0%,
-  100% {
-    filter: drop-shadow(0 3px 4px rgba(13, 30, 18, 0.5))
-      drop-shadow(0 0 4px rgba(212, 175, 55, 0.45));
-  }
-  50% {
-    filter: drop-shadow(0 3px 4px rgba(13, 30, 18, 0.5))
-      drop-shadow(0 0 11px rgba(212, 175, 55, 0.85));
-  }
-}
-
-/* Panel: borde dorado GRUESO y luminoso (destaca del resto de tarjetas de un
-   vistazo) + AURA dorada que late en bucle infinito. Revelado al entrar en
-   viewport (entrada), pero el resalte queda permanente después. */
-.accred-panel {
-  position: relative;
-  /* Sin overflow:hidden en el panel: así la caja CRECE con su contenido y nunca
-     recorta el texto (especialmente en móvil). El shimmer se recorta aparte con
-     su propio contenedor (.accred-shine-clip). */
-  border-width: 2px;
-  border-color: rgba(212, 175, 55, 0.7);
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: accred-aura 3.2s ease-in-out infinite;
-}
-.accred-panel.is-revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-@keyframes accred-aura {
-  0%,
-  100% {
-    box-shadow:
-      var(--shadow-elegant),
-      0 0 0 1px rgba(212, 175, 55, 0.45),
-      0 0 18px 0 rgba(212, 175, 55, 0.35);
-  }
-  50% {
-    box-shadow:
-      var(--shadow-elegant),
-      0 0 0 1px rgba(212, 175, 55, 0.6),
-      0 0 38px 4px rgba(212, 175, 55, 0.6);
-  }
-}
-
-/* Contenedor que recorta el shimmer al marco redondeado del panel, sin que el
-   panel en sí tenga overflow:hidden (que recortaría el texto en móvil). */
-.accred-shine-clip {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-/* Shimmer: franja de luz dorada que recorre el panel en BUCLE continuo
-   (un barrido visible y luego pausa, repitiéndose cada pocos segundos). */
-.accred-shine {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateX(-160%) skewX(-12deg);
-  background: linear-gradient(
-    100deg,
-    rgba(248, 212, 152, 0) 0%,
-    rgba(248, 212, 152, 0.22) 50%,
-    rgba(248, 212, 152, 0) 100%
-  );
-  animation: accred-shimmer 4.5s ease-in-out infinite;
-}
-@keyframes accred-shimmer {
-  0% {
-    transform: translateX(-160%) skewX(-12deg);
-    opacity: 0;
-  }
-  6% {
-    opacity: 1;
-  }
-  26% {
-    transform: translateX(330%) skewX(-12deg);
-    opacity: 1;
-  }
-  32%,
-  100% {
-    transform: translateX(330%) skewX(-12deg);
-    opacity: 0;
-  }
-}
-
-/* Accesibilidad: sin bucles si el usuario pide movimiento reducido. El bloque
-   aparece visible de inmediato y SIN animaciones, pero conserva un resplandor
-   dorado ESTÁTICO fuerte y el borde grueso para seguir destacando. */
-@media (prefers-reduced-motion: reduce) {
-  .accred-panel {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-    animation: none !important;
-    box-shadow:
-      var(--shadow-elegant),
-      0 0 0 1px rgba(212, 175, 55, 0.6),
-      0 0 30px 2px rgba(212, 175, 55, 0.5) !important;
-  }
-  .accred-panel .official-seal {
-    animation: none !important;
-    filter: drop-shadow(0 3px 4px rgba(13, 30, 18, 0.5))
-      drop-shadow(0 0 9px rgba(212, 175, 55, 0.7));
-  }
-  .accred-shine {
-    display: none;
   }
 }

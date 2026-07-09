@@ -14,7 +14,7 @@ export const RankStars = ({ count }: { count: number }) => {
   if (count === 3) {
     return (
       <span
-        className="inline-flex flex-col items-center gap-0.5 text-alanizGold-600"
+        className="inline-flex flex-col items-center gap-0.5 text-fasor-gold"
         aria-hidden="true"
       >
         <span className="inline-flex gap-0.5">
@@ -27,7 +27,7 @@ export const RankStars = ({ count }: { count: number }) => {
   }
 
   return (
-    <span className="inline-flex items-center gap-0.5 text-alanizGold-600" aria-hidden="true">
+    <span className="inline-flex items-center gap-0.5 text-fasor-gold" aria-hidden="true">
       {Array.from({ length: count }, (_, i) => (
         <Star key={i} />
       ))}
@@ -36,10 +36,7 @@ export const RankStars = ({ count }: { count: number }) => {
 };
 
 export const RankChevrons = ({ count }: { count: number }) => (
-  <span
-    className="inline-flex flex-col items-center gap-0.5 text-alanizGold-600"
-    aria-hidden="true"
-  >
+  <span className="inline-flex flex-col items-center gap-0.5 text-fasor-gold" aria-hidden="true">
     {Array.from({ length: count }, (_, i) => (
       <svg
         key={i}
@@ -60,8 +57,8 @@ export const RankChevrons = ({ count }: { count: number }) => (
 // Círculo-insignia: encierra las divisas de un rango (estilo badge del sitio).
 // Doble filete dorado (un círculo dentro de otro) para realzar la divisa.
 export const RankBadge = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-alanizGold-600 bg-transparent">
-    <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-alanizGold-600/70">
+  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-fasor-gold/60 bg-transparent">
+    <div className="flex h-[52px] w-[52px] items-center justify-center rounded-full border border-fasor-gold/30">
       {children}
     </div>
   </div>

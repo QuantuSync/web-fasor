@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import OfficialSeal from './OfficialSeal';
 
 interface AccreditationSealProps {
-  /** Antetítulo en versalitas (utilidad eyebrow) */
+  /** Antetítulo técnico (estilo .etiqueta) */
   eyebrow: string;
   /** Título de la acreditación */
   title: string;
@@ -10,10 +10,9 @@ interface AccreditationSealProps {
   children: ReactNode;
 }
 
-// Panel de acreditación oficial: panel oscuro con borde dorado + sello en relieve,
-// aura dorada muy sutil y constante, revelado al entrar en viewport (funde y sube) y
-// un shimmer dorado que recorre el panel UNA sola vez al aparecer. Sobrio, en gama
-// verde/oro. Respeta prefers-reduced-motion: si está activo, aparece sin movimiento.
+// Panel de acreditación oficial, plano: borde dorado de 1px, radio 4px y
+// revelado por fundido al entrar en viewport. Sin shimmer, sin aura, sin
+// latidos (el dorado del sistema es tinta). Respeta prefers-reduced-motion.
 export default function AccreditationSeal({ eyebrow, title, children }: AccreditationSealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
@@ -45,27 +44,28 @@ export default function AccreditationSeal({ eyebrow, title, children }: Accredit
   }, []);
 
   return (
-    <div ref={ref} className={`accred-panel card-elegant ${revealed ? 'is-revealed' : ''}`}>
-      {/* Barrido de luz (shimmer) que cruza el panel; se recorta en su propio
-          contenedor para no obligar al panel a usar overflow:hidden. */}
-      <span className="accred-shine-clip" aria-hidden="true">
-        <span className="accred-shine" />
-      </span>
-
-      <div className="relative">
-        <div className="mb-6 flex items-start space-x-6">
-          <div className="flex-shrink-0">
-            <OfficialSeal />
-          </div>
-          <div className="flex-1">
-            <p className="eyebrow mb-1 text-alanizGold-600/70">{eyebrow}</p>
-            {/* h2 (en Casa Alaniz era h3): aquí el panel cuelga directamente del h1 de la página */}
-            <h2 className="m-0 font-display text-2xl font-semibold text-alanizGold-600">{title}</h2>
-            <div className="rule-gold mt-4" aria-hidden="true"></div>
-          </div>
+    <div
+      ref={ref}
+      className={`rounded border border-fasor-gold/25 bg-fasor-surface p-6 transition-all duration-700 md:p-10 ${
+        revealed ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+      }`}
+    >
+      <div className="mb-6 flex items-start gap-6">
+        <div className="flex-shrink-0">
+          <OfficialSeal />
         </div>
+        <div className="flex-1">
+          <p className="etiqueta mb-2">{eyebrow}</p>
+          {/* h2: cuelga directamente del h1 de la página (jerarquía propia del sitio) */}
+          <h2 className="m-0 font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone md:text-3xl">
+            {title}
+          </h2>
+          <div className="linea-fade mt-4" aria-hidden="true"></div>
+        </div>
+      </div>
 
-        <div className="space-y-4 leading-relaxed text-parchment-200">{children}</div>
+      <div className="space-y-4 leading-relaxed text-fasor-sage [&_strong]:text-fasor-bone">
+        {children}
       </div>
     </div>
   );
