@@ -1,12 +1,25 @@
 import { useEffect } from 'react';
+import TituloSeccion from '../components/TituloSeccion';
 import { especialidades } from '../data/especialidades';
 import { pilaresEntrenamiento, programaEntrenamiento } from '../data/entrenamiento';
 import { protocoloActivacion } from '../data/protocolo';
 import { principiosOperativos } from '../data/principios';
 
-// Página de Actuación: especialidades, entrenamiento y preparación, protocolo de
-// activación (Verde/Ámbar/Rojo) y principios operativos.
-// Contenido portado verbatim de Fasor.tsx (repo de Casa Alaniz).
+// Colores semánticos del protocolo (única excepción cromática del sistema).
+// Se mapean aquí por nivel — el campo colorTitulo de src/data/protocolo.ts se
+// conserva intacto (los datos no se tocan) pero ya no se usa.
+// El bloque va sobre fondo base: el rojo #D65A4A da 4.73:1 ahí (AA), y además
+// el nombre del nivel se compone en cuerpo gigante (umbral 3:1).
+const COLOR_NIVEL: Record<number, string> = {
+  1: 'text-estado-verde',
+  2: 'text-estado-ambar',
+  3: 'text-estado-rojo',
+};
+
+// Actuación: especialidades en dos columnas compactas, entrenamiento en tres
+// pilares + programa, protocolo con el nivel como protagonista tipográfico y
+// principios operativos en listado editorial.
+// Contenido textual verbatim de Fasor.tsx (repo de Casa Alaniz).
 export default function Actuacion() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,182 +40,159 @@ export default function Actuacion() {
   }, []);
 
   return (
-    <div className="min-h-screen py-16 md:py-24">
-      <div className="content-container">
+    <div>
+      {/* Cabecera de página */}
+      <header className="content-container pt-14 md:pt-20">
         <div className="observe-me opacity-0 translate-y-8">
-          <h1 className="stack-centered mb-12 font-display text-4xl font-bold text-alanizGold-600 md:text-5xl">
+          <p className="etiqueta mb-3">FASOR</p>
+          <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-fasor-bone md:text-6xl">
             Actuación
           </h1>
+          <div className="linea-fade mt-6" aria-hidden="true"></div>
+        </div>
+      </header>
+
+      {/* Especialidades */}
+      <section className="content-container py-14 md:py-20">
+        <div className="observe-me opacity-0 translate-y-8">
+          <TituloSeccion
+            numero="01"
+            titulo="Especialidades"
+            intro="Cada miembro puede formarse en una o varias áreas de especialización, lo que permite desplegar equipos versátiles y autosuficientes:"
+          />
         </div>
 
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '200ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6">
-              Especialidades
-            </h2>
-            <p className="text-parchment-200 leading-relaxed mb-6">
-              Cada miembro puede formarse en una o varias áreas de especialización, lo que permite
-              desplegar equipos versátiles y autosuficientes:
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                {especialidades.slice(0, 3).map((especialidad) => (
-                  <div
-                    key={especialidad.titulo}
-                    className="bg-alanizGreen-900/50 rounded-lg p-4 border border-alanizGold-600/30"
-                  >
-                    <h3 className="font-display font-semibold text-alanizGold-500 mb-2 flex items-center">
-                      <especialidad.icono
-                        className="w-5 h-5 mr-2 text-alanizGold-600"
-                        aria-hidden="true"
-                      />
-                      {especialidad.titulo}
-                    </h3>
-                    <p className="text-sm text-parchment-300">{especialidad.descripcion}</p>
-                  </div>
-                ))}
+        <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-x-10 md:grid-cols-2">
+          {especialidades.map((especialidad) => (
+            <div key={especialidad.titulo} className="border-t border-fasor-line py-5">
+              <div className="mb-2 flex items-center gap-3">
+                <especialidad.icono
+                  className="h-5 w-5 shrink-0 text-fasor-gold"
+                  aria-hidden="true"
+                />
+                <h3 className="m-0 font-display text-base font-bold uppercase tracking-tight text-fasor-bone">
+                  {especialidad.titulo}
+                </h3>
               </div>
-
-              <div className="space-y-4">
-                {especialidades.slice(3).map((especialidad) => (
-                  <div
-                    key={especialidad.titulo}
-                    className="bg-alanizGreen-900/50 rounded-lg p-4 border border-alanizGold-600/30"
-                  >
-                    <h3 className="font-display font-semibold text-alanizGold-500 mb-2 flex items-center">
-                      <especialidad.icono
-                        className="w-5 h-5 mr-2 text-alanizGold-600"
-                        aria-hidden="true"
-                      />
-                      {especialidad.titulo}
-                    </h3>
-                    <p className="text-sm text-parchment-300">{especialidad.descripcion}</p>
-                  </div>
-                ))}
-              </div>
+              <p className="m-0 text-sm leading-relaxed text-fasor-sage">
+                {especialidad.descripcion}
+              </p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Entrenamiento y preparación */}
+      <section className="banda-superficie">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion
+              numero="02"
+              titulo="Entrenamiento y Preparación"
+              intro="La preparación de los miembros se centra en la constancia y la excelencia. El entrenamiento combina resistencia física, fortaleza moral y pericia técnica."
+            />
           </div>
 
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '400ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6">
-              Entrenamiento y Preparación
-            </h2>
-            <p className="text-parchment-200 leading-relaxed mb-6">
-              La preparación de los miembros se centra en la constancia y la excelencia. El
-              entrenamiento combina resistencia física, fortaleza moral y pericia técnica.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {pilaresEntrenamiento.map((pilar) => (
-                <div
-                  key={pilar.titulo}
-                  className="bg-alanizGreen-900/50 rounded-lg p-6 border border-alanizGold-600/30"
-                >
-                  <div className="text-center mb-4">
-                    <div className="inline-flex items-center justify-center w-12 h-12 border-2 border-alanizGold-600 bg-transparent rounded-full mb-3 mx-auto">
-                      <pilar.icono className="w-5 h-5 text-alanizGold-600" aria-hidden="true" />
-                    </div>
-                    <h3 className="font-display font-semibold text-alanizGold-500">
-                      {pilar.titulo}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-parchment-300 text-center">{pilar.descripcion}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 space-y-4">
-              <h3 className="text-lg font-display font-semibold text-alanizGold-500">
-                Programa de Entrenamiento
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {programaEntrenamiento.map((item) => (
-                  <div key={item.titulo} className="flex items-start space-x-3">
-                    <item.icono
-                      className="w-5 h-5 text-alanizGold-400 mt-1 flex-shrink-0"
-                      aria-hidden="true"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-alanizGold-500 text-sm">{item.titulo}</h4>
-                      <p className="text-xs text-parchment-300">{item.descripcion}</p>
-                    </div>
-                  </div>
-                ))}
+          <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+            {pilaresEntrenamiento.map((pilar) => (
+              <div key={pilar.titulo} className="border-t-2 border-fasor-gold pt-5">
+                <pilar.icono className="mb-3 h-6 w-6 text-fasor-gold" aria-hidden="true" />
+                <h3 className="mb-2 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                  {pilar.titulo}
+                </h3>
+                <p className="m-0 text-sm leading-relaxed text-fasor-sage">{pilar.descripcion}</p>
               </div>
-            </div>
+            ))}
           </div>
 
-          <div
-            className="card-elegant border-2 border-alanizGold-600/40 observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '600ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6 text-center">
-              Protocolo de Activación
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {protocoloActivacion.map((nivel) => (
-                <div key={nivel.nombre} className="stack-centered">
-                  <div
-                    className={`inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4 ${
-                      nivel.critico ? 'animate-pulse' : ''
-                    }`}
-                  >
-                    <span className="text-alanizGold-600 text-xl font-bold">{nivel.numero}</span>
-                  </div>
-                  <h3 className={`font-display font-semibold ${nivel.colorTitulo} mb-3`}>
-                    {nivel.nombre}
-                  </h3>
-                  <div className="text-center">
-                    <p className="text-sm text-parchment-300 font-semibold mb-1">
-                      {nivel.categoria}
+          <div className="observe-me opacity-0 translate-y-8 mt-14">
+            <h3 className="mb-6 font-display text-xl font-bold uppercase tracking-tight text-fasor-bone">
+              Programa de Entrenamiento
+            </h3>
+            <div className="grid grid-cols-1 gap-x-10 gap-y-5 md:grid-cols-2">
+              {programaEntrenamiento.map((item) => (
+                <div key={item.titulo} className="flex items-start gap-3">
+                  <item.icono
+                    className="mt-0.5 h-5 w-5 shrink-0 text-fasor-gold"
+                    aria-hidden="true"
+                  />
+                  <div>
+                    <h4 className="m-0 mb-1 text-sm font-semibold text-fasor-bone">
+                      {item.titulo}
+                    </h4>
+                    <p className="m-0 text-xs leading-relaxed text-fasor-sage">
+                      {item.descripcion}
                     </p>
-                    <p className="text-sm text-parchment-300 mb-1">{nivel.despliegue}</p>
-                    <p className="text-sm text-parchment-300">{nivel.tiempo}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '800ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6">
-              Principios Operativos
-            </h2>
+      {/* Protocolo de activación: el nivel como protagonista tipográfico.
+          Sobre fondo base (no superficie) por contraste AA del rojo. */}
+      <section className="banda">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion numero="03" titulo="Protocolo de Activación" />
+          </div>
 
-            <div className="space-y-6">
-              {principiosOperativos.map((principio) => (
-                <div
-                  key={principio.titulo}
-                  className="bg-alanizGreen-900/50 rounded-lg p-6 border border-alanizGold-600/30"
-                >
-                  <h3 className="font-display font-semibold text-alanizGold-500 mb-3 flex items-center">
-                    <principio.icono
-                      className="w-6 h-6 mr-3 text-alanizGold-600"
-                      aria-hidden="true"
-                    />
+          <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-12 md:grid-cols-3">
+            {protocoloActivacion.map((nivel) => {
+              const [palabraNivel, nombreNivel] = nivel.nombre.split(' ');
+              return (
+                <div key={nivel.nombre} className="border-t border-fasor-line pt-6">
+                  <p className="m-0 mb-4 font-mono text-xs tracking-widest text-fasor-sage">
+                    {String(nivel.numero).padStart(2, '0')}
+                  </p>
+                  <h3 className={`m-0 ${COLOR_NIVEL[nivel.numero]}`}>
+                    <span className="block font-display text-sm font-semibold uppercase tracking-[0.25em]">
+                      {palabraNivel}
+                    </span>
+                    <span className="block font-display text-6xl font-bold uppercase leading-none tracking-tight md:text-7xl">
+                      {nombreNivel}
+                    </span>
+                  </h3>
+                  <div className="mt-5 space-y-1">
+                    <p className="m-0 text-sm font-semibold text-fasor-bone">{nivel.categoria}</p>
+                    <p className="m-0 text-sm text-fasor-sage">{nivel.despliegue}</p>
+                    <p className="m-0 font-mono text-xs tracking-wider text-fasor-sage">
+                      {nivel.tiempo}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Principios operativos */}
+      <section className="banda-superficie">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion numero="04" titulo="Principios Operativos" />
+          </div>
+
+          <div className="observe-me opacity-0 translate-y-8 space-y-10">
+            {principiosOperativos.map((principio) => (
+              <div key={principio.titulo} className="border-l-2 border-fasor-gold pl-6">
+                <div className="mb-2 flex items-center gap-3">
+                  <principio.icono className="h-5 w-5 text-fasor-gold" aria-hidden="true" />
+                  <h3 className="m-0 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
                     {principio.titulo}
                   </h3>
-                  <p className="text-parchment-200 text-sm leading-relaxed">
-                    {principio.descripcion}
-                  </p>
                 </div>
-              ))}
-            </div>
+                <p className="m-0 max-w-3xl text-sm leading-relaxed text-fasor-sage">
+                  {principio.descripcion}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

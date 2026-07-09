@@ -11,7 +11,7 @@ export default function BarraEstado() {
         </span>
         <p className="m-0 font-mono text-xs tracking-[0.25em] text-fasor-bone">
           <span className="sr-only">Estado actual: </span>
-          OPERATIVO — EN SERVICIO
+          OPERATIVO - EN SERVICIO
         </p>
       </div>
     </div>

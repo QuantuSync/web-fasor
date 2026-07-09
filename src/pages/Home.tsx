@@ -4,6 +4,9 @@ import { Head } from 'vite-react-ssg';
 import { Scale, Handshake, Zap, Shield } from 'lucide-react';
 import { SITE_URL } from '../config';
 import fasorLogo from '../assets/fasor.jpg';
+import Galon from '../components/Galon';
+import TituloSeccion from '../components/TituloSeccion';
+import BarraEstado from '../components/BarraEstado';
 
 // Datos estructurados de la organización (JSON-LD, solo en la home)
 const DATOS_ORGANIZACION = JSON.stringify({
@@ -25,9 +28,18 @@ const DATOS_ORGANIZACION = JSON.stringify({
   ],
 });
 
-// Página de Inicio: hero completo (sello, wordmark, presentación, badge operativo),
-// Misión Principal con los cuatro valores y CTAs a Unidades y Únete.
-// Contenido portado verbatim de Fasor.tsx (repo de Casa Alaniz).
+// Los cuatro valores de la Misión Principal (texto verbatim)
+const VALORES = [
+  { icono: Scale, nombre: 'Disciplina', descripcion: 'Orden y método en cada actuación' },
+  { icono: Handshake, nombre: 'Coordinación', descripcion: 'Trabajo en equipo efectivo' },
+  { icono: Zap, nombre: 'Sacrificio', descripcion: 'Entrega total al servicio' },
+  { icono: Shield, nombre: 'Fidelidad', descripcion: 'Lealtad inquebrantable al pueblo' },
+];
+
+// Inicio: hero editorial asimétrico (etiqueta dorada, wordmark condensado enorme,
+// CTA de contorno, línea que se desvanece, sello circular), barra de estado
+// operativo, presentación y Misión Principal con los cuatro valores.
+// Contenido textual verbatim de Fasor.tsx (repo de Casa Alaniz).
 export default function Home() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -48,148 +60,114 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen py-16 md:py-24">
+    <div>
       <Head>
         <script type="application/ld+json">{DATOS_ORGANIZACION}</script>
       </Head>
-      <div className="content-container">
-        <div className="stack-centered mb-16 observe-me opacity-0 translate-y-8">
-          <div className="inline-flex items-center justify-center w-60 h-60 border-4 border-alanizGold-600/40 bg-transparent rounded-full mb-8 overflow-hidden">
-            <img
-              src={fasorLogo}
-              alt="Logo FASOR - Fuerza de Auxilio, Soporte y Rescate"
-              className="w-full h-full object-cover"
-              loading="eager"
-            />
+
+      {/* Hero */}
+      <section className="fondo-galones">
+        <div className="content-container py-16 md:py-24">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr,auto]">
+            <div className="observe-me opacity-0 translate-y-8">
+              <p className="etiqueta mb-4">Fuerza de Auxilio, Soporte y Rescate</p>
+              <h1 className="font-display text-7xl font-bold uppercase leading-none tracking-tight text-fasor-bone sm:text-8xl md:text-9xl">
+                FASOR
+              </h1>
+              <div className="linea-fade mt-6 max-w-xl" aria-hidden="true"></div>
+              <p className="mt-6 max-w-xl text-lg italic leading-relaxed text-fasor-sage">
+                «Donde la memoria arde, también nace la fuerza de proteger.»
+              </p>
+              <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+                <Link to="/unidades" className="btn-contorno">
+                  Conoce nuestras Unidades
+                </Link>
+                <Link
+                  to="/unete"
+                  className="group inline-flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-[0.15em] text-fasor-gold"
+                >
+                  Únete a FASOR
+                  <Galon className="h-3 w-2 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="observe-me opacity-0 translate-y-8 justify-self-center lg:justify-self-end">
+              <img
+                src={fasorLogo}
+                alt="Sello de FASOR - Fuerza de Auxilio, Soporte y Rescate"
+                width={936}
+                height={936}
+                className="h-48 w-48 rounded-full border border-fasor-gold/40 object-cover sm:h-56 sm:w-56 lg:h-64 lg:w-64"
+                loading="eager"
+              />
+            </div>
           </div>
+        </div>
+      </section>
 
-          <h1
-            className="text-4xl xs:text-5xl md:text-7xl font-bold text-alanizGold-600 mb-4 tracking-wider drop-shadow-lg"
-            style={{ fontFamily: 'Impact, "Arial Black", sans-serif' }}
-          >
-            FASOR
-          </h1>
+      {/* Barra de estado operativo */}
+      <BarraEstado />
 
-          <h2 className="text-2xl md:text-3xl font-display font-semibold text-alanizGold-600 mb-6">
-            Fuerza de Auxilio, Soporte y Rescate
-          </h2>
-
-          <div className="rule-gold mx-auto my-6" aria-hidden="true"></div>
-
-          <div className="text-lg text-parchment-300 max-w-4xl mx-auto leading-relaxed mb-6 space-y-4">
-            <p>
+      {/* Presentación */}
+      <section className="banda border-t-0">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8 max-w-3xl space-y-5 leading-relaxed">
+            <p className="text-lg text-fasor-bone">
               La Fuerza de Auxilio, Soporte y Rescate (FASOR) es una{' '}
-              <strong className="text-alanizGold-500">ONG</strong> impulsada por la{' '}
+              <strong className="text-fasor-gold">ONG</strong> impulsada por la{' '}
               <a
                 href="https://casaalaniz.es"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-2 hover:text-alanizGold-400"
+                className="underline underline-offset-2 hover:text-fasor-gold"
               >
-                <strong className="text-alanizGold-500">Casa Alaniz</strong>
+                <strong className="text-fasor-gold">Casa Alaniz</strong>
               </a>{' '}
               con un objetivo claro: ayudar y proteger a la comunidad cuando más lo necesita. No es
               una idea abstracta, sino una respuesta a problemas reales.
             </p>
-            <p>
+            <p className="text-fasor-sage">
               Incendios, inundaciones, terremotos y temporales son cada vez más frecuentes. Frente a
               ellos hace falta contar con organizaciones civiles preparadas, disciplinadas y
               comprometidas.
             </p>
-            <p>
+            <p className="text-fasor-sage">
               FASOR responde a esa necesidad: estar preparados para actuar con decisión allí donde
               se necesita ayuda.
             </p>
-            <p>
+            <p className="text-fasor-sage">
               Más que una organización, FASOR es un compromiso con la comunidad: estar presentes y
               echar una mano cuando llega la adversidad.
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="inline-flex items-center px-5 sm:px-6 py-3 border border-alanizGold-600/40 bg-alanizGreen-900/60 text-alanizGold-500 rounded-full font-bold text-base sm:text-lg shadow-lg">
-            <span
-              className="w-3 h-3 shrink-0 bg-alanizGold-500 rounded-full mr-3 animate-ping"
-              aria-hidden="true"
-            ></span>
-            <span className="sr-only">Estado actual: </span>
-            OPERATIVO - EN SERVICIO
+      {/* Misión Principal + valores */}
+      <section className="banda-superficie">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion numero="01" titulo="Misión Principal" />
+            <p className="max-w-3xl text-xl leading-relaxed text-fasor-bone md:text-2xl">
+              <strong className="text-fasor-gold">Estar presentes donde se necesita ayuda</strong>:
+              incendios, inundaciones, catástrofes naturales y otras emergencias.
+            </p>
+          </div>
+
+          <div className="observe-me opacity-0 translate-y-8 mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {VALORES.map((valor) => (
+              <div key={valor.nombre} className="border-t-2 border-fasor-gold pt-5">
+                <valor.icono className="mb-3 h-6 w-6 text-fasor-gold" aria-hidden="true" />
+                <h3 className="mb-2 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                  {valor.nombre}
+                </h3>
+                <p className="m-0 text-sm leading-relaxed text-fasor-sage">{valor.descripcion}</p>
+              </div>
+            ))}
           </div>
         </div>
-
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div
-            className="card-elegant bg-gradient-to-r from-alanizGreen-800/80 to-alanizGreen-900/80 border-2 border-alanizGold-600/40 observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '200ms' }}
-          >
-            <div className="stack-centered mb-8">
-              <h3 className="text-3xl font-display font-bold text-alanizGold-600 mb-6">
-                Misión Principal
-              </h3>
-              <p className="text-xl text-parchment-100 leading-relaxed text-center">
-                <strong className="text-alanizGold-400">
-                  Estar presentes donde se necesita ayuda
-                </strong>
-                : incendios, inundaciones, catástrofes naturales y otras emergencias.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <Scale className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <h4 className="font-display font-semibold text-alanizGold-400 mb-2">Disciplina</h4>
-                <p className="text-sm text-parchment-300 text-center">
-                  Orden y método en cada actuación
-                </p>
-              </div>
-
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <Handshake className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <h4 className="font-display font-semibold text-alanizGold-400 mb-2">
-                  Coordinación
-                </h4>
-                <p className="text-sm text-parchment-300 text-center">Trabajo en equipo efectivo</p>
-              </div>
-
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <Zap className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <h4 className="font-display font-semibold text-alanizGold-400 mb-2">Sacrificio</h4>
-                <p className="text-sm text-parchment-300 text-center">Entrega total al servicio</p>
-              </div>
-
-              <div className="stack-centered">
-                <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <Shield className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <h4 className="font-display font-semibold text-alanizGold-400 mb-2">Fidelidad</h4>
-                <p className="text-sm text-parchment-300 text-center">
-                  Lealtad inquebrantable al pueblo
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* CTAs a las secciones principales del sitio */}
-          <div
-            className="stack-centered observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '400ms' }}
-          >
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-              <Link to="/unidades" className="btn-alaniz">
-                Conoce nuestras Unidades
-              </Link>
-              <Link to="/unete" className="btn-secondary">
-                Únete a FASOR
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

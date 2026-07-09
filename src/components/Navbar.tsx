@@ -161,7 +161,7 @@ const MobileMenu = React.memo(({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
         <div className="absolute inset-x-0 bottom-0 border-t border-fasor-gold/25 p-5">
           <p className="m-0 text-center font-mono text-[10px] tracking-[0.25em] text-fasor-sage">
-            DISCIPLINA · VALOR · SERVICIO
+            DISCIPLINA • VALOR • SERVICIO
           </p>
         </div>
       </div>

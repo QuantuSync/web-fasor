@@ -1,51 +1,37 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FlaskConical, Newspaper, CalendarDays, Activity, ArrowRight } from 'lucide-react';
+import Galon from '../components/Galon';
 import { actualidad, type EntradaActualidad } from '../data/actualidad';
 
 // Etiqueta visible según el tipo de entrada
-const TIPOS = {
-  proyecto: { etiqueta: 'Proyecto', icono: FlaskConical },
-  noticia: { etiqueta: 'Noticia', icono: Newspaper },
-} as const;
+const TIPOS = { proyecto: 'Proyecto', noticia: 'Noticia' } as const;
 
-// Tarjeta de una entrada: badge de tipo, estado, fecha, resumen y enlace
-// (interno con Link, externo con <a>).
+// Tarjeta plana de una entrada: línea superior dorada, metadatos en mono,
+// titular condensado y enlace (interno con Link, externo con <a>).
 function TarjetaEntrada({ entrada }: { entrada: EntradaActualidad }) {
-  const tipo = TIPOS[entrada.tipo];
   const esInterno = entrada.enlace.startsWith('/');
 
   const contenidoEnlace = (
-    <span className="inline-flex items-center gap-2 font-semibold text-alanizGold-500 transition-colors duration-200 group-hover:text-alanizGold-400">
+    <span className="inline-flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-[0.15em] text-fasor-gold">
       Ver más
-      <ArrowRight
-        className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-        aria-hidden="true"
-      />
+      <Galon className="h-3 w-2 transition-transform duration-300 group-hover:translate-x-1" />
     </span>
   );
 
   return (
-    <article className="card-elegant group">
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-2 rounded-full border-2 border-alanizGold-600 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wide text-alanizGold-500">
-          <tipo.icono className="h-3.5 w-3.5" aria-hidden="true" />
-          {tipo.etiqueta}
+    <article className="group border-t-2 border-fasor-gold bg-fasor-surface p-6 transition-colors duration-300 hover:bg-fasor-surface2 md:p-8">
+      <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] tracking-widest">
+        <span className="border border-fasor-gold/60 px-2 py-0.5 uppercase text-fasor-gold">
+          {TIPOS[entrada.tipo]}
         </span>
-        <span className="inline-flex items-center gap-2 text-xs text-parchment-300">
-          <Activity className="h-3.5 w-3.5 text-alanizGold-600" aria-hidden="true" />
-          {entrada.estado}
-        </span>
-        <span className="inline-flex items-center gap-2 text-xs text-parchment-300">
-          <CalendarDays className="h-3.5 w-3.5 text-alanizGold-600" aria-hidden="true" />
-          {entrada.fecha}
-        </span>
+        <span className="uppercase text-fasor-sage">{entrada.estado}</span>
+        <span className="uppercase text-fasor-sage">{entrada.fecha}</span>
       </div>
 
-      <h2 className="mb-3 font-display text-xl font-semibold text-alanizGold-600">
+      <h2 className="mb-3 font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone">
         {entrada.titulo}
       </h2>
-      <p className="mb-4 text-sm leading-relaxed text-parchment-300">{entrada.resumen}</p>
+      <p className="mb-5 max-w-3xl text-sm leading-relaxed text-fasor-sage">{entrada.resumen}</p>
 
       {esInterno ? (
         <Link to={entrada.enlace} aria-label={`Ver más sobre ${entrada.titulo}`}>
@@ -65,8 +51,8 @@ function TarjetaEntrada({ entrada }: { entrada: EntradaActualidad }) {
   );
 }
 
-// Página de Actualidad: hub de proyectos propios y noticias de FASOR,
-// alimentado por src/data/actualidad.ts.
+// Actualidad: hub de proyectos propios y noticias de FASOR, alimentado por
+// src/data/actualidad.ts.
 export default function Actualidad() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -87,28 +73,30 @@ export default function Actualidad() {
   }, []);
 
   return (
-    <div className="min-h-screen py-16 md:py-24">
-      <div className="content-container">
-        <div className="stack-centered mb-12 observe-me opacity-0 translate-y-8">
-          <h1 className="font-display text-4xl font-bold text-alanizGold-600 md:text-5xl">
+    <div>
+      {/* Cabecera de página */}
+      <header className="content-container pt-14 md:pt-20">
+        <div className="observe-me opacity-0 translate-y-8">
+          <p className="etiqueta mb-3">FASOR</p>
+          <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-fasor-bone md:text-6xl">
             Actualidad
           </h1>
-          <div className="rule-gold mt-4" aria-hidden="true"></div>
-          <p className="mt-4 max-w-2xl text-center text-lg leading-relaxed text-parchment-300">
+          <div className="linea-fade mt-6" aria-hidden="true"></div>
+          <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
             La actividad de FASOR: los proyectos propios en los que trabajamos y las noticias de la
             asociación.
           </p>
         </div>
+      </header>
 
-        <div
-          className="max-w-3xl mx-auto space-y-8 observe-me opacity-0 translate-y-8"
-          style={{ animationDelay: '200ms' }}
-        >
+      {/* Entradas */}
+      <section className="content-container py-14 md:py-20">
+        <div className="observe-me opacity-0 translate-y-8 max-w-4xl space-y-8">
           {actualidad.map((entrada) => (
             <TarjetaEntrada key={entrada.id} entrada={entrada} />
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

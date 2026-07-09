@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import SectionHeading from '../components/SectionHeading';
+import TituloSeccion from '../components/TituloSeccion';
+import Galon from '../components/Galon';
 import { unidades } from '../data/unidades';
 import { areasActuacion } from '../data/areas';
 
-// Página de Unidades: las cinco unidades especializadas con sus logos y las
-// seis áreas de actuación. Contenido portado verbatim de Fasor.tsx (repo de Casa Alaniz).
+// Unidades: grid de tarjetas planas con línea superior dorada para las cinco
+// unidades, y las áreas de actuación como retícula compacta con galón-bullet.
+// Contenido textual verbatim de Fasor.tsx (repo de Casa Alaniz).
 export default function Unidades() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -25,75 +27,72 @@ export default function Unidades() {
   }, []);
 
   return (
-    <div className="min-h-screen py-16 md:py-24">
-      <div className="content-container">
+    <div>
+      {/* Cabecera de página */}
+      <header className="content-container pt-14 md:pt-20">
         <div className="observe-me opacity-0 translate-y-8">
-          <h1 className="stack-centered mb-12 font-display text-4xl font-bold text-alanizGold-600 md:text-5xl">
+          <p className="etiqueta mb-3">FASOR</p>
+          <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-fasor-bone md:text-6xl">
             Unidades
           </h1>
+          <div className="linea-fade mt-6" aria-hidden="true"></div>
+        </div>
+      </header>
+
+      {/* Unidades especializadas */}
+      <section className="content-container py-14 md:py-20">
+        <div className="observe-me opacity-0 translate-y-8">
+          <TituloSeccion numero="01" titulo="Unidades Especializadas" />
+          <p className="max-w-3xl text-lg leading-relaxed text-fasor-sage">
+            FASOR se organiza en{' '}
+            <strong className="text-fasor-gold">cinco unidades especializadas</strong>, cada una con
+            capacidades específicas que garantizan una respuesta integral ante cualquier emergencia.
+          </p>
         </div>
 
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div
-            className="card-elegant bg-gradient-to-r from-alanizGreen-800/80 to-alanizGreen-900/80 border-2 border-alanizGold-600/40 observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '200ms' }}
-          >
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-display font-bold text-alanizGold-600 mb-6">
-                Unidades Especializadas
-              </h2>
-              <p className="text-lg text-parchment-100 leading-relaxed">
-                FASOR se organiza en{' '}
-                <strong className="text-alanizGold-600">cinco unidades especializadas</strong>, cada
-                una con capacidades específicas que garantizan una respuesta integral ante cualquier
-                emergencia.
-              </p>
+        <div className="observe-me opacity-0 translate-y-8 mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {unidades.map((unidad) => (
+            <div
+              key={unidad.id}
+              className="border-t-2 border-fasor-gold bg-fasor-surface p-6 transition-colors duration-300 hover:bg-fasor-surface2"
+            >
+              <img
+                src={unidad.logo}
+                alt={`Emblema de ${unidad.nombre} - FASOR`}
+                className="mb-4 h-20 w-20 rounded-full border border-fasor-gold/40 object-cover"
+                loading="lazy"
+              />
+              <h3 className="mb-2 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+                {unidad.nombre}
+              </h3>
+              <p className="m-0 text-sm leading-relaxed text-fasor-sage">{unidad.descripcion}</p>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {unidades.map((unidad) => (
-                <div
-                  key={unidad.id}
-                  className="stack-centered rounded-xl border border-alanizGold-600/30 bg-alanizGreen-900/40 p-6 transition-all duration-300 hover:border-alanizGold-600/60"
-                >
-                  <div className="mb-4 inline-flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-2 border-alanizGold-600/40 bg-alanizGreen-900 shadow-lg">
-                    <img
-                      src={unidad.logo}
-                      alt={`Logo ${unidad.nombre} - FASOR`}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <h3 className="mb-2 font-display text-lg font-semibold text-alanizGold-500">
-                    {unidad.nombre}
+      {/* Áreas de actuación */}
+      <section className="banda-superficie">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8">
+            <TituloSeccion numero="02" titulo="Áreas de Actuación" />
+          </div>
+
+          <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {areasActuacion.map((area) => (
+              <div key={area.titulo} className="border-t border-fasor-line pt-5">
+                <div className="mb-2 flex items-center gap-2.5">
+                  <Galon />
+                  <h3 className="m-0 font-display text-base font-bold uppercase tracking-tight text-fasor-bone">
+                    {area.titulo}
                   </h3>
-                  <p className="text-sm leading-relaxed text-parchment-300">{unidad.descripcion}</p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="observe-me opacity-0 translate-y-8" style={{ animationDelay: '400ms' }}>
-            <SectionHeading title="Áreas de Actuación" />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {areasActuacion.map((area) => (
-                <div key={area.titulo} className="card-elegant">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="inline-flex items-center justify-center w-12 h-12 border-2 border-alanizGold-600 bg-transparent rounded-full flex-shrink-0">
-                      <area.icono className="w-5 h-5 text-alanizGold-600" aria-hidden="true" />
-                    </div>
-                    <h3 className="font-display font-semibold text-alanizGold-500">
-                      {area.titulo}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-parchment-300">{area.descripcion}</p>
-                </div>
-              ))}
-            </div>
+                <p className="m-0 text-sm leading-relaxed text-fasor-sage">{area.descripcion}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -20,7 +20,7 @@ const EntityInfo = () => (
       «Donde la memoria arde, también nace la fuerza de proteger.»
     </p>
     <p className="m-0 font-mono text-[10px] tracking-[0.25em] text-fasor-gold">
-      DISCIPLINA · VALOR · SERVICIO
+      DISCIPLINA • VALOR • SERVICIO
     </p>
   </div>
 );
