@@ -5,8 +5,8 @@ import {
   Shield,
   Medal,
   Target,
+  Newspaper,
   Scale,
-  Flame,
   Handshake,
   ExternalLink,
   X,
@@ -15,14 +15,15 @@ import {
 } from 'lucide-react';
 import fasorLogo from '../assets/fasor.jpg';
 
-// Configuración de navegación: las 7 rutas del sitio (sin submenús)
+// Configuración de navegación (sin submenús). /abeiro no va aquí: se llega
+// desde Actualidad. Las rutas legales tampoco (van en el Footer).
 const navigationItems = [
   { path: '/', label: 'Inicio', icon: Home },
   { path: '/unidades', label: 'Unidades', icon: Shield },
   { path: '/organizacion', label: 'Organización', icon: Medal },
   { path: '/actuacion', label: 'Actuación', icon: Target },
+  { path: '/actualidad', label: 'Actualidad', icon: Newspaper },
   { path: '/entidad', label: 'Entidad', icon: Scale },
-  { path: '/abeiro', label: 'Abeiro', icon: Flame },
   { path: '/unete', label: 'Únete', icon: Handshake },
 ] as const;
 

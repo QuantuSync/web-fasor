@@ -125,6 +125,15 @@ export const routes: RouteRecord[] = [
         } satisfies RouteMeta,
       },
       {
+        path: 'actualidad',
+        lazy: () => import('./pages/Actualidad').then((m) => ({ Component: m.default })),
+        handle: {
+          title: 'Actualidad - FASOR',
+          description:
+            'La actividad de FASOR: proyectos propios y noticias de la asociación, con Abeiro como primer proyecto.',
+        } satisfies RouteMeta,
+      },
+      {
         path: 'entidad',
         lazy: () => import('./pages/Entidad').then((m) => ({ Component: m.default })),
         handle: {

@@ -80,9 +80,16 @@ export default function Home() {
             <p>
               La Fuerza de Auxilio, Soporte y Rescate (FASOR) es una{' '}
               <strong className="text-alanizGold-500">ONG</strong> impulsada por la{' '}
-              <strong className="text-alanizGold-500">Casa Alaniz</strong> con un objetivo claro:
-              ayudar y proteger a la comunidad cuando más lo necesita. No es una idea abstracta,
-              sino una respuesta a problemas reales.
+              <a
+                href="https://casaalaniz.es"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-alanizGold-400"
+              >
+                <strong className="text-alanizGold-500">Casa Alaniz</strong>
+              </a>{' '}
+              con un objetivo claro: ayudar y proteger a la comunidad cuando más lo necesita. No es
+              una idea abstracta, sino una respuesta a problemas reales.
             </p>
             <p>
               Incendios, inundaciones, terremotos y temporales son cada vez más frecuentes. Frente a
