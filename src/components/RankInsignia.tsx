@@ -43,7 +43,7 @@ export const RankComandante = () => (
     <svg viewBox="0 0 40 55" className="h-full w-full" fill="currentColor" aria-hidden="true">
       <g transform={MARCO_MANDO}>
         <polygon
-          transform="translate(0,-4)"
+          transform="translate(0,-7)"
           points="0,-8 1.75,-4.23 5.66,-5.66 4.23,-1.75 8,0 4.23,1.75 5.66,5.66 1.75,4.23 0,8 -1.75,4.23 -5.66,5.66 -4.23,1.75 -8,0 -4.23,-1.75 -5.66,-5.66 -1.75,-4.23"
         />
         <BarraDeMando />
