@@ -7,7 +7,7 @@ module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     // Tope global de 4px. `full` se conserva SOLO para formas intrínsecamente
-    // circulares: escudos, insignias de rango y el punto del indicador de estado.
+    // circulares: escudos y el punto del indicador de estado.
     borderRadius: {
       none: '0',
       sm: '2px',
