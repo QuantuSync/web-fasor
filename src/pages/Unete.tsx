@@ -147,7 +147,7 @@ function FormularioAlistamiento() {
             id="localidad"
             type="text"
             required
-            placeholder="Valladolid / Tordesillas"
+            placeholder="Madrid / Getafe"
             value={solicitud.localidad}
             onChange={(e) => actualizar('localidad', e.target.value)}
           />

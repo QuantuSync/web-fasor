@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Landmark, Users } from 'lucide-react';
 import TituloSeccion from '../components/TituloSeccion';
-import { RankBadge, RankStars, RankChevrons } from '../components/RankInsignia';
+import { RankBadge, RankComandante, RankStars, RankChevrons } from '../components/RankInsignia';
 import { escalafon } from '../data/escalafon';
 
 // Organización: estructura organizativa, escalafón como listado jerárquico
@@ -69,8 +69,13 @@ export default function Organizacion() {
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <RankBadge>
+                  {/* El Comandante (rango 1, tres estrellas en los datos) lleva divisa propia */}
                   {rango.insignia.tipo === 'estrellas' ? (
-                    <RankStars count={rango.insignia.numero} />
+                    rango.insignia.numero === 3 ? (
+                      <RankComandante />
+                    ) : (
+                      <RankStars count={rango.insignia.numero} />
+                    )
                   ) : (
                     <RankChevrons count={rango.insignia.numero} />
                   )}

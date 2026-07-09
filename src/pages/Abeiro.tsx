@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-// GitBranch y no Github: lucide retiró los iconos de marca en esta versión
-import { Map, Maximize, Eye, Route, AlertTriangle, GitBranch } from 'lucide-react';
+import { Map, Maximize, Eye, Route, AlertTriangle } from 'lucide-react';
 import TituloSeccion from '../components/TituloSeccion';
 import Galon from '../components/Galon';
 
 // Abeiro: proyecto propio de protección ante incendios forestales.
-// Información basada en el repo y la web reales (github.com/QuantuSync/abeiro ·
-// abeiro.vercel.app). Mapa embebido en escritorio y botón a pantalla completa en móvil.
+// Información basada en el proyecto y la web reales (abeiro.vercel.app).
+// Mapa embebido en escritorio y botón a pantalla completa en móvil.
 // La advertencia de que es un demostrador debe mantenerse SIEMPRE.
 
 // Procedencia de cada dato que usa el proyecto
@@ -161,18 +160,6 @@ export default function Abeiro() {
                 base para decisiones operativas reales.
               </span>
             </p>
-          </div>
-
-          <div className="observe-me opacity-0 translate-y-8 mt-10">
-            <a
-              href="https://github.com/QuantuSync/abeiro"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-contorno"
-            >
-              <GitBranch className="h-4 w-4" aria-hidden="true" />
-              Ver el repositorio en GitHub
-            </a>
           </div>
         </div>
       </section>

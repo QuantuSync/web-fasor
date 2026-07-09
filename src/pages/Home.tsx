@@ -20,8 +20,7 @@ const DATOS_ORGANIZACION = JSON.stringify({
   identifier: [
     {
       '@type': 'PropertyValue',
-      propertyID:
-        'Registro de Asociaciones de la Delegación Territorial de Valladolid (sección Primera)',
+      propertyID: 'Registro de Asociaciones (sección Primera)',
       value: '0006429',
     },
     { '@type': 'PropertyValue', propertyID: 'NIF', value: 'G93758183' },

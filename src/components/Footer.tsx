@@ -63,10 +63,7 @@ const RegistryInfo = () => (
     <div className="space-y-3">
       <div className="flex items-start gap-3 text-sm text-fasor-sage">
         <FileCheck className="mt-0.5 h-4 w-4 flex-shrink-0 text-fasor-gold" aria-hidden="true" />
-        <span>
-          Registro de Asociaciones de la Delegación Territorial de Valladolid — nº 0006429, sección
-          Primera
-        </span>
+        <span>Inscrita en el Registro de Asociaciones con el número 0006429, sección Primera</span>
       </div>
 
       <div className="flex items-center gap-3 text-sm text-fasor-sage">

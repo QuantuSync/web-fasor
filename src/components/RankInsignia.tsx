@@ -2,13 +2,13 @@ import React from 'react';
 
 // Distintivos de rango en formato «Estandarte»: banderín vertical con punta
 // inferior, relleno superficie y trazo dorado de 1.6px (esquinas vivas, sin
-// radios). Dentro, en columna vertical centrada: estrellas rellenas para el
-// mando (rangos 1-3) y galones ^ para la tropa (rangos 4-5).
-// El dorado es tinta: sin sombras, sin brillos, sin degradados.
+// radios). Dentro, en columna vertical centrada: divisa propia para el
+// Comandante (estrella de ocho puntas sobre palas cruzadas), estrellas
+// rellenas para el resto del mando (rangos 2-3) y galones ^ para la tropa
+// (rangos 4-5). El dorado es tinta: sin sombras, sin brillos, sin degradados.
 
 // Nombres de rango por divisa (doctrina del escalafón), para el aria-label
 const RANGO_ESTRELLAS: Record<number, string> = {
-  3: 'Distintivo de Comandante: tres estrellas',
   2: 'Distintivo de Capitán de Unidad: dos estrellas',
   1: 'Distintivo de Teniente de Cuadrilla: una estrella',
 };
@@ -23,6 +23,45 @@ const Star = () => (
   <svg viewBox="0 0 24 24" className="h-[15px] w-[15px]" fill="currentColor" aria-hidden="true">
     <path d="M12 1 L14.53 8.52 L22.46 8.6 L16.09 13.33 L18.47 20.9 L12 16.3 L5.53 20.9 L7.91 13.33 L1.54 8.6 L9.47 8.52 Z" />
   </svg>
+);
+
+// Pala esquemática (como la del sello): mango recto y hoja apuntada, en
+// vertical con la hoja hacia abajo; se coloca girada ±45° para el aspa.
+const Pala = () => (
+  <g fill="currentColor">
+    <rect x="18.9" y="3" width="2.2" height="20" />
+    <path d="M15.8 22 H24.2 V27.5 L20 36 L15.8 27.5 Z" />
+  </g>
+);
+
+// Divisa del Comandante (rango 1): estrella de ocho puntas (dos cuadrados
+// superpuestos girados 45°) rellena en dorado como elemento dominante, sobre
+// dos palas cruzadas en aspa que asoman por los lados. El contorno de la
+// estrella va en color superficie (paintOrder stroke) para separarla de las
+// palas: es un corte de tinta, no un brillo.
+export const RankComandante = () => (
+  <span
+    className="flex items-center justify-center text-fasor-gold"
+    role="img"
+    aria-label="Distintivo de Comandante: estrella de ocho puntas sobre palas cruzadas"
+  >
+    <svg viewBox="0 0 40 40" className="h-[38px] w-[38px]" aria-hidden="true">
+      <g transform="rotate(45 20 20)">
+        <Pala />
+      </g>
+      <g transform="rotate(-45 20 20)">
+        <Pala />
+      </g>
+      <path
+        d="M20 7 L23.83 10.76 L29.19 10.81 L29.24 16.17 L33 20 L29.24 23.83 L29.19 29.19 L23.83 29.24 L20 33 L16.17 29.24 L10.81 29.19 L10.76 23.83 L7 20 L10.76 16.17 L10.81 10.81 L16.17 10.76 Z"
+        fill="currentColor"
+        className="stroke-fasor-surface"
+        strokeWidth={1.4}
+        strokeLinejoin="miter"
+        paintOrder="stroke"
+      />
+    </svg>
+  </span>
 );
 
 export const RankStars = ({ count }: { count: number }) => (

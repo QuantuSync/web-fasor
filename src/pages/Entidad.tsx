@@ -47,13 +47,12 @@ export default function Entidad() {
             La Fuerza de Auxilio, Soporte y Rescate (FASOR) es una entidad de protección civil y
             respuesta rápida ante emergencias, con personalidad jurídica propia, creada en 2025 al
             amparo del artículo 22 de la Constitución Española y conforme a la Ley Orgánica 1/2002,
-            de 22 de marzo, e inscrita en el Registro de Asociaciones de la Delegación Territorial
-            de Valladolid con el número 0006429, sección Primera.
+            de 22 de marzo, e inscrita en el Registro de Asociaciones con el número 0006429, sección
+            Primera.
           </p>
           <p>
-            Su ámbito principal de actuación es la comunidad de Castilla y León, pudiendo intervenir
-            en el resto de España y en el extranjero en colaboración con las autoridades
-            competentes.
+            Su ámbito de actuación es España, pudiendo intervenir también en el extranjero en
+            colaboración con las autoridades competentes.
           </p>
           <p>
             FASOR nace bajo el amparo de la Casa Alaniz como reflejo de un deber de servicio y

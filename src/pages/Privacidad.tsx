@@ -76,8 +76,7 @@ export default function Privacidad() {
           <SeccionLegal numero="01" titulo="¿Quién es el responsable?">
             <p>
               FASOR – Fuerza de Auxilio, Soporte y Rescate, asociación inscrita en el Registro de
-              Asociaciones de la Delegación Territorial de Valladolid con el número 0006429, sección
-              Primera. Contacto: <EmailContacto />.
+              Asociaciones con el número 0006429, sección Primera. Contacto: <EmailContacto />.
             </p>
           </SeccionLegal>
 

@@ -73,9 +73,8 @@ export default function AvisoLegal() {
               <strong className="text-fasor-bone">NIF:</strong> G93758183
             </p>
             <p>
-              <strong className="text-fasor-bone">Inscripción registral:</strong> Registro de
-              Asociaciones de la Delegación Territorial de Valladolid (Junta de Castilla y León),
-              número 0006429, sección Primera
+              <strong className="text-fasor-bone">Inscripción registral:</strong> inscrita en el
+              Registro de Asociaciones con el número 0006429, sección Primera
             </p>
             <p>
               <strong className="text-fasor-bone">Contacto:</strong>{' '}
@@ -125,7 +124,7 @@ export default function AvisoLegal() {
           <SeccionLegal numero="05" titulo="Legislación aplicable">
             <p>
               Este aviso legal se rige por la legislación española. Para cualquier controversia
-              serán competentes los juzgados y tribunales de Valladolid, salvo que la ley disponga
+              conocerán los juzgados y tribunales españoles competentes, salvo que la ley disponga
               otro fuero.
             </p>
           </SeccionLegal>
