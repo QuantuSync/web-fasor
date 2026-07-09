@@ -66,7 +66,7 @@ export default function Privacidad() {
           <div className="linea-fade mt-6" aria-hidden="true"></div>
           <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
             Aquí te explicamos, de forma clara, qué hacemos con tus datos cuando usas el formulario
-            de alistamiento.
+            de ingreso.
           </p>
         </div>
       </header>
@@ -82,10 +82,10 @@ export default function Privacidad() {
 
           <SeccionLegal numero="02" titulo="¿Qué datos tratamos y para qué?">
             <p>
-              Los que escribes en el formulario de alistamiento: nombre, email, teléfono (si lo
-              indicas), provincia o municipio, unidad de interés y tu motivación. Los usamos solo
-              para gestionar tu solicitud de alistamiento y ponernos en contacto contigo. No los
-              usamos para publicidad ni los vendemos a nadie.
+              Los que escribes en el formulario de ingreso: nombre, email, teléfono (si lo indicas),
+              provincia o municipio, unidad de interés y tu motivación. Los usamos solo para
+              gestionar tu solicitud de ingreso y ponernos en contacto contigo. No los usamos para
+              publicidad ni los vendemos a nadie.
             </p>
           </SeccionLegal>
 
@@ -125,8 +125,8 @@ export default function Privacidad() {
 
           <SeccionLegal numero="07" titulo="Menores">
             <p>
-              El formulario de alistamiento está reservado a mayores de 18 años; por eso te pedimos
-              que lo declares antes de enviarlo.
+              El formulario de ingreso está reservado a mayores de 18 años; por eso te pedimos que
+              lo declares antes de enviarlo.
             </p>
           </SeccionLegal>
         </div>

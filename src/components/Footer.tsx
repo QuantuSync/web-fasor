@@ -73,8 +73,11 @@ const RegistryInfo = () => (
 
       <div className="flex items-center gap-3 text-sm text-fasor-sage">
         <Mail className="h-4 w-4 flex-shrink-0 text-fasor-gold" aria-hidden="true" />
-        <a href="/unete" className="underline-offset-2 hover:text-fasor-gold hover:underline">
-          Cómo unirte a FASOR
+        <a
+          href="mailto:contacto@fasor.es"
+          className="underline-offset-2 hover:text-fasor-gold hover:underline"
+        >
+          contacto@fasor.es
         </a>
       </div>
 

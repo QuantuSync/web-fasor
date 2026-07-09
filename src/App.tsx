@@ -156,7 +156,7 @@ export const routes: RouteRecord[] = [
         lazy: () => import('./pages/Unete').then((m) => ({ Component: m.default })),
         handle: {
           title: 'Únete - FASOR',
-          description: 'Categorías de socios, derechos y deberes, y cómo alistarse en FASOR.',
+          description: 'Categorías de socios, derechos y deberes, y cómo ingresar en FASOR.',
         } satisfies RouteMeta,
       },
       {

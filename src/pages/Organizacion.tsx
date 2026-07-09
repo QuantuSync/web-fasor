@@ -4,6 +4,14 @@ import TituloSeccion from '../components/TituloSeccion';
 import { RankBadge, RankComandante, RankStars, RankChevrons } from '../components/RankInsignia';
 import { escalafon } from '../data/escalafon';
 
+// Buzones institucionales de los cargos de la Junta Directiva: siempre el
+// cargo u órgano, nunca nombres de personas (regla de privacidad del CLAUDE.md)
+const CORREOS_JUNTA = [
+  { cargo: 'Presidencia', email: 'presidencia@fasor.es' },
+  { cargo: 'Secretaría', email: 'secretaria@fasor.es' },
+  { cargo: 'Tesorería', email: 'tesoreria@fasor.es' },
+];
+
 // Organización: estructura organizativa, escalafón como listado jerárquico
 // descendente con las insignias, y órganos de gobierno en paneles planos.
 // Por la regla de privacidad del CLAUDE.md aquí NO se publican nombres de personas.
@@ -132,6 +140,19 @@ export default function Organizacion() {
                 Secretario/a y Tesorero/a, pudiendo añadirse vocales si lo aprueba la Asamblea. Los
                 cargos son gratuitos, con mandato de cuatro años renovable.
               </p>
+              <ul className="m-0 mt-4 list-none space-y-1.5 p-0 font-mono text-xs tracking-wider text-fasor-sage">
+                {CORREOS_JUNTA.map(({ cargo, email }) => (
+                  <li key={email}>
+                    {cargo} ·{' '}
+                    <a
+                      href={`mailto:${email}`}
+                      className="underline-offset-2 hover:text-fasor-gold hover:underline"
+                    >
+                      {email}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

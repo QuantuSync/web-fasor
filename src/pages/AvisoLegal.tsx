@@ -90,8 +90,7 @@ export default function AvisoLegal() {
           <SeccionLegal numero="02" titulo="Condiciones de uso">
             <p>
               Este sitio web tiene carácter informativo: presenta la actividad de FASOR, sus
-              unidades y su forma de organización, y permite solicitar el alistamiento en la
-              Asociación.
+              unidades y su forma de organización, y permite solicitar el ingreso en la Asociación.
             </p>
             <p>
               Al navegar por el sitio te comprometes a hacer un uso adecuado de sus contenidos y a

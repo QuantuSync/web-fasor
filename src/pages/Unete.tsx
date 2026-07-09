@@ -12,7 +12,7 @@ const WEB3FORMS_ACCESS_KEY = 'bae25a86-7969-4709-b895-fac73950ae82';
 
 type EstadoEnvio = 'inicial' | 'enviando' | 'exito' | 'error';
 
-// Estado del formulario de alistamiento
+// Estado del formulario de ingreso
 interface Solicitud {
   nombre: string;
   email: string;
@@ -37,11 +37,11 @@ const SOLICITUD_VACIA: Solicitud = {
   botcheck: '',
 };
 
-// Pasos del proceso de alistamiento
+// Pasos del proceso de ingreso
 const PASOS = [
   {
     titulo: 'Envía tu solicitud',
-    descripcion: 'Rellena el formulario de alistamiento con tus datos y tu motivación.',
+    descripcion: 'Rellena el formulario de ingreso con tus datos y tu motivación.',
   },
   {
     titulo: 'Valoración',
@@ -53,9 +53,9 @@ const PASOS = [
   },
 ];
 
-// Formulario de alistamiento: envío a Web3Forms con fetch en el handler (regla SSG),
+// Formulario de ingreso: envío a Web3Forms con fetch en el handler (regla SSG),
 // validación en cliente y estados de envío anunciados en una región aria-live.
-function FormularioAlistamiento() {
+function FormularioIngreso() {
   const [solicitud, setSolicitud] = useState<Solicitud>(SOLICITUD_VACIA);
   const [estado, setEstado] = useState<EstadoEnvio>('inicial');
 
@@ -76,7 +76,7 @@ function FormularioAlistamiento() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
-          subject: 'Nueva solicitud de alistamiento - FASOR',
+          subject: 'Nueva solicitud de ingreso - FASOR',
           from_name: 'Web FASOR',
           nombre: solicitud.nombre,
           email: solicitud.email,
@@ -252,7 +252,7 @@ function FormularioAlistamiento() {
 }
 
 // Únete: categorías de socios (art. 15), derechos y deberes (arts. 16-17)
-// según el texto literal de los estatutos, cómo alistarse y formulario.
+// según el texto literal de los estatutos, cómo ingresar y formulario.
 export default function Unete() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -284,7 +284,7 @@ export default function Unete() {
           <div className="linea-fade mt-6" aria-hidden="true"></div>
           <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
             FASOR crece con personas dispuestas a servir. Conoce las categorías de socios, tus
-            derechos y deberes, y envía tu solicitud de alistamiento.
+            derechos y deberes, y envía tu solicitud de ingreso.
           </p>
         </div>
       </header>
@@ -355,11 +355,11 @@ export default function Unete() {
         </div>
       </section>
 
-      {/* Cómo alistarse */}
+      {/* Cómo ingresar */}
       <section className="banda">
         <div className="content-container">
           <div className="observe-me opacity-0 translate-y-8">
-            <TituloSeccion numero="03" titulo="Cómo Alistarse" />
+            <TituloSeccion numero="03" titulo="Cómo Ingresar" />
           </div>
 
           <div className="observe-me opacity-0 translate-y-8 grid grid-cols-1 gap-10 md:grid-cols-3">
@@ -378,19 +378,31 @@ export default function Unete() {
         </div>
       </section>
 
-      {/* Formulario de alistamiento */}
+      {/* Formulario de ingreso */}
       <section className="banda-superficie">
         <div className="content-container">
           <div className="observe-me opacity-0 translate-y-8">
-            <TituloSeccion numero="04" titulo="Formulario de Alistamiento" />
+            <TituloSeccion numero="04" titulo="Formulario de Ingreso" />
           </div>
 
           <div className="observe-me opacity-0 translate-y-8">
-            <FormularioAlistamiento />
+            <FormularioIngreso />
 
             <p className="mt-10 max-w-3xl text-xs leading-relaxed text-fasor-sage">
               La admisión de socios corresponde a la Junta Directiva. La pertenencia a FASOR está
               sujeta al régimen disciplinario previsto en los estatutos (arts. 11, 18 y 19).
+            </p>
+
+            {/* Vía alternativa al formulario */}
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-fasor-sage">
+              También puedes escribirnos a{' '}
+              <a
+                href="mailto:ingreso@fasor.es"
+                className="text-fasor-gold underline underline-offset-2 hover:text-fasor-bone"
+              >
+                ingreso@fasor.es
+              </a>
+              .
             </p>
           </div>
         </div>
