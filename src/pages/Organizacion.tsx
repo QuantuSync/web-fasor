@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Swords } from 'lucide-react';
+import { Swords, Landmark, Users, UserRound } from 'lucide-react';
 import { RankBadge, RankStars, RankChevrons } from '../components/RankInsignia';
 import { escalafon } from '../data/escalafon';
 
@@ -89,6 +89,86 @@ export default function Organizacion() {
                     </p>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="card-elegant observe-me opacity-0 translate-y-8"
+            style={{ animationDelay: '400ms' }}
+          >
+            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-2">
+              Órganos de Gobierno
+            </h2>
+            <p className="text-sm text-parchment-400 mb-6">
+              Según los artículos 9 y 10 de los estatutos.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-alanizGreen-900/50 rounded-lg p-6 border border-alanizGold-600/30">
+                <h3 className="font-display font-semibold text-alanizGold-500 mb-3 flex items-center">
+                  <Landmark className="w-5 h-5 mr-2 text-alanizGold-600" aria-hidden="true" />
+                  Asamblea General
+                </h3>
+                <p className="text-sm text-parchment-300 leading-relaxed">
+                  Órgano supremo de gobierno de la Asociación, integrado por todos los socios de
+                  pleno derecho. Se reúne al menos una vez al año, dentro de los cuatro meses
+                  siguientes al cierre del ejercicio (31 de diciembre). Sus acuerdos obligan a todos
+                  los socios.
+                </p>
+              </div>
+
+              <div className="bg-alanizGreen-900/50 rounded-lg p-6 border border-alanizGold-600/30">
+                <h3 className="font-display font-semibold text-alanizGold-500 mb-3 flex items-center">
+                  <Users className="w-5 h-5 mr-2 text-alanizGold-600" aria-hidden="true" />
+                  Junta Directiva
+                </h3>
+                <p className="text-sm text-parchment-300 leading-relaxed">
+                  Órgano de representación y gestión de la Asociación, compuesto por Presidente/a,
+                  Secretario/a y Tesorero/a, pudiendo añadirse vocales si lo aprueba la Asamblea.
+                  Los cargos son gratuitos, con mandato de cuatro años renovable.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="card-elegant observe-me opacity-0 translate-y-8"
+            style={{ animationDelay: '600ms' }}
+          >
+            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6 text-center">
+              Junta Directiva Actual
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6">
+                <div className="inline-flex items-center justify-center w-14 h-14 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
+                  <UserRound className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
+                </div>
+                <p className="eyebrow mb-2 text-alanizGold-600/70">Presidente</p>
+                <h3 className="font-display font-semibold text-alanizGold-500 text-center">
+                  Lucas Damián Alaniz Pintos
+                </h3>
+              </div>
+
+              <div className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6">
+                <div className="inline-flex items-center justify-center w-14 h-14 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
+                  <UserRound className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
+                </div>
+                <p className="eyebrow mb-2 text-alanizGold-600/70">Secretario</p>
+                <h3 className="font-display font-semibold text-alanizGold-500 text-center">
+                  Matías Nahuel Pintos
+                </h3>
+              </div>
+
+              <div className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6">
+                <div className="inline-flex items-center justify-center w-14 h-14 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
+                  <UserRound className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
+                </div>
+                <p className="eyebrow mb-2 text-alanizGold-600/70">Tesorera</p>
+                <h3 className="font-display font-semibold text-alanizGold-500 text-center">
+                  Noelia Barrio Barrio
+                </h3>
               </div>
             </div>
           </div>

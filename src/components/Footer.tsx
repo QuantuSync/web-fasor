@@ -161,8 +161,22 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* Subir */}
+            {/* Enlaces legales y subir */}
             <div className="flex items-center space-x-6 text-xs text-parchment-400">
+              <a
+                href="/aviso-legal"
+                className="hover:text-alanizGold-600 transition-colors duration-200
+                           underline-offset-2 hover:underline"
+              >
+                Aviso Legal
+              </a>
+              <a
+                href="/privacidad"
+                className="hover:text-alanizGold-600 transition-colors duration-200
+                           underline-offset-2 hover:underline"
+              >
+                Privacidad
+              </a>
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="hover:text-alanizGold-600 transition-colors duration-200

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Outlet, Navigate, useLocation, useMatches } from 'react-router-dom';
-import { Siren } from 'lucide-react';
 import { Head, type RouteRecord } from 'vite-react-ssg';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
+import NotFound from './pages/NotFound';
 
 const DEFAULT_TITLE = 'FASOR - Fuerza de Auxilio, Soporte y Rescate';
 const DEFAULT_DESCRIPTION =
@@ -47,27 +47,6 @@ const useScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location]);
 };
-
-// Página 404 (versión mínima; la página temática completa llega en la fase 3)
-const NotFound = () => (
-  <div className="flex min-h-[60vh] items-center justify-center px-4">
-    <div className="stack-centered space-y-5">
-      <Siren className="h-24 w-24 text-alanizGold-600" aria-hidden="true" />
-      <h1 className="font-display text-3xl font-bold text-alanizGold-600">Página No Encontrada</h1>
-      <p className="max-w-md text-parchment-300">
-        La página que buscas no existe en el sitio de FASOR.
-      </p>
-      <div className="space-x-4">
-        <button onClick={() => window.history.back()} className="btn-secondary">
-          Volver Atrás
-        </button>
-        <button onClick={() => (window.location.href = '/')} className="btn-alaniz">
-          Ir al Inicio
-        </button>
-      </div>
-    </div>
-  </div>
-);
 
 // Elemento raíz: head por ruta + ErrorBoundary + Layout + Suspense con el Outlet.
 function Root() {
@@ -154,7 +133,32 @@ export const routes: RouteRecord[] = [
           description: 'Categorías de socios, derechos y deberes, y cómo alistarse en FASOR.',
         } satisfies RouteMeta,
       },
-      { path: '404', element: <NotFound /> },
+      {
+        path: 'aviso-legal',
+        lazy: () => import('./pages/AvisoLegal').then((m) => ({ Component: m.default })),
+        handle: {
+          title: 'Aviso Legal - FASOR',
+          description:
+            'Aviso legal del sitio web de FASOR: titular, condiciones de uso y propiedad intelectual.',
+        } satisfies RouteMeta,
+      },
+      {
+        path: 'privacidad',
+        lazy: () => import('./pages/Privacidad').then((m) => ({ Component: m.default })),
+        handle: {
+          title: 'Política de Privacidad - FASOR',
+          description:
+            'Política de privacidad de FASOR: qué datos tratamos, con qué base, y cuáles son tus derechos.',
+        } satisfies RouteMeta,
+      },
+      {
+        path: '404',
+        element: <NotFound />,
+        handle: {
+          title: 'Página no encontrada - FASOR',
+          description: 'La página solicitada no existe en el sitio de FASOR.',
+        } satisfies RouteMeta,
+      },
       { path: '*', element: <Navigate to="/404" replace /> },
     ],
   },
