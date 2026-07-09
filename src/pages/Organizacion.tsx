@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { Swords, Landmark, Users, UserRound } from 'lucide-react';
+import { Swords, Landmark, Users } from 'lucide-react';
 import { RankBadge, RankStars, RankChevrons } from '../components/RankInsignia';
 import { escalafon } from '../data/escalafon';
 
-// Página de Organización: estructura organizativa y escalafón oficial (cinco rangos
-// con sus distintivos). Los órganos de gobierno y la Junta Directiva llegan en la fase 3.
+// Página de Organización: estructura organizativa, escalafón oficial (cinco rangos
+// con sus distintivos) y órganos de gobierno según estatutos, en términos impersonales.
+// Por la regla de privacidad del CLAUDE.md aquí NO se publican nombres de personas.
 // Contenido portado verbatim de Fasor.tsx (repo de Casa Alaniz).
 export default function Organizacion() {
   useEffect(() => {
@@ -128,47 +129,6 @@ export default function Organizacion() {
                   Secretario/a y Tesorero/a, pudiendo añadirse vocales si lo aprueba la Asamblea.
                   Los cargos son gratuitos, con mandato de cuatro años renovable.
                 </p>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className="card-elegant observe-me opacity-0 translate-y-8"
-            style={{ animationDelay: '600ms' }}
-          >
-            <h2 className="text-2xl font-display font-semibold text-alanizGold-600 mb-6 text-center">
-              Junta Directiva Actual
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6">
-                <div className="inline-flex items-center justify-center w-14 h-14 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <UserRound className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <p className="eyebrow mb-2 text-alanizGold-600/70">Presidente</p>
-                <h3 className="font-display font-semibold text-alanizGold-500 text-center">
-                  Lucas Damián Alaniz Pintos
-                </h3>
-              </div>
-
-              <div className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6">
-                <div className="inline-flex items-center justify-center w-14 h-14 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <UserRound className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <p className="eyebrow mb-2 text-alanizGold-600/70">Secretario</p>
-                <h3 className="font-display font-semibold text-alanizGold-500 text-center">
-                  Matías Nahuel Pintos
-                </h3>
-              </div>
-
-              <div className="stack-centered rounded-lg border border-alanizGold-600/30 bg-alanizGreen-900/50 p-6">
-                <div className="inline-flex items-center justify-center w-14 h-14 border-2 border-alanizGold-600 bg-transparent rounded-full mb-4">
-                  <UserRound className="w-6 h-6 text-alanizGold-600" aria-hidden="true" />
-                </div>
-                <p className="eyebrow mb-2 text-alanizGold-600/70">Tesorera</p>
-                <h3 className="font-display font-semibold text-alanizGold-500 text-center">
-                  Noelia Barrio Barrio
-                </h3>
               </div>
             </div>
           </div>
