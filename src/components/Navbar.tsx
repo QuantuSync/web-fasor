@@ -1,103 +1,59 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import {
-  Home,
-  Shield,
-  Medal,
-  Target,
-  Newspaper,
-  Scale,
-  Handshake,
-  ExternalLink,
-  X,
-  Menu,
-  type LucideIcon,
-} from 'lucide-react';
+import { ExternalLink, X, Menu } from 'lucide-react';
 import fasorLogo from '../assets/fasor.jpg';
 
-// Configuración de navegación (sin submenús). /abeiro no va aquí: se llega
-// desde Actualidad. Las rutas legales tampoco (van en el Footer).
+// Navegación plana (sin submenús). /abeiro no va aquí: se llega desde
+// Actualidad. Las rutas legales tampoco (van en el Footer).
 const navigationItems = [
-  { path: '/', label: 'Inicio', icon: Home },
-  { path: '/unidades', label: 'Unidades', icon: Shield },
-  { path: '/organizacion', label: 'Organización', icon: Medal },
-  { path: '/actuacion', label: 'Actuación', icon: Target },
-  { path: '/actualidad', label: 'Actualidad', icon: Newspaper },
-  { path: '/entidad', label: 'Entidad', icon: Scale },
-  { path: '/unete', label: 'Únete', icon: Handshake },
+  { path: '/', label: 'Inicio' },
+  { path: '/unidades', label: 'Unidades' },
+  { path: '/organizacion', label: 'Organización' },
+  { path: '/actuacion', label: 'Actuación' },
+  { path: '/actualidad', label: 'Actualidad' },
+  { path: '/entidad', label: 'Entidad' },
+  { path: '/unete', label: 'Únete' },
 ] as const;
 
-// Componente del logo (sello FASOR pequeño)
+// Logo: sello circular pequeño con filete fino + wordmark condensado
 const Logo = React.memo(() => (
-  <NavLink
-    to="/"
-    end
-    className="group flex items-center gap-3 leading-none transition-all duration-300"
-    aria-label="FASOR - Inicio"
-  >
-    <span className="subtle-glow flex h-10 w-10 shrink-0 items-center justify-center drop-shadow-lg transition-transform duration-300 group-hover:scale-110">
-      <img
-        src={fasorLogo}
-        alt="Sello de FASOR"
-        className="h-full w-full rounded-full object-cover brightness-110 transition-all duration-300 group-hover:brightness-125"
-        loading="eager"
-      />
-    </span>
-    <span className="hidden font-display text-xl font-semibold leading-none text-alanizGold-600 transition-colors duration-300 group-hover:text-alanizGold-500 lg:inline-block">
+  <NavLink to="/" end className="group flex items-center gap-3" aria-label="FASOR - Inicio">
+    <img
+      src={fasorLogo}
+      alt="Sello de FASOR"
+      className="h-8 w-8 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+      loading="eager"
+    />
+    <span className="font-display text-lg font-bold uppercase tracking-[0.2em] text-fasor-bone transition-colors duration-200 group-hover:text-fasor-gold">
       FASOR
     </span>
   </NavLink>
 ));
 
-// Componente de link de navegación simple
+// Enlace de navegación: mayúsculas condensadas; el activo lleva subrayado
+// dorado de 2px pegado a la línea inferior de la navbar.
 const NavItem = React.memo(
-  ({
-    path,
-    label,
-    icon,
-    onClick,
-  }: {
-    path: string;
-    label: string;
-    icon: LucideIcon;
-    onClick?: () => void;
-  }) => (
+  ({ path, label, onClick }: { path: string; label: string; onClick?: () => void }) => (
     <NavLink
       to={path}
       end={path === '/'}
       onClick={onClick}
       className={({ isActive }) => `
-      relative flex items-center space-x-2 px-3 py-2 rounded-lg
-      font-medium transition-all duration-300 group text-sm
-      ${
-        isActive
-          ? 'text-alanizGold-500 bg-alanizGold-600/10'
-          : 'text-alanizGold-600/80 hover:text-alanizGold-500 hover:bg-alanizGold-600/5'
-      }
-    `}
+        relative flex h-full items-center px-3 font-display text-xs font-semibold uppercase
+        tracking-[0.15em] transition-colors duration-200
+        ${isActive ? 'text-fasor-gold' : 'text-fasor-sage hover:text-fasor-bone'}
+      `}
       aria-label={`Ir a ${label}`}
     >
       {({ isActive }) => (
         <>
-          <span
-            className="transition-transform duration-300 group-hover:scale-110"
-            aria-hidden="true"
-          >
-            {React.createElement(icon, { className: 'w-4 h-4' })}
-          </span>
-          <span className="text-sm font-semibold tracking-wide">{label}</span>
+          {label}
           {isActive && (
-            <div
-              className="absolute bottom-0 left-1/2 transform -translate-x-1/2
-                          w-6 h-0.5 bg-alanizGold-600 rounded-full"
+            <span
+              className="absolute inset-x-2 bottom-0 h-0.5 bg-fasor-gold"
               aria-hidden="true"
-            ></div>
+            ></span>
           )}
-          <div
-            className="absolute inset-0 bg-alanizGold-600/10 rounded-lg scale-0
-                        group-hover:scale-100 transition-transform duration-300 -z-10"
-            aria-hidden="true"
-          ></div>
         </>
       )}
     </NavLink>
@@ -111,27 +67,19 @@ const CasaAlanizLink = ({ onClick }: { onClick?: () => void }) => (
     target="_blank"
     rel="noopener noreferrer"
     onClick={onClick}
-    className="relative flex items-center space-x-2 px-3 py-2 rounded-lg
-               font-medium transition-all duration-300 group text-sm
-               text-alanizGold-600/80 hover:text-alanizGold-500 hover:bg-alanizGold-600/5"
+    className="flex items-center gap-1.5 px-3 font-display text-xs font-semibold uppercase
+               tracking-[0.15em] text-fasor-sage transition-colors duration-200 hover:text-fasor-bone"
     aria-label="Ir a la web de la Casa Alaniz (se abre en una pestaña nueva)"
   >
-    <span className="transition-transform duration-300 group-hover:scale-110" aria-hidden="true">
-      <ExternalLink className="w-4 h-4" />
-    </span>
-    <span className="text-sm font-semibold tracking-wide">Casa Alaniz</span>
+    Casa Alaniz
+    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
   </a>
 );
 
-// Componente del menú móvil
+// Menú móvil: panel plano sobre superficie, sin sombras decorativas
 const MobileMenu = React.memo(({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
@@ -139,77 +87,81 @@ const MobileMenu = React.memo(({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+      if (e.key === 'Escape') onClose();
     },
     [onClose]
   );
 
   return (
     <div
-      className={`fixed inset-0 z-[99999] lg:hidden transition-opacity duration-300
-                     ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      className={`fixed inset-0 z-[99999] transition-opacity duration-300 lg:hidden
+                  ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
       role="dialog"
       aria-modal="true"
       aria-label="Menú de navegación móvil"
     >
       {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-alanizGreen-950/90 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      ></div>
+      <div className="absolute inset-0 bg-fasor-bg/90" onClick={onClose} aria-hidden="true"></div>
 
-      {/* Menu panel */}
+      {/* Panel */}
       <div
-        className={`absolute top-0 right-0 h-full w-80 max-w-[85vw]
-                       bg-gradient-to-b from-alanizGreen-800 to-alanizGreen-900
-                       border-l border-alanizGold-600/20 shadow-2xl
-                       transform transition-transform duration-300 ease-out
-                       ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`absolute right-0 top-0 h-full w-72 max-w-[85vw] border-l border-fasor-gold/25
+                    bg-fasor-surface transition-transform duration-300 ease-out
+                    ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         onKeyDown={handleKeyDown}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-alanizGold-600/20">
+        <div className="flex items-center justify-between border-b border-fasor-gold/25 p-5">
           <Logo />
           <button
             onClick={onClose}
             aria-label="Cerrar menú"
-            className="p-2 text-alanizGold-600 hover:text-alanizGold-500
-                       hover:bg-alanizGold-600/10 rounded-lg transition-all duration-200
-                       focus:outline-none focus:ring-2 focus:ring-alanizGold-600"
+            className="rounded-sm p-2 text-fasor-gold transition-colors duration-200 hover:bg-fasor-surface2"
           >
-            <X className="w-6 h-6" aria-hidden="true" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Navigation */}
         <nav
-          className="p-6 space-y-2 overflow-y-auto max-h-[calc(100vh-120px)]"
+          className="max-h-[calc(100vh-140px)] space-y-1 overflow-y-auto p-5"
           role="navigation"
           aria-label="Navegación principal"
         >
           {navigationItems.map((item) => (
-            <NavItem
+            <NavLink
               key={item.path}
-              path={item.path}
-              label={item.label}
-              icon={item.icon}
+              to={item.path}
+              end={item.path === '/'}
               onClick={onClose}
-            />
+              className={({ isActive }) => `
+                block border-l-2 px-4 py-3 font-display text-sm font-semibold uppercase
+                tracking-[0.15em] transition-colors duration-200
+                ${
+                  isActive
+                    ? 'border-fasor-gold text-fasor-gold'
+                    : 'border-transparent text-fasor-sage hover:border-fasor-gold/40 hover:text-fasor-bone'
+                }
+              `}
+            >
+              {item.label}
+            </NavLink>
           ))}
-          <CasaAlanizLink onClick={onClose} />
+          <a
+            href="https://casaalaniz.es"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onClose}
+            className="flex items-center gap-2 border-l-2 border-transparent px-4 py-3 font-display
+                       text-sm font-semibold uppercase tracking-[0.15em] text-fasor-sage
+                       transition-colors duration-200 hover:text-fasor-bone"
+          >
+            Casa Alaniz
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
         </nav>
 
-        {/* Footer info */}
-        <div
-          className="absolute bottom-0 left-0 right-0 p-6
-                        border-t border-alanizGold-600/20"
-        >
-          {/* /80 y no /60: con /60 el contraste queda en 3.4:1, por debajo de AA */}
-          <p className="text-xs text-alanizGold-600/80 text-center italic">
-            Disciplina • Valor • Servicio
+        <div className="absolute inset-x-0 bottom-0 border-t border-fasor-gold/25 p-5">
+          <p className="m-0 text-center font-mono text-[10px] tracking-[0.25em] text-fasor-sage">
+            DISCIPLINA · VALOR · SERVICIO
           </p>
         </div>
       </div>
@@ -217,10 +169,9 @@ const MobileMenu = React.memo(({ isOpen, onClose }: { isOpen: boolean; onClose: 
   );
 });
 
-// Componente principal del Navbar
+// Navbar principal: fina, fondo base con línea inferior dorada de 1px
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
   // Cerrar menú móvil al cambiar de ruta
@@ -228,83 +179,58 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  // Efecto de scroll para el navbar
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 20;
-      setIsScrolled(scrolled);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Manejar ESC key
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsMobileMenuOpen(false);
-      }
+      if (event.key === 'Escape') setIsMobileMenuOpen(false);
     };
 
     document.addEventListener('keydown', handleEsc);
     return () => document.removeEventListener('keydown', handleEsc);
   }, []);
 
-  const toggleMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen((prev) => !prev);
-  }, []);
-
-  const closeMobileMenu = useCallback(() => {
-    setIsMobileMenuOpen(false);
-  }, []);
+  const toggleMobileMenu = useCallback(() => setIsMobileMenuOpen((prev) => !prev), []);
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
 
   return (
     <>
       <header
-        className={`sticky top-0 z-[99998] transition-all duration-300
-                    ${
-                      isScrolled
-                        ? 'bg-alanizGreen-950/95 backdrop-blur-md shadow-lg border-b border-alanizGold-600/20'
-                        : 'bg-alanizGreen-950/90 backdrop-blur-sm'
-                    }`}
+        className="sticky top-0 z-[99998] border-b border-fasor-gold/25 bg-fasor-bg/95 backdrop-blur-sm"
         role="banner"
       >
         <div className="content-container">
           <nav
-            className="flex items-center justify-between h-16 lg:h-20"
+            className="flex h-14 items-center justify-between"
             role="navigation"
             aria-label="Navegación principal"
           >
-            {/* Logo */}
             <Logo />
 
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-1 ml-12">
+            {/* Navegación de escritorio */}
+            <div className="hidden h-full items-center lg:flex">
               {navigationItems.map((item) => (
-                <NavItem key={item.path} path={item.path} label={item.label} icon={item.icon} />
+                <NavItem key={item.path} path={item.path} label={item.label} />
               ))}
+              <span className="mx-2 h-4 w-px bg-fasor-gold/25" aria-hidden="true"></span>
               <CasaAlanizLink />
             </div>
 
-            {/* Mobile menu button */}
+            {/* Botón de menú móvil */}
             <button
               onClick={toggleMobileMenu}
               aria-label={
                 isMobileMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'
               }
               aria-expanded={isMobileMenuOpen}
-              className="lg:hidden p-2 text-alanizGold-600 hover:text-alanizGold-500
-                         hover:bg-alanizGold-600/10 rounded-lg transition-all duration-200
-                         focus:outline-none focus:ring-2 focus:ring-alanizGold-600 focus:ring-opacity-50"
+              className="rounded-sm p-2 text-fasor-gold transition-colors duration-200
+                         hover:bg-fasor-surface lg:hidden"
             >
-              <Menu className="w-6 h-6" aria-hidden="true" />
+              <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
           </nav>
         </div>
       </header>
 
-      {/* Mobile Menu */}
       <MobileMenu isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
     </>
   );
