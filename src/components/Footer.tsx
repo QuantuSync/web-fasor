@@ -1,4 +1,5 @@
-import { Mail, IdCard, FileCheck, ArrowUp, ExternalLink } from 'lucide-react';
+import { IdCard, FileCheck, ArrowUp, ExternalLink } from 'lucide-react';
+import CorreoEnlace from './CorreoEnlace';
 import Galon from './Galon';
 
 // Identidad de la entidad
@@ -71,14 +72,8 @@ const RegistryInfo = () => (
         <span className="font-mono text-xs tracking-wider">NIF G93758183</span>
       </div>
 
-      <div className="flex items-center gap-3 text-sm text-fasor-sage">
-        <Mail className="h-4 w-4 flex-shrink-0 text-fasor-gold" aria-hidden="true" />
-        <a
-          href="mailto:contacto@fasor.es"
-          className="underline-offset-2 hover:text-fasor-gold hover:underline"
-        >
-          contacto@fasor.es
-        </a>
+      <div>
+        <CorreoEnlace email="contacto@fasor.es" />
       </div>
 
       <div className="flex items-center gap-3 text-sm text-fasor-sage">

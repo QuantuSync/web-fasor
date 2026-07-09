@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Landmark, Users } from 'lucide-react';
+import CorreoEnlace from '../components/CorreoEnlace';
 import TituloSeccion from '../components/TituloSeccion';
 import { RankBadge, RankComandante, RankStars, RankChevrons } from '../components/RankInsignia';
 import { escalafon } from '../data/escalafon';
@@ -140,16 +141,11 @@ export default function Organizacion() {
                 Secretario/a y Tesorero/a, pudiendo añadirse vocales si lo aprueba la Asamblea. Los
                 cargos son gratuitos, con mandato de cuatro años renovable.
               </p>
-              <ul className="m-0 mt-4 list-none space-y-1.5 p-0 font-mono text-xs tracking-wider text-fasor-sage">
+              <ul className="m-0 mt-5 list-none space-y-3 p-0">
                 {CORREOS_JUNTA.map(({ cargo, email }) => (
-                  <li key={email}>
-                    {cargo} ·{' '}
-                    <a
-                      href={`mailto:${email}`}
-                      className="underline-offset-2 hover:text-fasor-gold hover:underline"
-                    >
-                      {email}
-                    </a>
+                  <li key={email} className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <span className="w-24 shrink-0 text-sm text-fasor-sage">{cargo}</span>
+                    <CorreoEnlace email={email} />
                   </li>
                 ))}
               </ul>

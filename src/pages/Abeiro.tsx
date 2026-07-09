@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Map, Maximize, Eye, Route, AlertTriangle } from 'lucide-react';
+import { Map, Maximize, Eye, Route } from 'lucide-react';
 import TituloSeccion from '../components/TituloSeccion';
 import Galon from '../components/Galon';
 
 // Abeiro: proyecto propio de protección ante incendios forestales.
 // Información basada en el proyecto y la web reales (abeiro.vercel.app).
 // Mapa embebido en escritorio y botón a pantalla completa en móvil.
-// La advertencia de que es un demostrador debe mantenerse SIEMPRE.
+// Sin avisos ni disclaimers sobre el proyecto (regla del CLAUDE.md).
 
 // Procedencia de cada dato que usa el proyecto
 const FUENTES_DATOS = [
@@ -83,7 +83,7 @@ export default function Abeiro() {
             <TituloSeccion
               numero="02"
               titulo="Comarca piloto: Valdeorras / Larouco (Ourense)"
-              intro="El demostrador trabaja sobre una comarca real, con un índice de vulnerabilidad calculado para cada núcleo de población y dos lentes intercambiables sobre el mismo mapa:"
+              intro="Abeiro trabaja sobre una comarca real, con un índice de vulnerabilidad calculado para cada núcleo de población y dos lentes intercambiables sobre el mismo mapa:"
             />
           </div>
 
@@ -141,30 +141,10 @@ export default function Abeiro() {
               </li>
             ))}
           </ul>
-
-          {/* Advertencia: mantener SIEMPRE, destacada */}
-          <div
-            className="observe-me opacity-0 translate-y-8 mt-10 max-w-3xl rounded-sm border border-fasor-gold/60 p-6"
-            role="note"
-          >
-            <p className="m-0 flex items-start gap-3 text-sm leading-relaxed text-fasor-bone">
-              <AlertTriangle
-                className="mt-0.5 h-5 w-5 shrink-0 text-fasor-gold"
-                aria-hidden="true"
-              />
-              <span>
-                <strong className="text-fasor-gold">
-                  Abeiro es un demostrador, no una herramienta operativa.
-                </strong>{' '}
-                Los pesos del índice de vulnerabilidad son provisionales y no debe usarse como única
-                base para decisiones operativas reales.
-              </span>
-            </p>
-          </div>
         </div>
       </section>
 
-      {/* Mapa incrustado (demostrador) */}
+      {/* Mapa incrustado */}
       <section className="banda-superficie">
         <div className="content-container">
           <div className="observe-me opacity-0 translate-y-8">
@@ -176,7 +156,7 @@ export default function Abeiro() {
             <div className="overflow-hidden rounded-sm border border-fasor-gold/25">
               <iframe
                 src="https://abeiro.vercel.app"
-                title="Abeiro — mapa (demostrador)"
+                title="Abeiro — mapa"
                 loading="lazy"
                 className="h-[600px] w-full"
               ></iframe>

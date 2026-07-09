@@ -1,14 +1,8 @@
 import { useEffect, type ReactNode } from 'react';
+import CorreoEnlace from '../components/CorreoEnlace';
 
-// Enlace mailto reutilizado en varias secciones
-const EmailContacto = () => (
-  <a
-    href="mailto:contacto@fasor.es"
-    className="text-fasor-gold underline underline-offset-2 hover:text-fasor-bone"
-  >
-    contacto@fasor.es
-  </a>
-);
+// Enlace mailto reutilizado en varias secciones (tratamiento único del sitio)
+const EmailContacto = () => <CorreoEnlace email="contacto@fasor.es" />;
 
 // Sección de prosa legal: numeración técnica + título condensado + cuerpo
 function SeccionLegal({

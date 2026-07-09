@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Send, CheckCircle2, AlertTriangle } from 'lucide-react';
+import CorreoEnlace from '../components/CorreoEnlace';
 import TituloSeccion from '../components/TituloSeccion';
 import Galon from '../components/Galon';
 import { categoriasSocios, derechosSocios, deberesSocios } from '../data/socios';
@@ -394,15 +395,8 @@ export default function Unete() {
             </p>
 
             {/* Vía alternativa al formulario */}
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-fasor-sage">
-              También puedes escribirnos a{' '}
-              <a
-                href="mailto:ingreso@fasor.es"
-                className="text-fasor-gold underline underline-offset-2 hover:text-fasor-bone"
-              >
-                ingreso@fasor.es
-              </a>
-              .
+            <p className="mt-4 max-w-3xl leading-relaxed text-fasor-sage">
+              También puedes escribirnos a <CorreoEnlace email="ingreso@fasor.es" />.
             </p>
           </div>
         </div>
