@@ -2,15 +2,16 @@ import React from 'react';
 
 // Distintivos de rango en formato «Estandarte»: banderín vertical con punta
 // inferior, relleno superficie y trazo dorado de 1.6px (esquinas vivas, sin
-// radios). Dentro, en columna vertical centrada: divisa propia para el
-// Comandante (estrella de ocho puntas sobre palas cruzadas), estrellas
-// rellenas para el resto del mando (rangos 2-3) y galones ^ para la tropa
-// (rangos 4-5). El dorado es tinta: sin sombras, sin brillos, sin degradados.
+// radios). Los tres rangos de mando (1-3) llevan una barra de mando horizontal
+// en la parte baja del banderín y, sobre ella, sus estrellas: la de ocho
+// puntas del Comandante o las de cinco puntas de Capitán y Teniente. La tropa
+// (rangos 4-5) lleva galones ^ en columna. El dorado es tinta: sin sombras,
+// sin brillos, sin degradados.
 
 // Nombres de rango por divisa (doctrina del escalafón), para el aria-label
 const RANGO_ESTRELLAS: Record<number, string> = {
-  2: 'Distintivo de Capitán de Unidad: dos estrellas',
-  1: 'Distintivo de Teniente de Cuadrilla: una estrella',
+  2: 'Distintivo de Capitán de Unidad: dos estrellas sobre barra de mando',
+  1: 'Distintivo de Teniente de Cuadrilla: una estrella sobre barra de mando',
 };
 
 const RANGO_GALONES: Record<number, string> = {
@@ -18,63 +19,70 @@ const RANGO_GALONES: Record<number, string> = {
   1: 'Distintivo de Cadete en Formación: un galón',
 };
 
-// Estrella heráldica de cinco puntas, rellena en dorado
-const Star = () => (
-  <svg viewBox="0 0 24 24" className="h-[15px] w-[15px]" fill="currentColor" aria-hidden="true">
-    <path d="M12 1 L14.53 8.52 L22.46 8.6 L16.09 13.33 L18.47 20.9 L12 16.3 L5.53 20.9 L7.91 13.33 L1.54 8.6 L9.47 8.52 Z" />
-  </svg>
-);
+// Las divisas de mando están aprobadas en un marco de diseño propio (banderín
+// de 30 de ancho con el borde recto inferior en y=14, origen en el centro) y
+// se llevan al banderín compartido de RankBadge (38 de ancho, borde recto en
+// y=55) con una única transformación uniforme anclada a ese borde: misma
+// geometría aprobada y mismo encaje de la barra sobre la punta en los tres
+// rangos.
+const ESCALA = 38 / 30;
+const MARCO_MANDO = `translate(20 ${55 - 14 * ESCALA}) scale(${ESCALA})`;
 
-// Pala esquemática (como la del sello): mango recto y hoja apuntada, en
-// vertical con la hoja hacia abajo; se coloca girada ±45° para el aspa.
-const Pala = () => (
-  <g fill="currentColor">
-    <rect x="18.9" y="3" width="2.2" height="20" />
-    <path d="M15.8 22 H24.2 V27.5 L20 36 L15.8 27.5 Z" />
-  </g>
-);
+// Barra de mando horizontal, común a los rangos 1-3 (geometría aprobada;
+// se dibuja dentro de un grupo con MARCO_MANDO)
+const BarraDeMando = () => <rect x="-9" y="9.5" width="18" height="2.6" />;
 
-// Divisa del Comandante (rango 1): estrella de ocho puntas (dos cuadrados
-// superpuestos girados 45°) rellena en dorado como elemento dominante, sobre
-// dos palas cruzadas en aspa que asoman por los lados. El contorno de la
-// estrella va en color superficie (paintOrder stroke) para separarla de las
-// palas: es un corte de tinta, no un brillo.
+// Divisa del Comandante (rango 1): estrella de ocho puntas rellena en dorado
+// como elemento dominante, sobre la barra de mando (geometría aprobada).
 export const RankComandante = () => (
   <span
-    className="flex items-center justify-center text-fasor-gold"
+    className="absolute inset-0 text-fasor-gold"
     role="img"
-    aria-label="Distintivo de Comandante: estrella de ocho puntas sobre palas cruzadas"
+    aria-label="Distintivo de Comandante: estrella de ocho puntas sobre barra de mando"
   >
-    <svg viewBox="0 0 40 40" className="h-[38px] w-[38px]" aria-hidden="true">
-      <g transform="rotate(45 20 20)">
-        <Pala />
+    <svg viewBox="0 0 40 55" className="h-full w-full" fill="currentColor" aria-hidden="true">
+      <g transform={MARCO_MANDO}>
+        <polygon
+          transform="translate(0,-4)"
+          points="0,-10 2.19,-5.29 7.07,-7.07 5.29,-2.19 10,0 5.29,2.19 7.07,7.07 2.19,5.29 0,10 -2.19,5.29 -7.07,7.07 -5.29,2.19 -10,0 -5.29,-2.19 -7.07,-7.07 -2.19,-5.29"
+        />
+        <BarraDeMando />
       </g>
-      <g transform="rotate(-45 20 20)">
-        <Pala />
-      </g>
-      <path
-        d="M20 7 L23.83 10.76 L29.19 10.81 L29.24 16.17 L33 20 L29.24 23.83 L29.19 29.19 L23.83 29.24 L20 33 L16.17 29.24 L10.81 29.19 L10.76 23.83 L7 20 L10.76 16.17 L10.81 10.81 L16.17 10.76 Z"
-        fill="currentColor"
-        className="stroke-fasor-surface"
-        strokeWidth={1.4}
-        strokeLinejoin="miter"
-        paintOrder="stroke"
-      />
     </svg>
   </span>
 );
 
-export const RankStars = ({ count }: { count: number }) => (
-  <span
-    className="flex flex-col items-center gap-0.5 text-fasor-gold"
-    role="img"
-    aria-label={RANGO_ESTRELLAS[count] ?? `Distintivo de rango: ${count} estrellas`}
-  >
-    {Array.from({ length: count }, (_, i) => (
-      <Star key={i} />
-    ))}
-  </span>
-);
+// Estrella heráldica de cinco puntas (trazado original, en su marco de 24×24)
+const ESTRELLA_CINCO =
+  'M12 1 L14.53 8.52 L22.46 8.6 L16.09 13.33 L18.47 20.9 L12 16.3 L5.53 20.9 L7.91 13.33 L1.54 8.6 L9.47 8.52 Z';
+
+// Capitán (dos estrellas) y Teniente (una estrella): sus estrellas de cinco
+// puntas de siempre (15px, apiladas con hueco de 2px), centradas en el espacio
+// que queda sobre la barra de mando para que ningún elemento toque otro.
+export const RankStars = ({ count }: { count: number }) => {
+  const alto = count * 15 + (count - 1) * 2;
+  const inicio = 23.5 - alto / 2;
+  return (
+    <span
+      className="absolute inset-0 text-fasor-gold"
+      role="img"
+      aria-label={RANGO_ESTRELLAS[count] ?? `Distintivo de rango: ${count} estrellas`}
+    >
+      <svg viewBox="0 0 40 55" className="h-full w-full" fill="currentColor" aria-hidden="true">
+        {Array.from({ length: count }, (_, i) => (
+          <path
+            key={i}
+            d={ESTRELLA_CINCO}
+            transform={`translate(12.5 ${inicio + i * 17}) scale(${15 / 24})`}
+          />
+        ))}
+        <g transform={MARCO_MANDO}>
+          <BarraDeMando />
+        </g>
+      </svg>
+    </span>
+  );
+};
 
 export const RankChevrons = ({ count }: { count: number }) => (
   <span
