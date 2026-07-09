@@ -89,9 +89,9 @@ export default function Entidad() {
           {/* Cita destacada */}
           <blockquote className="observe-me opacity-0 translate-y-8 my-10 max-w-3xl border-l-2 border-fasor-gold pl-6">
             <p className="m-0 text-lg italic leading-relaxed text-fasor-bone">
-              "La Fuerza Casa Alaniz actúa con seriedad, método y determinación. Su estructura no
-              busca imitar un ejército, sino transmitir la misma solidez y confianza que requiere
-              toda organización destinada a proteger y servir en momentos de crisis."
+              "FASOR actúa con seriedad, método y determinación. Su estructura no busca imitar un
+              ejército, sino transmitir la misma solidez y confianza que requiere toda organización
+              destinada a proteger y servir en momentos de crisis."
             </p>
           </blockquote>
 
