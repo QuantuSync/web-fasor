@@ -6,7 +6,7 @@ import Galon from '../components/Galon';
 // Abeiro: proyecto propio de protección ante incendios forestales.
 // Información basada en el proyecto y la web reales (abeiro.vercel.app).
 // Mapa embebido en escritorio y botón a pantalla completa en móvil.
-// Sin avisos ni disclaimers sobre el proyecto (regla del CLAUDE.md).
+// Sin avisos ni disclaimers sobre el proyecto (regla editorial del sitio).
 
 // Procedencia de cada dato que usa el proyecto
 const FUENTES_DATOS = [

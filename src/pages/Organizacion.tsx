@@ -6,7 +6,7 @@ import { RankBadge, RankComandante, RankStars, RankChevrons } from '../component
 import { escalafon } from '../data/escalafon';
 
 // Buzones institucionales de los cargos de la Junta Directiva: siempre el
-// cargo u órgano, nunca nombres de personas (regla de privacidad del CLAUDE.md)
+// cargo u órgano, nunca nombres de personas (regla de privacidad del proyecto)
 const CORREOS_JUNTA = [
   { cargo: 'Presidencia', email: 'presidencia@fasor.es' },
   { cargo: 'Secretaría', email: 'secretaria@fasor.es' },
@@ -15,7 +15,7 @@ const CORREOS_JUNTA = [
 
 // Organización: estructura organizativa, escalafón como listado jerárquico
 // descendente con las insignias, y órganos de gobierno en paneles planos.
-// Por la regla de privacidad del CLAUDE.md aquí NO se publican nombres de personas.
+// Por la regla de privacidad del proyecto aquí NO se publican nombres de personas.
 // Contenido textual verbatim de Fasor.tsx (repo de Casa Alaniz).
 export default function Organizacion() {
   useEffect(() => {

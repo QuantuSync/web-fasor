@@ -13,6 +13,10 @@ dist-ssr
 .vite-react-ssg-temp
 *.local
 
+# Documentación interna de trabajo (no publicar)
+CLAUDE.md
+.claude/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
