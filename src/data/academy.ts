@@ -1,4 +1,25 @@
+import {
+  ShieldCheck,
+  HeartPulse,
+  Compass,
+  RadioTower,
+  Dumbbell,
+  Drone,
+  Waves,
+  Flame,
+  Stethoscope,
+  Users,
+  Siren,
+  BrainCircuit,
+  Monitor,
+  FileUser,
+  Megaphone,
+  ListChecks,
+  Lock,
+  type LucideIcon,
+} from 'lucide-react';
 import { type RangoId } from './escalafon';
+import { type UnidadId } from './unidades';
 
 // FASOR Academy: la plataforma formativa de la asociación. Órgano transversal
 // dependiente de la Junta Directiva, no una sexta unidad ni una academia externa.
@@ -45,8 +66,7 @@ export const itinerarioAcademy: PasoItinerario[] = [
   },
   {
     titulo: 'Cadete en Formación',
-    descripcion:
-      'Se ingresa en el escalafón como Cadete en Formación, con el brazalete amarillo como distintivo de instrucción.',
+    descripcion: 'Ingreso en el escalafón con brazalete amarillo como distintivo de instrucción.',
     gratuito: true,
     rangoId: 'cadete',
   },
@@ -70,13 +90,12 @@ export const itinerarioAcademy: PasoItinerario[] = [
   },
   {
     titulo: 'Operador Táctico',
-    descripcion:
-      'Superada la evaluación se alcanza el rango de Operador Táctico: formación completa y autonomía bajo mando superior.',
+    descripcion: 'Formación completa y autonomía operativa bajo mando superior.',
     gratuito: true,
     rangoId: 'operador',
   },
   {
-    titulo: 'Especialidades, responsabilidades y liderazgo',
+    titulo: 'Especialidades y liderazgo',
     descripcion:
       'A partir de aquí se abren las especialidades operativas, las responsabilidades dentro de una unidad y las funciones de liderazgo.',
     gratuito: false,
@@ -90,8 +109,15 @@ export const itinerarioAcademy: PasoItinerario[] = [
 export type ModalidadCurso = 'Gratuito' | 'De pago';
 
 export interface CursoAcademy {
+  icono: LucideIcon;
   titulo: string;
   descripcion: string;
+  /**
+   * Unidad a la que pertenece el curso, para mostrar su emblema. Solo en las
+   * especialidades operativas; los cursos transversales no llevan ninguna. El
+   * emblema se lee de src/data/unidades.ts: aquí no se duplica ninguna imagen.
+   */
+  unidadId?: UnidadId;
 }
 
 export interface NivelCatalogo {
@@ -116,22 +142,27 @@ export const catalogoAcademy: NivelCatalogo[] = [
       'La base que comparte todo miembro de FASOR. Es el itinerario obligatorio de progresión y no cuesta nada.',
     cursos: [
       {
+        icono: ShieldCheck,
         titulo: 'Formación básica y de seguridad',
         descripcion: 'Doctrina, disciplina operativa y seguridad personal en intervención.',
       },
       {
+        icono: HeartPulse,
         titulo: 'Primeros auxilios',
         descripcion: 'Soporte vital básico, control de hemorragias e inmovilización.',
       },
       {
+        icono: Compass,
         titulo: 'Orientación y supervivencia',
         descripcion: 'Cartografía, navegación terrestre y autonomía prolongada en el medio.',
       },
       {
+        icono: RadioTower,
         titulo: 'Comunicaciones y coordinación de equipos',
         descripcion: 'Radio, protocolos de transmisión y trabajo coordinado en cuadrilla.',
       },
       {
+        icono: Dumbbell,
         titulo: 'Preparación física',
         descripcion: 'Acondicionamiento para operar en esfuerzo prolongado y condiciones adversas.',
       },
@@ -147,27 +178,37 @@ export const catalogoAcademy: NivelCatalogo[] = [
     nota: 'Dan especialidad interna y pueden ser requisito para desempeñar funciones concretas. Nunca son requisito para un rango.',
     cursos: [
       {
+        icono: Drone,
         titulo: 'Drones y apoyo a búsqueda',
+        unidadId: 'drones',
         descripcion: 'Pilotaje, planificación de vuelo y apoyo aéreo a batidas y rastreos.',
       },
       {
+        icono: Waves,
         titulo: 'Rescate acuático',
+        unidadId: 'buceadores',
         descripcion: 'Técnicas de aproximación, extracción y seguridad en medio acuático.',
       },
       {
+        icono: Flame,
         titulo: 'Intervención forestal',
+        unidadId: 'forestal',
         descripcion:
           'Comportamiento del fuego, herramientas y trabajo de apoyo en incendios forestales.',
       },
       {
+        icono: Stethoscope,
         titulo: 'Sanitario avanzado',
+        unidadId: 'sanitario',
         descripcion: 'Asistencia en escenarios complejos, triaje y evacuación sanitaria.',
       },
       {
+        icono: Users,
         titulo: 'Liderazgo y gestión de equipos',
         descripcion: 'Mando en el terreno, toma de decisiones bajo presión y cuidado del equipo.',
       },
       {
+        icono: Siren,
         titulo: 'Simulacros y jornadas prácticas',
         descripcion:
           'Ejercicios integrados que ponen a prueba lo aprendido en condiciones realistas.',
@@ -184,26 +225,32 @@ export const catalogoAcademy: NivelCatalogo[] = [
     nota: 'No da rango ni especialidad operativa: es conocimiento aplicable a cualquier trayectoria.',
     cursos: [
       {
+        icono: BrainCircuit,
         titulo: 'IA práctica',
         descripcion: 'Uso real de herramientas de inteligencia artificial en el trabajo diario.',
       },
       {
+        icono: Monitor,
         titulo: 'Herramientas digitales',
         descripcion: 'Ofimática, gestión documental y flujos de trabajo digitales.',
       },
       {
+        icono: FileUser,
         titulo: 'Empleabilidad: CV y entrevistas',
         descripcion: 'Preparación de la candidatura, del currículo y de la entrevista de trabajo.',
       },
       {
+        icono: Megaphone,
         titulo: 'Comunicación y oratoria',
         descripcion: 'Hablar en público, estructurar un mensaje y sostenerlo ante una audiencia.',
       },
       {
+        icono: ListChecks,
         titulo: 'Productividad y gestión de proyectos',
         descripcion: 'Método de trabajo, planificación y seguimiento de proyectos.',
       },
       {
+        icono: Lock,
         titulo: 'Ciberseguridad básica',
         descripcion: 'Higiene digital, contraseñas, fraude por correo y protección de datos.',
       },
