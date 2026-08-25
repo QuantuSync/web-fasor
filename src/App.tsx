@@ -125,6 +125,15 @@ export const routes: RouteRecord[] = [
         } satisfies RouteMeta,
       },
       {
+        path: 'academy',
+        lazy: () => import('./pages/Academy').then((m) => ({ Component: m.default })),
+        handle: {
+          title: 'Academy - FASOR',
+          description:
+            'FASOR Academy, la plataforma formativa de FASOR: itinerario de progresión gratuito, especialidades operativas y escuela abierta.',
+        } satisfies RouteMeta,
+      },
+      {
         path: 'actualidad',
         lazy: () => import('./pages/Actualidad').then((m) => ({ Component: m.default })),
         handle: {

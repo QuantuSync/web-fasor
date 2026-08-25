@@ -376,6 +376,19 @@ export default function Unete() {
               </div>
             ))}
           </div>
+
+          {/* Frontera con Academy: Únete responde «cómo entro»; la formación
+              posterior es cosa de la Academy */}
+          <p className="observe-me opacity-0 translate-y-8 mt-10 max-w-3xl leading-relaxed text-fasor-sage">
+            La instrucción posterior al ingreso corre a cargo de{' '}
+            <Link
+              to="/academy"
+              className="text-fasor-gold underline underline-offset-2 hover:text-fasor-bone"
+            >
+              FASOR Academy
+            </Link>
+            , cuyo itinerario de progresión es gratuito.
+          </p>
         </div>
       </section>
 

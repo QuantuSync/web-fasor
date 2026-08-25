@@ -10,6 +10,7 @@ const navigationItems = [
   { path: '/unidades', label: 'Unidades' },
   { path: '/organizacion', label: 'Organización' },
   { path: '/actuacion', label: 'Actuación' },
+  { path: '/academy', label: 'Academy' },
   { path: '/actualidad', label: 'Actualidad' },
   { path: '/entidad', label: 'Entidad' },
   { path: '/unete', label: 'Únete' },

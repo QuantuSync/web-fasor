@@ -129,3 +129,25 @@ export const RankBadge = ({ children }: { children: React.ReactNode }) => (
     <div className="relative flex h-[55px] w-full items-center justify-center">{children}</div>
   </div>
 );
+
+// Divisa completa de un rango: el banderín con el distintivo que le corresponde
+// según los datos del escalafón (src/data/escalafon.ts, fuente de verdad única).
+// Centraliza aquí la regla de que el Comandante —tres estrellas en los datos—
+// lleva divisa propia, para que ninguna página la reimplemente.
+export const RankDivisa = ({
+  divisa,
+}: {
+  divisa: { tipo: 'estrellas' | 'galones'; numero: number };
+}) => (
+  <RankBadge>
+    {divisa.tipo === 'estrellas' ? (
+      divisa.numero === 3 ? (
+        <RankComandante />
+      ) : (
+        <RankStars count={divisa.numero} />
+      )
+    ) : (
+      <RankChevrons count={divisa.numero} />
+    )}
+  </RankBadge>
+);

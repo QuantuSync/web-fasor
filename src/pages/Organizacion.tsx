@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Landmark, Users } from 'lucide-react';
 import CorreoEnlace from '../components/CorreoEnlace';
 import TituloSeccion from '../components/TituloSeccion';
-import { RankBadge, RankComandante, RankStars, RankChevrons } from '../components/RankInsignia';
+import { RankDivisa } from '../components/RankInsignia';
 import { escalafon } from '../data/escalafon';
 
 // Buzones institucionales de los cargos de la Junta Directiva: siempre el
@@ -77,18 +77,7 @@ export default function Organizacion() {
                 <span className="hidden pt-1 font-mono text-xs tracking-widest text-fasor-gold md:block">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <RankBadge>
-                  {/* El Comandante (rango 1, tres estrellas en los datos) lleva divisa propia */}
-                  {rango.insignia.tipo === 'estrellas' ? (
-                    rango.insignia.numero === 3 ? (
-                      <RankComandante />
-                    ) : (
-                      <RankStars count={rango.insignia.numero} />
-                    )
-                  ) : (
-                    <RankChevrons count={rango.insignia.numero} />
-                  )}
-                </RankBadge>
+                <RankDivisa divisa={rango.insignia} />
                 <div>
                   <h3 className="mb-2 font-display text-xl font-bold uppercase tracking-tight text-fasor-bone">
                     {rango.nombre}

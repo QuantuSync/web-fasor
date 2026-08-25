@@ -33,6 +33,7 @@ const QuickLinks = () => {
     { href: '/unidades', label: 'Unidades' },
     { href: '/organizacion', label: 'Organización' },
     { href: '/actuacion', label: 'Actuación' },
+    { href: '/academy', label: 'Academy' },
     { href: '/actualidad', label: 'Actualidad' },
     { href: '/entidad', label: 'Entidad' },
     { href: '/abeiro', label: 'Abeiro' },
