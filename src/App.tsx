@@ -103,7 +103,7 @@ export const routes: RouteRecord[] = [
         handle: {
           title: 'Unidades · FASOR',
           description:
-            'Las cinco unidades especializadas de FASOR y sus áreas de actuación ante emergencias.',
+            'Las seis unidades especializadas de FASOR y sus áreas de actuación ante emergencias.',
         } satisfies RouteMeta,
       },
       {

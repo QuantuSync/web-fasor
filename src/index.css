@@ -197,6 +197,12 @@
     animation: none !important;
   }
 
+  /* La vista ampliada de unidad aparece sin desplazamiento ni fundido */
+  .animate-aparecer-fondo,
+  .animate-aparecer-panel {
+    animation: none !important;
+  }
+
   /* La pestaña Academy deja de destellar y queda fija, legible y dorada */
   .animate-destello-academy {
     animation: none !important;

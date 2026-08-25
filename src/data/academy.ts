@@ -22,7 +22,7 @@ import { type RangoId } from './escalafon';
 import { type UnidadId } from './unidades';
 
 // FASOR Academy: la plataforma formativa de la entidad. Órgano transversal
-// dependiente de la Junta Directiva, no una sexta unidad ni una academia externa.
+// dependiente de la Junta Directiva, no una unidad más ni una academia externa.
 // Contenido nuevo (no procede de Fasor.tsx). En esta fase la web es informativa:
 // sin precios, sin pasarela y sin venta online.
 

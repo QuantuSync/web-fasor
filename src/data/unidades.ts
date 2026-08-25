@@ -3,10 +3,12 @@ import dronesLogo from '../assets/drones-logo.jpg';
 import forestalLogo from '../assets/forestal-logo.jpg';
 import terrestresLogo from '../assets/terrestres-logo.jpg';
 import sanitarioLogo from '../assets/sanitario-logo.jpg';
+import comunicacionesLogo from '../assets/comunicaciones-logo.png';
 
-// Las cinco unidades especializadas de FASOR.
+// Las seis unidades especializadas de FASOR.
 // Contenido portado verbatim de Fasor.tsx (repo de Casa Alaniz).
-export type UnidadId = 'buceadores' | 'drones' | 'forestal' | 'terrestres' | 'sanitario';
+export type UnidadId =
+  'buceadores' | 'drones' | 'forestal' | 'terrestres' | 'sanitario' | 'comunicaciones';
 
 export interface Unidad {
   id: UnidadId;
@@ -50,6 +52,13 @@ export const unidades: Unidad[] = [
     logo: sanitarioLogo,
     descripcion:
       'Asistencia médica de emergencia, estabilización de heridos, evacuaciones sanitarias y apoyo médico en catástrofes.',
+  },
+  {
+    id: 'comunicaciones',
+    nombre: 'Comunicaciones y Coordinación',
+    logo: comunicacionesLogo,
+    descripcion:
+      'Enlace radio, coordinación con el 112 y las autoridades competentes, puesto de mando avanzado y seguimiento de los equipos sobre el terreno.',
   },
 ];
 

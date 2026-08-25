@@ -55,6 +55,10 @@ module.exports = {
         'slide-in-left': 'slideInLeft 0.6s ease-out',
         // Única excepción a «el dorado es tinta»: el destello de la pestaña Academy
         'destello-academy': 'destelloAcademy 2.6s ease-in-out infinite',
+        // Apertura de la vista ampliada de unidad (fondo y panel). Breve y
+        // sobria; con prefers-reduced-motion queda anulada desde index.css.
+        'aparecer-fondo': 'fadeIn 0.18s ease-out',
+        'aparecer-panel': 'aparecerPanel 0.2s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -79,6 +83,10 @@ module.exports = {
         },
         // Latido de opacidad con un halo dorado muy leve. Solo lo usa la
         // pestaña Academy de la Navbar (ver CLAUDE.md).
+        aparecerPanel: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         destelloAcademy: {
           '0%, 100%': { opacity: '1', textShadow: '0 0 0 rgba(201, 165, 74, 0)' },
           '50%': { opacity: '0.82', textShadow: '0 0 12px rgba(201, 165, 74, 0.55)' },

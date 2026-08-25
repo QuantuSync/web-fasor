@@ -38,7 +38,7 @@ const CIFRAS = [
   },
 ];
 
-// Los cinco emblemas de unidad, junto al titular del cuerpo de instructores.
+// Los emblemas de las unidades, junto al titular del cuerpo de instructores.
 // La habilitación atraviesa todas las unidades, y estos son sus escudos tal
 // cual viven en /unidades (recorte circular con filete fino, sin halos).
 const EmblemasUnidades = () => (
@@ -218,7 +218,7 @@ export default function Academy() {
           <p className="m-0 leading-relaxed text-fasor-sage">
             FASOR Academy es la plataforma formativa de la entidad. No es una academia externa ni
             una entidad aparte, sino un órgano transversal que depende de la Junta Directiva y
-            atraviesa todas las unidades, en lugar de constituir una sexta.
+            atraviesa todas las unidades, en lugar de constituir una unidad más.
           </p>
           <p className="m-0 leading-relaxed text-fasor-sage">
             Su función es doble. Hacia dentro, prepara a los miembros de FASOR y sostiene su
