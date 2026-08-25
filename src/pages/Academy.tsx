@@ -4,8 +4,9 @@ import TituloSeccion from '../components/TituloSeccion';
 import Galon from '../components/Galon';
 import CorreoEnlace from '../components/CorreoEnlace';
 import { RankDivisa } from '../components/RankInsignia';
+import InstructorInsignia, { type NivelHabilitacion } from '../components/InstructorInsignia';
 import { rangoPorId } from '../data/escalafon';
-import { unidadPorId } from '../data/unidades';
+import { unidades, unidadPorId } from '../data/unidades';
 import {
   principiosAcademy,
   itinerarioAcademy,
@@ -36,6 +37,27 @@ const CIFRAS = [
     etiqueta: 'Gratuitos hasta Operador Táctico',
   },
 ];
+
+// Los cinco emblemas de unidad, junto al titular del cuerpo de instructores.
+// La habilitación atraviesa todas las unidades, y estos son sus escudos tal
+// cual viven en /unidades (recorte circular con filete fino, sin halos).
+const EmblemasUnidades = () => (
+  <ul className="m-0 flex list-none items-center gap-2 p-0 sm:gap-3">
+    {unidades.map((unidad) => (
+      <li key={unidad.id} className="m-0">
+        <img
+          src={unidad.logo}
+          alt={`Emblema de ${unidad.nombre}`}
+          title={unidad.nombre}
+          width={36}
+          height={36}
+          loading="lazy"
+          className="h-8 w-8 rounded-full border border-fasor-gold/40 object-cover sm:h-9 sm:w-9"
+        />
+      </li>
+    ))}
+  </ul>
+);
 
 // Segmento de la línea de progresión del itinerario. El mismo elemento sirve
 // en vertical (móvil) y en horizontal (md+): sólido en el tramo gratuito,
@@ -129,7 +151,7 @@ const Itinerario = () => (
   </ol>
 );
 
-// FASOR Academy: la plataforma formativa de la asociación. Los principios van
+// FASOR Academy: la plataforma formativa de la entidad. Los principios van
 // antes del catálogo a propósito. Las divisas del itinerario se leen del
 // escalafón (src/data/escalafon.ts) y los emblemas de unidad de unidades.ts:
 // aquí no se redefine ni se duplica nada.
@@ -163,8 +185,8 @@ export default function Academy() {
           </h1>
           <div className="linea-fade mt-6" aria-hidden="true"></div>
           <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
-            La plataforma formativa de FASOR: el itinerario que prepara a sus miembros y la escuela
-            abierta a quien quiera formarse.
+            La plataforma formativa de FASOR, con el itinerario que prepara a sus miembros y la
+            escuela abierta a quien quiera formarse.
           </p>
         </div>
 
@@ -194,19 +216,19 @@ export default function Academy() {
 
         <div className="observe-me opacity-0 translate-y-8 max-w-3xl space-y-5">
           <p className="m-0 leading-relaxed text-fasor-sage">
-            FASOR Academy es la plataforma formativa de la asociación. No es una academia externa ni
-            una entidad aparte: es un órgano transversal que depende de la Junta Directiva y
+            FASOR Academy es la plataforma formativa de la entidad. No es una academia externa ni
+            una entidad aparte, sino un órgano transversal que depende de la Junta Directiva y
             atraviesa todas las unidades, en lugar de constituir una sexta.
           </p>
           <p className="m-0 leading-relaxed text-fasor-sage">
             Su función es doble. Hacia dentro, prepara a los miembros de FASOR y sostiene su
-            progresión: nadie interviene sin la formación adecuada. Hacia fuera, abre parte de su
-            catálogo a cualquier persona interesada en formarse, sea o no socia.
+            progresión, porque nadie interviene sin la formación adecuada. Hacia fuera, abre parte
+            de su catálogo a cualquier persona interesada en formarse, sea o no socia.
           </p>
           <p className="m-0 leading-relaxed text-fasor-sage">
-            La formación es además el sostén económico de las actividades: lo recaudado se
-            reinvierte íntegramente en FASOR —material, instrucción y despliegue—. La Academy no
-            sustituye ni altera la misión de la asociación; la sostiene.
+            La formación es además el sostén económico de las actividades, porque lo recaudado se
+            reinvierte íntegramente en FASOR (material, instrucción y despliegue). La Academy no
+            sustituye ni altera la misión de la organización; la sostiene.
           </p>
         </div>
 
@@ -283,7 +305,7 @@ export default function Academy() {
             <TituloSeccion
               numero="04"
               titulo="Catálogo Formativo"
-              intro="El catálogo está en desarrollo y la oferta inicial será reducida: crecerá a medida que la Academy acredite instructores y consolide programas. Se organiza en tres niveles."
+              intro="El catálogo está en desarrollo y la oferta inicial será reducida, y crecerá a medida que la Academy acredite instructores y consolide programas. Se organiza en tres niveles."
             />
           </div>
 
@@ -357,6 +379,7 @@ export default function Academy() {
               numero="05"
               titulo="Cuerpo de Instructores"
               intro="Instructor es una habilitación, no un rango. El rango dice dónde estás en la jerarquía; la habilitación, qué estás acreditado para impartir. Se suma al rango sin alterar la cadena de mando."
+              extra={<EmblemasUnidades />}
             />
           </div>
 
@@ -384,9 +407,12 @@ export default function Academy() {
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {nivelesInstructor.map((nivel) => (
                 <div key={nivel.nombre} className="border-t-2 border-fasor-gold pt-5">
-                  <p className="m-0 mb-3 font-mono text-xs tracking-widest text-fasor-sage">
-                    {String(nivel.numero).padStart(2, '0')}
-                  </p>
+                  <div className="mb-3 flex items-center gap-4">
+                    <InstructorInsignia nivel={nivel.numero as NivelHabilitacion} />
+                    <p className="m-0 font-mono text-xs tracking-widest text-fasor-sage">
+                      {String(nivel.numero).padStart(2, '0')}
+                    </p>
+                  </div>
                   <h4 className="mb-2 font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
                     {nivel.nombre}
                   </h4>
@@ -398,17 +424,18 @@ export default function Academy() {
 
           <div className="observe-me opacity-0 translate-y-8 mt-14 max-w-3xl space-y-5">
             <p className="m-0 leading-relaxed text-fasor-sage">
-              La habilitación no se compra: se obtiene cursando «Formación de Formadores», interno y
+              La habilitación no se compra, se obtiene cursando «Formación de Formadores», interno y
               gratuito, y superando la acreditación correspondiente.
             </p>
             <p className="m-0 leading-relaxed text-fasor-sage">
-              Los instructores no perciben remuneración: FASOR es una asociación sin ánimo de lucro.
-              A cambio, la asociación certifica sus horas de docencia como experiencia acreditable.
+              Los instructores no perciben remuneración, porque FASOR es una entidad sin ánimo de
+              lucro. A cambio, la entidad certifica sus horas de docencia como experiencia
+              acreditable.
             </p>
             <p className="m-0 leading-relaxed text-fasor-sage">
-              El docente colaborador es una figura distinta y externa: profesionales contratados o
-              convenidos para impartir un curso concreto. No son miembros de FASOR, no llevan
-              habilitación de instructor y no acreditan a otros instructores.
+              El docente colaborador es una figura distinta y externa, la de profesionales
+              contratados o convenidos para impartir un curso concreto. No son miembros de FASOR, no
+              llevan habilitación de instructor y no acreditan a otros instructores.
             </p>
           </div>
         </div>
@@ -423,7 +450,7 @@ export default function Academy() {
 
           <div className="observe-me opacity-0 translate-y-8 max-w-3xl space-y-5">
             <p className="m-0 leading-relaxed text-fasor-sage">
-              Si quieres formarte con FASOR Academy —seas o no socio—, escríbenos y te informamos de
+              Si quieres formarte con FASOR Academy, seas o no socio, escríbenos y te informamos de
               la formación disponible en cada momento.
             </p>
             <p className="m-0">

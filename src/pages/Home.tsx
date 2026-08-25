@@ -12,7 +12,7 @@ import BarraEstado from '../components/BarraEstado';
 const DATOS_ORGANIZACION = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'NGO',
-  name: 'FASOR – Fuerza de Auxilio, Soporte y Rescate',
+  name: 'FASOR, Fuerza de Auxilio, Soporte y Rescate',
   alternateName: 'FASOR',
   url: SITE_URL,
   logo: `${SITE_URL}/favicon.png`,
@@ -20,7 +20,7 @@ const DATOS_ORGANIZACION = JSON.stringify({
   identifier: [
     {
       '@type': 'PropertyValue',
-      propertyID: 'Registro de Asociaciones (sección Primera)',
+      propertyID: 'Número de registro (sección Primera)',
       value: '0006429',
     },
     { '@type': 'PropertyValue', propertyID: 'NIF', value: 'G93758183' },
@@ -94,7 +94,7 @@ export default function Home() {
             <div className="observe-me opacity-0 translate-y-8 justify-self-center lg:justify-self-end">
               <img
                 src={fasorLogo}
-                alt="Sello de FASOR - Fuerza de Auxilio, Soporte y Rescate"
+                alt="Sello de FASOR, Fuerza de Auxilio, Soporte y Rescate"
                 width={936}
                 height={936}
                 className="h-48 w-48 rounded-full border border-fasor-gold/40 object-cover sm:h-56 sm:w-56 lg:h-64 lg:w-64"
@@ -123,7 +123,7 @@ export default function Home() {
               >
                 <strong className="text-fasor-gold">Casa Alaniz</strong>
               </a>{' '}
-              con un objetivo claro: ayudar y proteger a la comunidad cuando más lo necesita. No es
+              con un objetivo claro, ayudar y proteger a la comunidad cuando más lo necesita. No es
               una idea abstracta, sino una respuesta a problemas reales.
             </p>
             <p className="text-fasor-sage">
@@ -132,12 +132,12 @@ export default function Home() {
               comprometidas.
             </p>
             <p className="text-fasor-sage">
-              FASOR responde a esa necesidad: estar preparados para actuar con decisión allí donde
+              FASOR responde a esa necesidad estando preparados para actuar con decisión allí donde
               se necesita ayuda.
             </p>
             <p className="text-fasor-sage">
-              Más que una organización, FASOR es un compromiso con la comunidad: estar presentes y
-              echar una mano cuando llega la adversidad.
+              Más que una organización, FASOR es un compromiso con la comunidad, el de estar
+              presentes y echar una mano cuando llega la adversidad.
             </p>
           </div>
         </div>
@@ -149,8 +149,8 @@ export default function Home() {
           <div className="observe-me opacity-0 translate-y-8">
             <TituloSeccion numero="01" titulo="Misión Principal" />
             <p className="max-w-3xl text-xl leading-relaxed text-fasor-bone md:text-2xl">
-              <strong className="text-fasor-gold">Estar presentes donde se necesita ayuda</strong>:
-              incendios, inundaciones, catástrofes naturales y otras emergencias.
+              <strong className="text-fasor-gold">Estar presentes donde se necesita ayuda</strong>{' '}
+              en incendios, inundaciones, catástrofes naturales y otras emergencias.
             </p>
           </div>
 

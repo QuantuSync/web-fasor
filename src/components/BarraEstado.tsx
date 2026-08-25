@@ -10,8 +10,8 @@ export default function BarraEstado() {
           <span className="relative inline-flex h-2 w-2 rounded-full bg-estado-verde"></span>
         </span>
         <p className="m-0 font-mono text-xs tracking-[0.25em] text-fasor-bone">
-          <span className="sr-only">Estado actual: </span>
-          OPERATIVO - EN SERVICIO
+          <span className="sr-only">Estado actual, </span>
+          OPERATIVO · EN SERVICIO
         </p>
       </div>
     </div>

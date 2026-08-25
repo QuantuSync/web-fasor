@@ -6,9 +6,9 @@ import ErrorBoundary from './components/ErrorBoundary';
 import NotFound from './pages/NotFound';
 import { SITE_URL } from './config';
 
-const DEFAULT_TITLE = 'FASOR - Fuerza de Auxilio, Soporte y Rescate';
+const DEFAULT_TITLE = 'FASOR, Fuerza de Auxilio, Soporte y Rescate';
 const DEFAULT_DESCRIPTION =
-  'FASOR, asociación sin ánimo de lucro de protección civil y respuesta ante emergencias impulsada por la Casa Alaniz.';
+  'FASOR, entidad sin ánimo de lucro de protección civil y respuesta ante emergencias impulsada por la Casa Alaniz.';
 
 const OG_IMAGE = `${SITE_URL}/og/portada.png`;
 
@@ -101,7 +101,7 @@ export const routes: RouteRecord[] = [
         path: 'unidades',
         lazy: () => import('./pages/Unidades').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Unidades - FASOR',
+          title: 'Unidades · FASOR',
           description:
             'Las cinco unidades especializadas de FASOR y sus áreas de actuación ante emergencias.',
         } satisfies RouteMeta,
@@ -110,16 +110,16 @@ export const routes: RouteRecord[] = [
         path: 'organizacion',
         lazy: () => import('./pages/Organizacion').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Organización - FASOR',
+          title: 'Organización · FASOR',
           description:
-            'Estructura organizativa de FASOR: escalafón oficial, Junta Directiva y órganos de gobierno.',
+            'Estructura organizativa de FASOR, con el escalafón oficial, la Junta Directiva y los órganos de gobierno.',
         } satisfies RouteMeta,
       },
       {
         path: 'actuacion',
         lazy: () => import('./pages/Actuacion').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Actuación - FASOR',
+          title: 'Actuación · FASOR',
           description:
             'Especialidades, entrenamiento, protocolo de activación y principios operativos de FASOR.',
         } satisfies RouteMeta,
@@ -128,25 +128,25 @@ export const routes: RouteRecord[] = [
         path: 'academy',
         lazy: () => import('./pages/Academy').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Academy - FASOR',
+          title: 'Academy · FASOR',
           description:
-            'FASOR Academy, la plataforma formativa de FASOR: itinerario de progresión gratuito, especialidades operativas y escuela abierta.',
+            'FASOR Academy, la plataforma formativa de FASOR, con itinerario de progresión gratuito, especialidades operativas y escuela abierta.',
         } satisfies RouteMeta,
       },
       {
         path: 'actualidad',
         lazy: () => import('./pages/Actualidad').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Actualidad - FASOR',
+          title: 'Actualidad · FASOR',
           description:
-            'La actividad de FASOR: proyectos propios y noticias de la asociación, con Abeiro como primer proyecto.',
+            'La actividad de FASOR, sus proyectos propios y las noticias de la entidad, con Abeiro como primer proyecto.',
         } satisfies RouteMeta,
       },
       {
         path: 'entidad',
         lazy: () => import('./pages/Entidad').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Entidad - FASOR',
+          title: 'Entidad · FASOR',
           description:
             'Datos registrales, fines estatutarios y vínculo de FASOR con la Casa Alaniz.',
         } satisfies RouteMeta,
@@ -155,7 +155,7 @@ export const routes: RouteRecord[] = [
         path: 'abeiro',
         lazy: () => import('./pages/Abeiro').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Abeiro - FASOR',
+          title: 'Abeiro · FASOR',
           description:
             'Abeiro, el proyecto propio de FASOR de protección ante incendios forestales.',
         } satisfies RouteMeta,
@@ -164,7 +164,7 @@ export const routes: RouteRecord[] = [
         path: 'unete',
         lazy: () => import('./pages/Unete').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Únete - FASOR',
+          title: 'Únete · FASOR',
           description: 'Categorías de socios, derechos y deberes, y cómo ingresar en FASOR.',
         } satisfies RouteMeta,
       },
@@ -172,25 +172,25 @@ export const routes: RouteRecord[] = [
         path: 'aviso-legal',
         lazy: () => import('./pages/AvisoLegal').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Aviso Legal - FASOR',
+          title: 'Aviso Legal · FASOR',
           description:
-            'Aviso legal del sitio web de FASOR: titular, condiciones de uso y propiedad intelectual.',
+            'Aviso legal del sitio web de FASOR, con el titular, las condiciones de uso y la propiedad intelectual.',
         } satisfies RouteMeta,
       },
       {
         path: 'privacidad',
         lazy: () => import('./pages/Privacidad').then((m) => ({ Component: m.default })),
         handle: {
-          title: 'Política de Privacidad - FASOR',
+          title: 'Política de Privacidad · FASOR',
           description:
-            'Política de privacidad de FASOR: qué datos tratamos, con qué base, y cuáles son tus derechos.',
+            'Política de privacidad de FASOR. Qué datos tratamos, con qué base, y cuáles son tus derechos.',
         } satisfies RouteMeta,
       },
       {
         path: '404',
         element: <NotFound />,
         handle: {
-          title: 'Página no encontrada - FASOR',
+          title: 'Página no encontrada · FASOR',
           description: 'La página solicitada no existe en el sitio de FASOR.',
           noindex: true,
         } satisfies RouteMeta,

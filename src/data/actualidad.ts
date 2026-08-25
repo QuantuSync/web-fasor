@@ -1,4 +1,4 @@
-// Entradas del hub de Actualidad: proyectos propios y noticias de la asociación.
+// Entradas del hub de Actualidad: proyectos propios y noticias de la entidad.
 // Añadir una entrada aquí basta para que aparezca en /actualidad, sin maquetar nada.
 export interface EntradaActualidad {
   id: string;
@@ -17,7 +17,7 @@ export const actualidad: EntradaActualidad[] = [
   {
     id: 'abeiro',
     tipo: 'proyecto',
-    titulo: 'Abeiro — protección ante incendios forestales',
+    titulo: 'Abeiro, protección ante incendios forestales',
     estado: 'En desarrollo activo',
     fecha: 'Julio de 2026',
     resumen:

@@ -52,25 +52,26 @@ export default function Abeiro() {
       {/* Qué es */}
       <section className="content-container py-14 md:py-20">
         <div className="observe-me opacity-0 translate-y-8">
-          <TituloSeccion numero="01" titulo="Abeiro — protección ante incendios forestales" />
+          <TituloSeccion numero="01" titulo="Abeiro, protección ante incendios forestales" />
           <div className="max-w-3xl space-y-5 leading-relaxed">
             <p className="text-fasor-sage">
               <strong className="text-fasor-gold">Abeiro</strong> es un proyecto propio en
-              desarrollo activo: una herramienta de protección ante incendios forestales que traduce
+              desarrollo activo, una herramienta de protección ante incendios forestales que traduce
               el avance del fuego en decisiones de evacuación por aldea, a partir de datos reales
-              (IGE, OpenStreetMap, Sentinel-2). Nace del mismo principio que FASOR: servir y
+              (IGE, OpenStreetMap, Sentinel-2). Nace del mismo principio que FASOR, servir y
               proteger a quien lo necesita. Se encuentra en fase de desarrollo y aún no es un
               sistema operativo de emergencias.
             </p>
             <p className="text-fasor-sage">
               «Abeiro» significa <em>refugio</em> o <em>amparo</em> en gallego, y esa es su vocación
-              en Galicia: un sistema <strong className="text-fasor-bone">abierto y gratuito</strong>{' '}
-              al servicio de quien vive rodeado de monte. Su aportación no es detectar el fuego —
-              eso ya lo hacen los satélites y los servicios de emergencias —, sino{' '}
+              en Galicia, la de un sistema{' '}
+              <strong className="text-fasor-bone">abierto y gratuito</strong> al servicio de quien
+              vive rodeado de monte. Su aportación no es detectar el fuego (eso ya lo hacen los
+              satélites y los servicios de emergencias), sino{' '}
               <strong className="text-fasor-bone">
                 traducir su avance en una decisión accionable por aldea y por persona
               </strong>
-              : quién debería salir, hacia dónde y con cuánta antelación.
+              , es decir, quién debería salir, hacia dónde y con cuánta antelación.
             </p>
           </div>
         </div>
@@ -82,8 +83,8 @@ export default function Abeiro() {
           <div className="observe-me opacity-0 translate-y-8">
             <TituloSeccion
               numero="02"
-              titulo="Comarca piloto: Valdeorras / Larouco (Ourense)"
-              intro="Abeiro trabaja sobre una comarca real, con un índice de vulnerabilidad calculado para cada núcleo de población y dos lentes intercambiables sobre el mismo mapa:"
+              titulo="Comarca piloto de Valdeorras / Larouco (Ourense)"
+              intro="Abeiro trabaja sobre una comarca real, con un índice de vulnerabilidad calculado para cada núcleo de población y dos lentes intercambiables sobre el mismo mapa."
             />
           </div>
 
@@ -96,8 +97,8 @@ export default function Abeiro() {
                 </h3>
               </div>
               <p className="m-0 text-sm leading-relaxed text-fasor-sage">
-                Cuánto riesgo acumula cada aldea: población y envejecimiento, entorno forestal,
-                pendiente del terreno y accesos disponibles.
+                Cuánto riesgo acumula cada aldea según su población y envejecimiento, su entorno
+                forestal, la pendiente del terreno y los accesos disponibles.
               </p>
             </div>
 
@@ -109,7 +110,7 @@ export default function Abeiro() {
                 </h3>
               </div>
               <p className="m-0 text-sm leading-relaxed text-fasor-sage">
-                Las rutas reales de salida de cada núcleo, para responder a la pregunta que importa:
+                Las rutas reales de salida de cada núcleo, para responder a la pregunta que importa,
                 hacia dónde salir y por qué camino.
               </p>
             </div>
@@ -124,7 +125,7 @@ export default function Abeiro() {
             <TituloSeccion
               numero="03"
               titulo="Datos reales, no de prueba"
-              intro="Todo lo que se ve en el mapa procede de fuentes públicas reales:"
+              intro="Todo lo que se ve en el mapa procede de fuentes públicas reales."
             />
           </div>
 
@@ -135,8 +136,8 @@ export default function Abeiro() {
                 <span className="text-sm leading-relaxed text-fasor-sage">
                   <strong className="font-mono text-xs uppercase tracking-wider text-fasor-bone">
                     {dato.fuente}
-                  </strong>
-                  : {dato.aporta}.
+                  </strong>{' '}
+                  aporta {dato.aporta}.
                 </span>
               </li>
             ))}
@@ -156,7 +157,7 @@ export default function Abeiro() {
             <div className="overflow-hidden rounded-sm border border-fasor-gold/25">
               <iframe
                 src="https://abeiro.vercel.app"
-                title="Abeiro — mapa"
+                title="Mapa de Abeiro"
                 loading="lazy"
                 className="h-[600px] w-full"
               ></iframe>

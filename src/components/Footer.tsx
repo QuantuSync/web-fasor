@@ -13,7 +13,7 @@ const EntityInfo = () => (
     </div>
 
     <p className="mb-4 text-sm leading-relaxed text-fasor-sage">
-      Fuerza de Auxilio, Soporte y Rescate: asociación sin ánimo de lucro de protección civil y
+      Fuerza de Auxilio, Soporte y Rescate, entidad sin ánimo de lucro de protección civil y
       respuesta ante emergencias, impulsada por la Casa Alaniz.
     </p>
 
@@ -65,7 +65,7 @@ const RegistryInfo = () => (
     <div className="space-y-3">
       <div className="flex items-start gap-3 text-sm text-fasor-sage">
         <FileCheck className="mt-0.5 h-4 w-4 flex-shrink-0 text-fasor-gold" aria-hidden="true" />
-        <span>Inscrita en el Registro de Asociaciones con el número 0006429, sección Primera</span>
+        <span>Inscrita con el número 0006429, sección Primera</span>
       </div>
 
       <div className="flex items-center gap-3 text-sm text-fasor-sage">
@@ -112,10 +112,10 @@ export default function Footer() {
         <div className="content-container flex flex-col items-center justify-between gap-4 py-5 md:flex-row">
           <div className="text-center md:text-left">
             <p className="m-0 text-xs text-fasor-sage">
-              © {currentYear} FASOR — Fuerza de Auxilio, Soporte y Rescate
+              © {currentYear} FASOR, Fuerza de Auxilio, Soporte y Rescate
             </p>
             <p className="m-0 mt-1 text-xs text-fasor-sage">
-              Asociación inscrita con el nº 0006429, sección Primera. Impulsada por la{' '}
+              Entidad inscrita con el nº 0006429, sección Primera. Impulsada por la{' '}
               <a
                 href="https://casaalaniz.es"
                 target="_blank"

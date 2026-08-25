@@ -83,8 +83,8 @@ export default function Actualidad() {
           </h1>
           <div className="linea-fade mt-6" aria-hidden="true"></div>
           <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
-            La actividad de FASOR: los proyectos propios en los que trabajamos y las noticias de la
-            asociación.
+            La actividad de FASOR, con los proyectos propios en los que trabajamos y las noticias de
+            la entidad.
           </p>
         </div>
       </header>

@@ -77,7 +77,7 @@ function FormularioIngreso() {
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: WEB3FORMS_ACCESS_KEY,
-          subject: 'Nueva solicitud de ingreso - FASOR',
+          subject: 'Nueva solicitud de ingreso en FASOR',
           from_name: 'Web FASOR',
           nombre: solicitud.nombre,
           email: solicitud.email,

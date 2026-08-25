@@ -13,7 +13,7 @@ export default function OfficialSeal({ className = '' }: { className?: string })
     <svg
       viewBox="0 0 120 84"
       role="img"
-      aria-label="Inscrita en el Registro de Asociaciones con el número 0006429, sección Primera"
+      aria-label="Inscrita con el número 0006429, sección Primera"
       className={`h-auto w-24 min-w-[96px] md:w-[120px] ${className}`}
     >
       <rect

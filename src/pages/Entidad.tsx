@@ -47,8 +47,7 @@ export default function Entidad() {
             La Fuerza de Auxilio, Soporte y Rescate (FASOR) es una entidad de protección civil y
             respuesta rápida ante emergencias, con personalidad jurídica propia, creada en 2025 al
             amparo del artículo 22 de la Constitución Española y conforme a la Ley Orgánica 1/2002,
-            de 22 de marzo, e inscrita en el Registro de Asociaciones con el número 0006429, sección
-            Primera.
+            de 22 de marzo, e inscrita con el número 0006429, sección Primera.
           </p>
           <p>
             Su ámbito de actuación es España, pudiendo intervenir también en el extranjero en
@@ -73,7 +72,7 @@ export default function Entidad() {
           <div className="observe-me opacity-0 translate-y-8 max-w-3xl space-y-5 leading-relaxed">
             <p className="text-fasor-sage">
               En cada intervención, la Fuerza de Auxilio, Soporte y Rescate busca ser más que un
-              grupo de apoyo: aspira a convertirse en un{' '}
+              grupo de apoyo y aspira a convertirse en un{' '}
               <strong className="text-fasor-bone">referente de confianza</strong>, capaz de inspirar
               seguridad en quienes nos ven actuar y esperanza en quienes reciben nuestra ayuda.
             </p>
@@ -107,14 +106,14 @@ export default function Entidad() {
           <div className="observe-me opacity-0 translate-y-8 max-w-3xl">
             <img
               src={equipoImg}
-              alt="Equipo FASOR - Fuerza de Auxilio, Soporte y Rescate Casa Alaniz"
+              alt="Equipo FASOR, Fuerza de Auxilio, Soporte y Rescate Casa Alaniz"
               width={1536}
               height={962}
               className="h-auto w-full rounded border border-fasor-line"
               loading="lazy"
             />
             <p className="mt-3 font-mono text-xs tracking-wider text-fasor-sage">
-              FASOR: Honor, disciplina y servicio bajo la bandera de Casa Alaniz
+              FASOR, honor, disciplina y servicio bajo la bandera de Casa Alaniz
             </p>
           </div>
         </div>
@@ -129,7 +128,7 @@ export default function Entidad() {
                 "Donde la memoria arde, también nace la fuerza de proteger."
               </p>
               <cite className="mt-4 block font-mono text-xs not-italic tracking-wider text-fasor-sage">
-                — Lema de la Fuerza de Auxilio, Soporte y Rescate Casa Alaniz
+                Lema de la Fuerza de Auxilio, Soporte y Rescate Casa Alaniz
               </cite>
             </blockquote>
           </div>

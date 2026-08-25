@@ -12,7 +12,7 @@ export const categoriasSocios: CategoriaSocio[] = [
   {
     icono: Landmark,
     nombre: 'Socios Fundadores',
-    descripcion: 'Firmantes del acta constitutiva de la Asociación.',
+    descripcion: 'Firmantes del acta constitutiva de la entidad.',
   },
   {
     icono: Users,
@@ -31,7 +31,7 @@ export const categoriasSocios: CategoriaSocio[] = [
 // Derechos de los socios (art. 16 de los estatutos)
 export const derechosSocios: string[] = [
   'Participar en la Asamblea con voz y voto (excepto los socios honorarios).',
-  'Elegir y ser elegidos para cargos de la Asociación.',
+  'Elegir y ser elegidos para cargos de la entidad.',
   'Acceder a las actividades y formación.',
 ];
 
@@ -39,6 +39,6 @@ export const derechosSocios: string[] = [
 export const deberesSocios: string[] = [
   'Cumplir los estatutos y reglamentos internos.',
   'Contribuir al sostenimiento económico con las cuotas aprobadas.',
-  'Colaborar en las actividades de la Asociación.',
+  'Colaborar en las actividades de la entidad.',
   'Respetar la jerarquía y disciplina de FASOR.',
 ];

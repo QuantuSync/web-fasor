@@ -21,7 +21,7 @@ import {
 import { type RangoId } from './escalafon';
 import { type UnidadId } from './unidades';
 
-// FASOR Academy: la plataforma formativa de la asociación. Órgano transversal
+// FASOR Academy: la plataforma formativa de la entidad. Órgano transversal
 // dependiente de la Junta Directiva, no una sexta unidad ni una academia externa.
 // Contenido nuevo (no procede de Fasor.tsx). En esta fase la web es informativa:
 // sin precios, sin pasarela y sin venta online.
@@ -34,7 +34,7 @@ import { type UnidadId } from './unidades';
 // «pagar por ascender».
 export const principiosAcademy: string[] = [
   'La pertenencia a FASOR es gratuita.',
-  'Los rangos no se venden: se ganan por formación, práctica, conducta, compromiso y evaluación.',
+  'Los rangos no se venden, se ganan por formación, práctica, conducta, compromiso y evaluación.',
   'El itinerario obligatorio de progresión es gratuito; solo las especialidades opcionales son de pago.',
   'Los certificados son internos, salvo homologación oficial externa.',
   'Nadie desempeña funciones sin formación, autorización y supervisión adecuadas.',
@@ -61,7 +61,7 @@ export const itinerarioAcademy: PasoItinerario[] = [
   {
     titulo: 'Evaluación de incorporación',
     descripcion:
-      'Una valoración inicial sitúa el punto de partida de cada persona: condición física, experiencia previa y disponibilidad real.',
+      'Una valoración inicial sitúa el punto de partida de cada persona según su condición física, su experiencia previa y su disponibilidad real.',
     gratuito: true,
   },
   {
@@ -73,7 +73,7 @@ export const itinerarioAcademy: PasoItinerario[] = [
   {
     titulo: 'Formación básica común',
     descripcion:
-      'El tronco común de la Academy: seguridad, primeros auxilios, orientación, comunicaciones y preparación física.',
+      'El tronco común de la Academy, con seguridad, primeros auxilios, orientación, comunicaciones y preparación física.',
     gratuito: true,
   },
   {
@@ -221,8 +221,8 @@ export const catalogoAcademy: NivelCatalogo[] = [
     modalidad: 'De pago',
     condicion: 'Abierta a quien no es socio',
     descripcion:
-      'Formación de utilidad general, abierta también a quien no pertenece a FASOR. Se puede cursar sin ningún vínculo previo con la asociación.',
-    nota: 'No da rango ni especialidad operativa: es conocimiento aplicable a cualquier trayectoria.',
+      'Formación de utilidad general, abierta también a quien no pertenece a FASOR. Se puede cursar sin ningún vínculo previo con la entidad.',
+    nota: 'No da rango ni especialidad operativa, es conocimiento aplicable a cualquier trayectoria.',
     cursos: [
       {
         icono: BrainCircuit,
@@ -236,7 +236,7 @@ export const catalogoAcademy: NivelCatalogo[] = [
       },
       {
         icono: FileUser,
-        titulo: 'Empleabilidad: CV y entrevistas',
+        titulo: 'Empleabilidad, CV y entrevistas',
         descripcion: 'Preparación de la candidatura, del currículo y de la entrevista de trabajo.',
       },
       {

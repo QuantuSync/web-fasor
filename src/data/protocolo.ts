@@ -20,7 +20,7 @@ export const protocoloActivacion: NivelActivacion[] = [
     colorTitulo: 'text-green-300/80',
     categoria: 'Alerta Preventiva',
     despliegue: 'Monitoreo y preparación.',
-    tiempo: 'Tiempo de activación: 2-4 horas',
+    tiempo: 'Activación en 2 a 4 horas',
   },
   {
     numero: 2,
@@ -28,7 +28,7 @@ export const protocoloActivacion: NivelActivacion[] = [
     colorTitulo: 'text-amber-300/80',
     categoria: 'Emergencia Moderada',
     despliegue: 'Despliegue parcial.',
-    tiempo: 'Tiempo de activación: 30-60 min',
+    tiempo: 'Activación en 30 a 60 min',
   },
   {
     numero: 3,
@@ -36,7 +36,7 @@ export const protocoloActivacion: NivelActivacion[] = [
     colorTitulo: 'text-red-300/80',
     categoria: 'Emergencia Crítica',
     despliegue: 'Movilización total.',
-    tiempo: 'Tiempo de activación: 10-15 min',
+    tiempo: 'Activación en 10 a 15 min',
     critico: true,
   },
 ];

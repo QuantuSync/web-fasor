@@ -69,23 +69,23 @@ export default function Privacidad() {
         <div className="max-w-2xl space-y-10">
           <SeccionLegal numero="01" titulo="¿Quién es el responsable?">
             <p>
-              FASOR – Fuerza de Auxilio, Soporte y Rescate, asociación inscrita en el Registro de
-              Asociaciones con el número 0006429, sección Primera. Contacto: <EmailContacto />.
+              FASOR, Fuerza de Auxilio, Soporte y Rescate, entidad inscrita con el número 0006429,
+              sección Primera. Puedes escribirnos a <EmailContacto />.
             </p>
           </SeccionLegal>
 
           <SeccionLegal numero="02" titulo="¿Qué datos tratamos y para qué?">
             <p>
-              Los que escribes en el formulario de ingreso: nombre, email, teléfono (si lo indicas),
-              provincia o municipio, unidad de interés y tu motivación. Los usamos solo para
-              gestionar tu solicitud de ingreso y ponernos en contacto contigo. No los usamos para
-              publicidad ni los vendemos a nadie.
+              Los que escribes en el formulario de ingreso, es decir, nombre, email, teléfono (si lo
+              indicas), provincia o municipio, unidad de interés y tu motivación. Los usamos solo
+              para gestionar tu solicitud de ingreso y ponernos en contacto contigo. No los usamos
+              para publicidad ni los vendemos a nadie.
             </p>
           </SeccionLegal>
 
           <SeccionLegal numero="03" titulo="¿Con qué base legal?">
             <p>
-              Tu consentimiento: la casilla que marcas antes de enviar el formulario. Puedes
+              Tu consentimiento, que das al marcar la casilla antes de enviar el formulario. Puedes
               retirarlo en cualquier momento escribiendo a <EmailContacto />, sin que ello afecte a
               lo tratado hasta entonces.
             </p>
@@ -101,7 +101,7 @@ export default function Privacidad() {
           <SeccionLegal numero="05" titulo="¿Cuánto tiempo los conservamos?">
             <p>
               Mientras tramitamos tu solicitud. Si ingresas en FASOR, mientras dure tu relación con
-              la Asociación; si no, los eliminamos una vez resuelta la solicitud.
+              la entidad; si no, los eliminamos una vez resuelta la solicitud.
             </p>
           </SeccionLegal>
 

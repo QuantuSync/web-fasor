@@ -3,8 +3,10 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { ExternalLink, X, Menu } from 'lucide-react';
 import fasorLogo from '../assets/fasor.jpg';
 
-// Navegación plana (sin submenús). /abeiro no va aquí: se llega desde
+// Navegación plana (sin submenús). /abeiro no va aquí, se llega desde
 // Actualidad. Las rutas legales tampoco (van en el Footer).
+// Academy va destacada con el destello dorado: es la única excepción a la
+// regla de «el dorado es tinta, no luz» (ver CLAUDE.md).
 const navigationItems = [
   { path: '/', label: 'Inicio' },
   { path: '/unidades', label: 'Unidades' },
@@ -16,9 +18,11 @@ const navigationItems = [
   { path: '/unete', label: 'Únete' },
 ] as const;
 
+const RUTA_DESTACADA = '/academy';
+
 // Logo: sello circular pequeño con filete fino + wordmark condensado
 const Logo = React.memo(() => (
-  <NavLink to="/" end className="group flex items-center gap-3" aria-label="FASOR - Inicio">
+  <NavLink to="/" end className="group flex items-center gap-3" aria-label="FASOR, Inicio">
     <img
       src={fasorLogo}
       alt="Sello de FASOR"
@@ -34,31 +38,34 @@ const Logo = React.memo(() => (
 // Enlace de navegación: mayúsculas condensadas; el activo lleva subrayado
 // dorado de 2px pegado a la línea inferior de la navbar.
 const NavItem = React.memo(
-  ({ path, label, onClick }: { path: string; label: string; onClick?: () => void }) => (
-    <NavLink
-      to={path}
-      end={path === '/'}
-      onClick={onClick}
-      className={({ isActive }) => `
+  ({ path, label, onClick }: { path: string; label: string; onClick?: () => void }) => {
+    const destacada = path === RUTA_DESTACADA;
+    return (
+      <NavLink
+        to={path}
+        end={path === '/'}
+        onClick={onClick}
+        className={({ isActive }) => `
         relative flex h-full items-center px-3 font-display text-xs font-semibold uppercase
         tracking-[0.15em] transition-colors duration-200
-        ${isActive ? 'text-fasor-gold' : 'text-fasor-sage hover:text-fasor-bone'}
+        ${isActive || destacada ? 'text-fasor-gold' : 'text-fasor-sage hover:text-fasor-bone'}
       `}
-      aria-label={`Ir a ${label}`}
-    >
-      {({ isActive }) => (
-        <>
-          {label}
-          {isActive && (
-            <span
-              className="absolute inset-x-2 bottom-0 h-0.5 bg-fasor-gold"
-              aria-hidden="true"
-            ></span>
-          )}
-        </>
-      )}
-    </NavLink>
-  )
+        aria-label={`Ir a ${label}`}
+      >
+        {({ isActive }) => (
+          <>
+            <span className={destacada ? 'animate-destello-academy' : undefined}>{label}</span>
+            {isActive && (
+              <span
+                className="absolute inset-x-2 bottom-0 h-0.5 bg-fasor-gold"
+                aria-hidden="true"
+              ></span>
+            )}
+          </>
+        )}
+      </NavLink>
+    );
+  }
 );
 
 // Enlace externo a la web de la Casa Alaniz
@@ -127,25 +134,32 @@ const MobileMenu = React.memo(({ isOpen, onClose }: { isOpen: boolean; onClose: 
           role="navigation"
           aria-label="Navegación principal"
         >
-          {navigationItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              end={item.path === '/'}
-              onClick={onClose}
-              className={({ isActive }) => `
+          {navigationItems.map((item) => {
+            const destacada = item.path === RUTA_DESTACADA;
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === '/'}
+                onClick={onClose}
+                className={({ isActive }) => `
                 block border-l-2 px-4 py-3 font-display text-sm font-semibold uppercase
                 tracking-[0.15em] transition-colors duration-200
                 ${
                   isActive
                     ? 'border-fasor-gold text-fasor-gold'
-                    : 'border-transparent text-fasor-sage hover:border-fasor-gold/40 hover:text-fasor-bone'
+                    : destacada
+                      ? 'border-fasor-gold/40 text-fasor-gold'
+                      : 'border-transparent text-fasor-sage hover:border-fasor-gold/40 hover:text-fasor-bone'
                 }
               `}
-            >
-              {item.label}
-            </NavLink>
-          ))}
+              >
+                <span className={destacada ? 'animate-destello-academy' : undefined}>
+                  {item.label}
+                </span>
+              </NavLink>
+            );
+          })}
           <a
             href="https://casaalaniz.es"
             target="_blank"

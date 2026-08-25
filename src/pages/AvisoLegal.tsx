@@ -61,32 +61,44 @@ export default function AvisoLegal() {
       <div className="content-container py-14 md:py-20">
         <div className="max-w-2xl space-y-10">
           <SeccionLegal numero="01" titulo="Titular del sitio">
-            <p>
-              <strong className="text-fasor-bone">Denominación:</strong> FASOR – Fuerza de Auxilio,
-              Soporte y Rescate
-            </p>
-            <p>
-              <strong className="text-fasor-bone">Naturaleza jurídica:</strong> asociación sin ánimo
-              de lucro con personalidad jurídica propia (art. 22 CE; Ley Orgánica 1/2002, de 22 de
-              marzo)
-            </p>
-            <p>
-              <strong className="text-fasor-bone">NIF:</strong> G93758183
-            </p>
-            <p>
-              <strong className="text-fasor-bone">Inscripción registral:</strong> inscrita en el
-              Registro de Asociaciones con el número 0006429, sección Primera
-            </p>
-            <p>
-              <strong className="text-fasor-bone">Contacto:</strong>{' '}
-              <CorreoEnlace email="contacto@fasor.es" />
-            </p>
+            {/* Cada dato va con su rótulo encima, para identificarlo sin dos puntos */}
+            <div className="space-y-4">
+              <div>
+                <p className="etiqueta m-0 text-[10px]">Denominación</p>
+                <p className="m-0 mt-1 text-fasor-bone">
+                  FASOR, Fuerza de Auxilio, Soporte y Rescate
+                </p>
+              </div>
+              <div>
+                <p className="etiqueta m-0 text-[10px]">Naturaleza jurídica</p>
+                <p className="m-0 mt-1 text-fasor-bone">
+                  Entidad sin ánimo de lucro con personalidad jurídica propia (art. 22 CE; Ley
+                  Orgánica 1/2002, de 22 de marzo)
+                </p>
+              </div>
+              <div>
+                <p className="etiqueta m-0 text-[10px]">NIF</p>
+                <p className="m-0 mt-1 text-fasor-bone">G93758183</p>
+              </div>
+              <div>
+                <p className="etiqueta m-0 text-[10px]">Inscripción registral</p>
+                <p className="m-0 mt-1 text-fasor-bone">
+                  Inscrita con el número 0006429, sección Primera
+                </p>
+              </div>
+              <div>
+                <p className="etiqueta m-0 text-[10px]">Contacto</p>
+                <p className="m-0 mt-1">
+                  <CorreoEnlace email="contacto@fasor.es" />
+                </p>
+              </div>
+            </div>
           </SeccionLegal>
 
           <SeccionLegal numero="02" titulo="Condiciones de uso">
             <p>
-              Este sitio web tiene carácter informativo: presenta la actividad de FASOR, sus
-              unidades y su forma de organización, y permite solicitar el ingreso en la Asociación.
+              Este sitio web tiene carácter informativo. Presenta la actividad de FASOR, sus
+              unidades y su forma de organización, y permite solicitar el ingreso en la entidad.
             </p>
             <p>
               Al navegar por el sitio te comprometes a hacer un uso adecuado de sus contenidos y a

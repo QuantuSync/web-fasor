@@ -58,7 +58,7 @@ export default function Actuacion() {
           <TituloSeccion
             numero="01"
             titulo="Especialidades"
-            intro="Cada miembro puede formarse en una o varias áreas de especialización, lo que permite desplegar equipos versátiles y autosuficientes:"
+            intro="Cada miembro puede formarse en una o varias áreas de especialización, lo que permite desplegar equipos versátiles y autosuficientes."
           />
         </div>
 

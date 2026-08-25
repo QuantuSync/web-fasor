@@ -58,7 +58,7 @@ export default function Unidades() {
             >
               <img
                 src={unidad.logo}
-                alt={`Emblema de ${unidad.nombre} - FASOR`}
+                alt={`Emblema de ${unidad.nombre} de FASOR`}
                 className="mb-4 h-20 w-20 rounded-full border border-fasor-gold/40 object-cover"
                 loading="lazy"
               />

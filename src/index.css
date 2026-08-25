@@ -196,4 +196,11 @@
   .animate-pulse {
     animation: none !important;
   }
+
+  /* La pestaña Academy deja de destellar y queda fija, legible y dorada */
+  .animate-destello-academy {
+    animation: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+  }
 }

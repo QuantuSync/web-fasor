@@ -10,13 +10,13 @@ import React from 'react';
 
 // Nombres de rango por divisa (doctrina del escalafón), para el aria-label
 const RANGO_ESTRELLAS: Record<number, string> = {
-  2: 'Distintivo de Capitán de Unidad: dos estrellas sobre barra de mando',
-  1: 'Distintivo de Teniente de Cuadrilla: una estrella sobre barra de mando',
+  2: 'Distintivo de Capitán de Unidad, dos estrellas sobre barra de mando',
+  1: 'Distintivo de Teniente de Cuadrilla, una estrella sobre barra de mando',
 };
 
 const RANGO_GALONES: Record<number, string> = {
-  2: 'Distintivo de Operador Táctico: dos galones',
-  1: 'Distintivo de Cadete en Formación: un galón',
+  2: 'Distintivo de Operador Táctico, dos galones',
+  1: 'Distintivo de Cadete en Formación, un galón',
 };
 
 // Las divisas de mando están aprobadas en un marco de diseño propio (banderín
@@ -38,7 +38,7 @@ export const RankComandante = () => (
   <span
     className="absolute inset-0 text-fasor-gold"
     role="img"
-    aria-label="Distintivo de Comandante: estrella de ocho puntas sobre barra de mando"
+    aria-label="Distintivo de Comandante, estrella de ocho puntas sobre barra de mando"
   >
     <svg viewBox="0 0 40 55" className="h-full w-full" fill="currentColor" aria-hidden="true">
       <g transform={MARCO_MANDO}>
@@ -66,7 +66,7 @@ export const RankStars = ({ count }: { count: number }) => {
     <span
       className="absolute inset-0 text-fasor-gold"
       role="img"
-      aria-label={RANGO_ESTRELLAS[count] ?? `Distintivo de rango: ${count} estrellas`}
+      aria-label={RANGO_ESTRELLAS[count] ?? `Distintivo de rango con ${count} estrellas`}
     >
       <svg viewBox="0 0 40 55" className="h-full w-full" fill="currentColor" aria-hidden="true">
         {Array.from({ length: count }, (_, i) => (
@@ -88,7 +88,7 @@ export const RankChevrons = ({ count }: { count: number }) => (
   <span
     className="flex flex-col items-center gap-1 text-fasor-gold"
     role="img"
-    aria-label={RANGO_GALONES[count] ?? `Distintivo de rango: ${count} galones`}
+    aria-label={RANGO_GALONES[count] ?? `Distintivo de rango con ${count} galones`}
   >
     {Array.from({ length: count }, (_, i) => (
       <svg

@@ -112,7 +112,7 @@ export default function Organizacion() {
                 </h3>
               </div>
               <p className="m-0 text-sm leading-relaxed text-fasor-sage">
-                Órgano supremo de gobierno de la Asociación, integrado por todos los socios de pleno
+                Órgano supremo de gobierno de la entidad, integrado por todos los socios de pleno
                 derecho. Se reúne al menos una vez al año, dentro de los cuatro meses siguientes al
                 cierre del ejercicio (31 de diciembre). Sus acuerdos obligan a todos los socios.
               </p>
@@ -126,7 +126,7 @@ export default function Organizacion() {
                 </h3>
               </div>
               <p className="m-0 text-sm leading-relaxed text-fasor-sage">
-                Órgano de representación y gestión de la Asociación, compuesto por Presidente/a,
+                Órgano de representación y gestión de la entidad, compuesto por Presidente/a,
                 Secretario/a y Tesorero/a, pudiendo añadirse vocales si lo aprueba la Asamblea. Los
                 cargos son gratuitos, con mandato de cuatro años renovable.
               </p>

@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react';
 import Galon from './Galon';
 
 // Cabecera de sección del sistema FASOR: numeración técnica en mono + galón +
@@ -8,6 +9,8 @@ interface TituloSeccionProps {
   numero: string;
   titulo: string;
   intro?: string;
+  /** Elemento opcional alineado a la derecha del titular (p. ej. emblemas) */
+  extra?: ReactNode;
   className?: string;
 }
 
@@ -15,6 +18,7 @@ export default function TituloSeccion({
   numero,
   titulo,
   intro,
+  extra,
   className = '',
 }: TituloSeccionProps) {
   return (
@@ -23,9 +27,12 @@ export default function TituloSeccion({
         <span className="font-mono text-xs tracking-widest text-fasor-gold">{numero}</span>
         <Galon />
       </div>
-      <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-fasor-bone md:text-4xl">
-        {titulo}
-      </h2>
+      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+        <h2 className="m-0 font-display text-3xl font-bold uppercase tracking-tight text-fasor-bone md:text-4xl">
+          {titulo}
+        </h2>
+        {extra}
+      </div>
       <div className="linea-fade mt-4" aria-hidden="true"></div>
       {intro && <p className="mt-4 max-w-2xl text-base leading-relaxed text-fasor-sage">{intro}</p>}
     </div>
