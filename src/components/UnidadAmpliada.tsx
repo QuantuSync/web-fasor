@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from 'react';
 import { X } from 'lucide-react';
 import Galon from './Galon';
 import { type Unidad } from '../data/unidades';
+import { cursosPorUnidad } from '../data/academy';
 
 // Vista ampliada de una unidad, sobre la retícula de /unidades. Diálogo modal
 // hecho a mano (sin librerías): foco atrapado mientras está abierto, cierre con
@@ -20,6 +21,24 @@ const ENFOCABLES = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(', ');
 
+// Bloque de lista del panel: rótulo en etiqueta dorada y entradas con galón,
+// sin cajas ni filetes propios (la doctrina de la página).
+function Bloque({ titulo, entradas }: { titulo: string; entradas: string[] }) {
+  return (
+    <section className="mt-8">
+      <h3 className="etiqueta mb-4">{titulo}</h3>
+      <ul className="m-0 list-none space-y-2.5 p-0">
+        {entradas.map((entrada) => (
+          <li key={entrada} className="flex items-start gap-3">
+            <Galon className="mt-1 h-3 w-2" />
+            <span className="text-sm leading-relaxed text-fasor-sage sm:text-base">{entrada}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 interface UnidadAmpliadaProps {
   unidad: Unidad;
   onCerrar: () => void;
@@ -29,6 +48,8 @@ export default function UnidadAmpliada({ unidad, onCerrar }: UnidadAmpliadaProps
   const panelRef = useRef<HTMLDivElement>(null);
   const cierreRef = useRef<HTMLButtonElement>(null);
   const tituloId = useId();
+  // Los cursos no se escriben aquí: se derivan del catálogo de la Academy.
+  const formacion = cursosPorUnidad(unidad.id);
 
   // Al abrir, el foco va al botón de cierre y el fondo deja de desplazarse.
   // Al cerrar, el foco vuelve al elemento que abrió el diálogo (la tarjeta).
@@ -97,46 +118,77 @@ export default function UnidadAmpliada({ unidad, onCerrar }: UnidadAmpliadaProps
         role="dialog"
         aria-modal="true"
         aria-labelledby={tituloId}
-        className="animate-aparecer-panel relative my-auto w-full max-w-lg border border-fasor-gold/40
-                   bg-fasor-surface p-6 sm:p-8"
+        className="animate-aparecer-panel relative my-auto flex w-full max-w-lg
+                   max-h-[calc(100vh_-_2rem)] flex-col border border-fasor-gold/40
+                   bg-fasor-surface sm:max-h-[calc(100vh_-_3rem)]"
       >
+        {/* Fuera del contenedor con scroll: queda fijo mientras el cuerpo se
+            desplaza. Fondo de superficie para que el texto pase por detrás. */}
         <button
           ref={cierreRef}
           type="button"
           onClick={onCerrar}
           aria-label="Cerrar la vista ampliada"
-          className="absolute right-3 top-3 inline-flex items-center justify-center rounded-sm
-                     border border-fasor-line p-2 text-fasor-sage transition-colors duration-200
-                     hover:border-fasor-gold hover:text-fasor-gold"
+          className="absolute right-3 top-3 z-10 inline-flex items-center justify-center rounded-sm
+                     border border-fasor-line bg-fasor-surface p-2 text-fasor-sage
+                     transition-colors duration-200 hover:border-fasor-gold hover:text-fasor-gold"
         >
           <X size={18} aria-hidden="true" />
         </button>
 
-        <p className="etiqueta mb-5 pr-12">Unidad especializada</p>
+        {/* Cuerpo con scroll interno. El atrapado de foco no se ve afectado:
+            se calcula sobre el DOM del panel, no sobre lo que está visible. */}
+        <div className="overflow-y-auto overscroll-contain p-6 sm:p-8">
+          <p className="etiqueta mb-5 pr-12">Unidad especializada</p>
 
-        <img
-          src={unidad.logo}
-          alt={`Emblema de ${unidad.nombre} de FASOR`}
-          width={160}
-          height={160}
-          className="mb-6 h-32 w-32 rounded-full border border-fasor-gold/40 object-cover sm:h-40 sm:w-40"
-        />
+          <img
+            src={unidad.logo}
+            alt={`Emblema de ${unidad.nombre} de FASOR`}
+            width={160}
+            height={160}
+            className="mb-6 h-32 w-32 rounded-full border border-fasor-gold/40 object-cover sm:h-40 sm:w-40"
+          />
 
-        <div className="mb-3 flex items-center gap-3">
-          <Galon />
-          <h2
-            id={tituloId}
-            className="m-0 font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone sm:text-3xl"
-          >
-            {unidad.nombre}
-          </h2>
+          <div className="mb-3 flex items-center gap-3">
+            <Galon />
+            <h2
+              id={tituloId}
+              className="m-0 font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone sm:text-3xl"
+            >
+              {unidad.nombre}
+            </h2>
+          </div>
+
+          <div className="linea-fade mb-5" aria-hidden="true"></div>
+
+          <p className="m-0 text-base leading-relaxed text-fasor-bone sm:text-lg">
+            {unidad.descripcion}
+          </p>
+
+          <Bloque titulo="Capacidades" entradas={unidad.capacidades} />
+          <Bloque titulo="Cuándo se activa" entradas={unidad.escenarios} />
+
+          {formacion.length > 0 && (
+            <section className="mt-8">
+              <h3 className="etiqueta mb-4">Formación en la Academy</h3>
+              <ul className="m-0 list-none space-y-4 p-0">
+                {formacion.map((curso) => (
+                  <li key={curso.titulo} className="flex items-start gap-3">
+                    <Galon className="mt-1.5 h-3 w-2" />
+                    <div>
+                      <p className="m-0 font-display text-base font-bold uppercase tracking-tight text-fasor-bone">
+                        {curso.titulo}
+                      </p>
+                      <p className="m-0 mt-1 text-sm leading-relaxed text-fasor-sage">
+                        {curso.descripcion}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
-
-        <div className="linea-fade mb-5" aria-hidden="true"></div>
-
-        <p className="m-0 text-base leading-relaxed text-fasor-bone sm:text-lg">
-          {unidad.descripcion}
-        </p>
       </div>
     </div>
   );

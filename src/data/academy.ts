@@ -18,8 +18,8 @@ import {
   Lock,
   type LucideIcon,
 } from 'lucide-react';
-import { type RangoId } from './escalafon';
-import { type UnidadId } from './unidades';
+import type { RangoId } from './escalafon';
+import type { UnidadId } from './unidades';
 
 // FASOR Academy: la plataforma formativa de la entidad. Órgano transversal
 // dependiente de la Junta Directiva, no una unidad más ni una academia externa.
@@ -257,6 +257,20 @@ export const catalogoAcademy: NivelCatalogo[] = [
     ],
   },
 ];
+
+/**
+ * Cursos del catálogo ligados a una unidad, derivados del propio
+ * `catalogoAcademy` por su `unidadId`. Los usa la vista ampliada de
+ * /unidades: al leerse del catálogo y no escribirse a mano, la formación
+ * que muestra cada unidad no puede divergir de la que publica /academy
+ * (mismo criterio que `rangoPorId` con las divisas del escalafón).
+ * Las unidades sin curso asociado devuelven una lista vacía.
+ */
+export function cursosPorUnidad(unidadId: UnidadId): CursoAcademy[] {
+  return catalogoAcademy.flatMap((nivel) =>
+    nivel.cursos.filter((curso) => curso.unidadId === unidadId)
+  );
+}
 
 // ---------------------------------------------------------------------------
 // 05 · Cuerpo de instructores
