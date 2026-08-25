@@ -331,9 +331,15 @@ export default function Academy() {
 
                 <ul className="m-0 mt-8 grid list-none grid-cols-1 gap-x-10 gap-y-6 p-0 md:grid-cols-2">
                   {nivel.cursos.map((curso) => {
-                    // Los cursos ligados a una unidad muestran su emblema: es el
-                    // vínculo visual con /unidades, sin dibujar nada nuevo.
-                    const unidad = curso.unidadId ? unidadPorId(curso.unidadId) : null;
+                    // El emblema es la marca de «especialidad operativa ligada a
+                    // una unidad», así que sigue apareciendo solo en ese nivel.
+                    // El tronco común también declara `unidadId` (para el bloque
+                    // de formación de la vista ampliada de /unidades), pero es
+                    // obligatorio para todos y no debe leerse como especialidad.
+                    const unidad =
+                      nivel.id === 'especialidades' && curso.unidadId
+                        ? unidadPorId(curso.unidadId)
+                        : null;
                     return (
                       <li key={curso.titulo} className="flex items-start gap-3">
                         <curso.icono

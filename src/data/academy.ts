@@ -113,9 +113,14 @@ export interface CursoAcademy {
   titulo: string;
   descripcion: string;
   /**
-   * Unidad a la que pertenece el curso, para mostrar su emblema. Solo en las
-   * especialidades operativas; los cursos transversales no llevan ninguna. El
-   * emblema se lee de src/data/unidades.ts: aquí no se duplica ninguna imagen.
+   * Unidad en cuyo dominio cae el curso. La declaran también cursos del
+   * tronco común, para que aparezcan en el bloque de formación de la vista
+   * ampliada de esa unidad (`cursosPorUnidad`). Los cursos realmente
+   * transversales y todos los de la escuela abierta no llevan ninguna, esta
+   * última porque por definición no da especialidad operativa.
+   * El emblema del catálogo se sigue mostrando solo en las especialidades
+   * operativas (ver Academy.tsx) y se lee de src/data/unidades.ts: aquí no se
+   * duplica ninguna imagen.
    */
   unidadId?: UnidadId;
 }
@@ -149,16 +154,19 @@ export const catalogoAcademy: NivelCatalogo[] = [
       {
         icono: HeartPulse,
         titulo: 'Primeros auxilios',
+        unidadId: 'sanitario',
         descripcion: 'Soporte vital básico, control de hemorragias e inmovilización.',
       },
       {
         icono: Compass,
         titulo: 'Orientación y supervivencia',
+        unidadId: 'terrestres',
         descripcion: 'Cartografía, navegación terrestre y autonomía prolongada en el medio.',
       },
       {
         icono: RadioTower,
         titulo: 'Comunicaciones y coordinación de equipos',
+        unidadId: 'comunicaciones',
         descripcion: 'Radio, protocolos de transmisión y trabajo coordinado en cuadrilla.',
       },
       {
