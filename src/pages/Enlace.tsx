@@ -3,10 +3,12 @@ import { ClientOnly } from 'vite-react-ssg';
 import { LogIn, LogOut, ShieldAlert } from 'lucide-react';
 import fasorLogo from '../assets/fasor.jpg';
 import Galon from '../components/Galon';
+import { RankDivisa } from '../components/RankInsignia';
 import SesionProvider from '../context/SesionContext';
 import { useSesion } from '../context/useSesion';
+import { escalafon } from '../data/escalafon';
 import { getSupabase } from '../lib/supabase';
-import { ETIQUETA_RANGO, etiquetaUnidad } from '../lib/enlace-types';
+import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../lib/enlace-types';
 
 /*
  * Zona interna de FASOR (/enlace). Fase 1, solo el acceso.
@@ -25,18 +27,28 @@ const ERROR_CREDENCIALES = 'Usuario o contraseña incorrectos.';
 // El fallo de red sí se separa, porque no dice nada sobre la cuenta.
 const ERROR_RED = 'No se ha podido conectar. Inténtalo de nuevo en unos minutos.';
 
+// Alto del sello y, por tanto, del distintivo de rango que lo acompaña
+const ALTO_CABECERA = 48;
+
 // Panel común a todos los estados. Superficie con filete dorado de 1px, radio
 // de 4px, sin sombras ni brillos. A 360px ocupa el ancho disponible.
-function Panel({ children }: { children: ReactNode }) {
+//
+// La fila superior lleva el sello a la izquierda y, cuando hay rango que
+// mostrar, su distintivo a la derecha. Ambos con `shrink-0`, para que en
+// pantallas estrechas repartan el hueco sin comprimirse.
+function Panel({ children, distintivo }: { children: ReactNode; distintivo?: ReactNode }) {
   return (
     <div className="w-full max-w-md rounded-sm border border-fasor-gold/40 bg-fasor-surface p-6 sm:p-8">
-      <img
-        src={fasorLogo}
-        alt=""
-        width={48}
-        height={48}
-        className="mb-5 h-12 w-12 rounded-full border border-fasor-gold/40 object-cover"
-      />
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <img
+          src={fasorLogo}
+          alt=""
+          width={ALTO_CABECERA}
+          height={ALTO_CABECERA}
+          className="h-12 w-12 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+        />
+        {distintivo}
+      </div>
       {children}
     </div>
   );
@@ -197,19 +209,43 @@ function AvisoCuenta({ mensaje }: { mensaje: string }) {
 
 // Pantalla interior, provisional en esta fase. Saluda al miembro con su rango y
 // su unidad, y avisa de que el buzón todavía no está en servicio.
-function Interior({
-  nombre,
-  rango,
-  unidad,
-}: {
-  nombre: string;
-  rango: string;
-  unidad: string | null;
-}) {
+function Interior({ perfil }: { perfil: Perfil }) {
+  const rango = ETIQUETA_RANGO[perfil.rango] ?? perfil.rango;
+  const unidad = perfil.unidad ? etiquetaUnidad(perfil.unidad) : null;
+  const emblema = perfil.unidad ? emblemaUnidad(perfil.unidad) : null;
+  // Búsqueda tolerante en lugar de `rangoPorId`, que lanza: el rango llega de
+  // la base de datos, y si un día no cuadrara con el escalafón la pantalla se
+  // queda sin distintivo, no rota. El rango sigue leyéndose en texto.
+  const divisa = escalafon.find((r) => r.id === perfil.rango)?.insignia ?? null;
+
   return (
-    <Panel>
-      <Rotulo titulo={nombre}>
-        <p className="mt-4 font-mono text-xs uppercase tracking-widest text-fasor-gold">{rango}</p>
+    <Panel
+      distintivo={
+        divisa && (
+          // Decorativo: el rango va escrito justo debajo, así que se oculta
+          // entero a los lectores de pantalla (incluido el aria-label propio
+          // de la divisa).
+          <span aria-hidden="true" className="shrink-0">
+            <RankDivisa divisa={divisa} alto={ALTO_CABECERA} />
+          </span>
+        )
+      }
+    >
+      <Rotulo titulo={perfil.nombre}>
+        <p className="mt-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
+          {rango}
+          {emblema && (
+            <img
+              src={emblema}
+              alt=""
+              aria-hidden="true"
+              title={unidad ?? undefined}
+              width={18}
+              height={18}
+              className="h-[18px] w-[18px] shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+            />
+          )}
+        </p>
         {unidad && <p className="mt-1 text-sm text-fasor-sage">{unidad}</p>}
       </Rotulo>
 
@@ -240,13 +276,7 @@ function Zona() {
     return <AvisoCuenta mensaje="Tu cuenta está desactivada, contacta con la Junta Directiva." />;
   }
 
-  return (
-    <Interior
-      nombre={perfil.nombre}
-      rango={ETIQUETA_RANGO[perfil.rango] ?? perfil.rango}
-      unidad={perfil.unidad ? etiquetaUnidad(perfil.unidad) : null}
-    />
-  );
+  return <Interior perfil={perfil} />;
 }
 
 export default function Enlace() {

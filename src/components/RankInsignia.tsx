@@ -84,9 +84,13 @@ export const RankStars = ({ count }: { count: number }) => {
   );
 };
 
-export const RankChevrons = ({ count }: { count: number }) => (
+// Los galones no son SVG a pantalla completa como las estrellas, así que no
+// escalan solos con el banderín: llevan su propio factor, que RankDivisa deriva
+// del alto pedido. A escala 1 quedan exactamente como estaban (11x22, hueco 4).
+export const RankChevrons = ({ count, escala = 1 }: { count: number; escala?: number }) => (
   <span
-    className="flex flex-col items-center gap-1 text-fasor-gold"
+    className="flex flex-col items-center text-fasor-gold"
+    style={{ gap: 4 * escala }}
     role="img"
     aria-label={RANGO_GALONES[count] ?? `Distintivo de rango con ${count} galones`}
   >
@@ -94,7 +98,7 @@ export const RankChevrons = ({ count }: { count: number }) => (
       <svg
         key={i}
         viewBox="0 0 24 12"
-        className="h-[11px] w-[22px]"
+        style={{ height: 11 * escala, width: 22 * escala }}
         fill="none"
         stroke="currentColor"
         strokeWidth={2.6}
@@ -108,11 +112,23 @@ export const RankChevrons = ({ count }: { count: number }) => (
   </span>
 );
 
-// Banderín contenedor: rectángulo con punta inferior centrada. Altura fija
-// para que el listado del escalafón alinee todos los rangos; el espaciado
-// interior de las divisas se adapta al número de elementos.
-export const RankBadge = ({ children }: { children: React.ReactNode }) => (
-  <div className="relative h-[72px] w-10 shrink-0">
+// Alto natural del banderín, del que se derivan el resto de medidas
+const ALTO_BASE = 72;
+
+// Banderín contenedor: rectángulo con punta inferior centrada. El alto es fijo
+// por defecto, para que el listado del escalafón alinee todos los rangos, pero
+// admite otro (`alto`) cuando hace falta encajarlo junto a otra pieza, como en
+// la zona interna. El ancho y el espacio útil interior se derivan del alto, así
+// que la geometría aprobada no se toca. El espaciado interior de las divisas se
+// adapta al número de elementos.
+export const RankBadge = ({
+  children,
+  alto = ALTO_BASE,
+}: {
+  children: React.ReactNode;
+  alto?: number;
+}) => (
+  <div className="relative shrink-0" style={{ height: alto, width: (alto * 40) / ALTO_BASE }}>
     <svg
       viewBox="0 0 40 72"
       className="absolute inset-0 h-full w-full"
@@ -126,7 +142,12 @@ export const RankBadge = ({ children }: { children: React.ReactNode }) => (
         strokeLinejoin="miter"
       />
     </svg>
-    <div className="relative flex h-[55px] w-full items-center justify-center">{children}</div>
+    <div
+      className="relative flex w-full items-center justify-center"
+      style={{ height: (alto * 55) / ALTO_BASE }}
+    >
+      {children}
+    </div>
   </div>
 );
 
@@ -136,10 +157,13 @@ export const RankBadge = ({ children }: { children: React.ReactNode }) => (
 // lleva divisa propia, para que ninguna página la reimplemente.
 export const RankDivisa = ({
   divisa,
+  alto,
 }: {
   divisa: { tipo: 'estrellas' | 'galones'; numero: number };
+  /** Alto del banderín en píxeles; por defecto, el del escalafón */
+  alto?: number;
 }) => (
-  <RankBadge>
+  <RankBadge alto={alto}>
     {divisa.tipo === 'estrellas' ? (
       divisa.numero === 3 ? (
         <RankComandante />
@@ -147,7 +171,7 @@ export const RankDivisa = ({
         <RankStars count={divisa.numero} />
       )
     ) : (
-      <RankChevrons count={divisa.numero} />
+      <RankChevrons count={divisa.numero} escala={(alto ?? ALTO_BASE) / ALTO_BASE} />
     )}
   </RankBadge>
 );

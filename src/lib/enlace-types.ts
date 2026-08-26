@@ -42,3 +42,12 @@ export const ETIQUETA_RANGO: Record<Rango, string> = {
 export function etiquetaUnidad(unidad: Unidad): string {
   return unidades.find((u) => u.id === unidad)?.nombre ?? unidad;
 }
+
+/*
+ * Emblema de la unidad, de la misma fuente que el nombre, para que la zona
+ * interna no repita rutas de imagen. Devuelve null si la unidad no se reconoce,
+ * y entonces la pantalla no pinta emblema (mismo criterio que sin unidad).
+ */
+export function emblemaUnidad(unidad: Unidad): string | null {
+  return unidades.find((u) => u.id === unidad)?.logo ?? null;
+}
