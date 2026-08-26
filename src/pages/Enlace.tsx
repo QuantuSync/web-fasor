@@ -71,15 +71,38 @@ function Panel({ children, distintivo }: { children: ReactNode; distintivo?: Rea
   );
 }
 
-// Rótulo de la zona, común al acceso y al interior
-function Rotulo({ titulo, children }: { titulo: string; children?: ReactNode }) {
+/*
+ * Rótulo de la zona, común al acceso y al interior.
+ *
+ * `derecha` es el hueco de la columna derecha, a la altura del titular. En el
+ * interior lo ocupa el rango, que así queda justo debajo del distintivo de la
+ * fila superior y alineado con el nombre, pero en el lado opuesto.
+ *
+ * La fila es `flex-wrap` con `items-baseline`, y lo de la derecha lleva
+ * `ml-auto` y `shrink-0`: mientras caben, nombre y rango comparten línea de
+ * base; cuando no caben, el rango baja a su propia línea y sigue pegado a la
+ * derecha, sin comprimirse ni solaparse con el nombre. El galón va `self-center`
+ * para que no sea él quien marque la línea de base de la fila.
+ */
+function Rotulo({
+  titulo,
+  derecha,
+  children,
+}: {
+  titulo: string;
+  derecha?: ReactNode;
+  children?: ReactNode;
+}) {
   return (
     <>
       <p className="etiqueta mb-2">Zona interna</p>
-      <h1 className="flex items-center gap-3 font-display text-3xl font-bold uppercase tracking-tight text-fasor-bone">
-        <Galon count={2} className="h-4 w-3 shrink-0" />
-        {titulo}
-      </h1>
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <h1 className="flex min-w-0 items-baseline gap-3 font-display text-3xl font-bold uppercase tracking-tight text-fasor-bone">
+          <Galon count={2} className="h-4 w-3 shrink-0 self-center" />
+          <span className="break-words">{titulo}</span>
+        </h1>
+        {derecha}
+      </div>
       <div className="linea-fade mt-4" aria-hidden="true"></div>
       {children}
     </>
@@ -262,22 +285,32 @@ function Interior({ perfil }: { perfil: Perfil }) {
           )
         }
       >
-        <Rotulo titulo={perfil.nombre}>
-          <p className="mt-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
-            {rango}
-            {emblema && (
-              <img
-                src={emblema}
-                alt=""
-                aria-hidden="true"
-                title={unidad ?? undefined}
-                width={24}
-                height={24}
-                className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
-              />
-            )}
-          </p>
-          {unidad && <p className="mt-1 text-sm text-fasor-sage">{unidad}</p>}
+        <Rotulo
+          titulo={perfil.nombre}
+          derecha={
+            <p className="ml-auto shrink-0 text-right font-mono text-xs uppercase tracking-widest text-fasor-gold">
+              {rango}
+            </p>
+          }
+        >
+          {/* La unidad va centrada en el ancho del panel y en negrita, con su
+              emblema al lado. Si el miembro no tiene unidad no se pinta nada,
+              ni emblema, ni hueco, ni texto alternativo. */}
+          {unidad && (
+            <p className="mt-4 flex flex-wrap items-center justify-center gap-2 text-center text-sm font-semibold text-fasor-bone">
+              {emblema && (
+                <img
+                  src={emblema}
+                  alt=""
+                  aria-hidden="true"
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+                />
+              )}
+              <span className="break-words">{unidad}</span>
+            </p>
+          )}
         </Rotulo>
 
         <p className="mt-6 text-sm leading-relaxed text-fasor-sage">
