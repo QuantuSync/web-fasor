@@ -136,8 +136,8 @@ export default function Privacidad() {
             <p>
               La zona interna incluye un buzón de mensajes que es la vía oficial de comunicación
               entre miembros. De cada mensaje tratamos el asunto, el contenido, quién lo escribe, a
-              quién va dirigido, la fecha y si se ha leído o archivado. La finalidad es sostener esa
-              comunicación oficial, y nada más.
+              quién va dirigido, la fecha y si se ha leído, archivado o eliminado. La finalidad es
+              sostener esa comunicación oficial, y nada más.
             </p>
             <p>
               Un mensaje solo lo pueden leer quien lo escribe y quien lo recibe. No lo leen los
@@ -146,21 +146,30 @@ export default function Privacidad() {
               base de datos.
             </p>
             <p>
-              Hay una única excepción, y conviene que la conozcas de antemano. Si escribes a un
-              rango por encima de tu superior inmediato, tu superior inmediato de tu misma unidad
-              recibe un aviso. Ese aviso registra solo tres datos, quién ha escrito, a quién y
-              cuándo. No incluye el asunto, ni el contenido, ni ninguna referencia que permita
-              llegar al mensaje, de modo que tu mando sabe que has escrito pero no puede saber qué
-              has escrito. Sirve para el buen orden interno de la entidad y se genera de forma
-              automática, sin intervención de nadie.
+              Hay un único registro adicional, y conviene que lo conozcas de antemano. Si escribes a
+              un rango por encima de tu superior inmediato, tu superior inmediato de tu misma unidad
+              recibe un aviso. Ese aviso guarda solo tres datos, quién ha escrito, a quién y cuándo.
+              No incluye el asunto, ni el contenido, ni ninguna referencia que permita llegar al
+              mensaje, de modo que tu mando sabe que has escrito pero no puede saber qué has
+              escrito. Es informativo, sirve para el buen orden interno de la entidad y se genera de
+              forma automática, sin intervención de nadie.
             </p>
             <p>
-              Conservamos estos datos mientras dure tu condición de miembro. Los mensajes y los
-              avisos se conservan mientras tanto, y archivar un mensaje lo aparta de la bandeja pero
-              no lo borra. Al causar baja, la cuenta se desactiva y deja de dar acceso, pero no se
-              borra, para poder reactivarla si vuelves y para dejar constancia de quién ha formado
-              parte de la entidad. Si nos pides la supresión, la atendemos como se explica en el
-              apartado de tus derechos, salvo lo que haya que guardar por obligación legal.
+              Puedes eliminar cualquier mensaje de tu buzón. Eliminar es permanente y no se puede
+              deshacer, y afecta solo a tu propia vista, así que la otra parte conserva su copia
+              igual que tú conservas la tuya si es ella quien elimina. Cuando las dos partes han
+              eliminado un mensaje, ya no puede verlo nadie y la información se borra por completo
+              de nuestros sistemas. Los avisos de mando los puede eliminar el mando que los recibe,
+              y como es el único que los ve, al eliminarlos se borran del todo.
+            </p>
+            <p>
+              Conservamos estos datos mientras dure tu condición de miembro, salvo lo que elimines
+              antes. Los mensajes y los avisos se conservan mientras tanto, y archivar un mensaje lo
+              aparta de la bandeja pero no lo borra, para eso está eliminar. Al causar baja, la
+              cuenta se desactiva y deja de dar acceso, pero no se borra, para poder reactivarla si
+              vuelves y para dejar constancia de quién ha formado parte de la entidad. Si nos pides
+              la supresión, la atendemos como se explica en el apartado de tus derechos, salvo lo
+              que haya que guardar por obligación legal.
             </p>
           </SeccionLegal>
 
