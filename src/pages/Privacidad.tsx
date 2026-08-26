@@ -134,16 +134,33 @@ export default function Privacidad() {
               legal.
             </p>
             <p>
-              Cuando el buzón interno entre en servicio trataremos también el contenido de las
-              comunicaciones internas, con la única finalidad de sostener esa comunicación oficial
-              entre miembros.
+              La zona interna incluye un buzón de mensajes que es la vía oficial de comunicación
+              entre miembros. De cada mensaje tratamos el asunto, el contenido, quién lo escribe, a
+              quién va dirigido, la fecha y si se ha leído o archivado. La finalidad es sostener esa
+              comunicación oficial, y nada más.
             </p>
             <p>
-              Conservamos estos datos mientras dure tu condición de miembro. Al causar baja, la
-              cuenta se desactiva y deja de dar acceso, pero no se borra, para poder reactivarla si
-              vuelves y para dejar constancia de quién ha formado parte de la entidad. Si nos pides
-              la supresión, la atendemos como se explica en el apartado de tus derechos, salvo lo
-              que haya que guardar por obligación legal.
+              Un mensaje solo lo pueden leer quien lo escribe y quien lo recibe. No lo leen los
+              demás miembros, ni los cargos de la Junta Directiva, ni el Comandante, ni el Capitán
+              de tu unidad. Ese límite no depende de lo que muestre la pantalla, lo aplica la propia
+              base de datos.
+            </p>
+            <p>
+              Hay una única excepción, y conviene que la conozcas de antemano. Si escribes a un
+              rango por encima de tu superior inmediato, tu superior inmediato de tu misma unidad
+              recibe un aviso. Ese aviso registra solo tres datos, quién ha escrito, a quién y
+              cuándo. No incluye el asunto, ni el contenido, ni ninguna referencia que permita
+              llegar al mensaje, de modo que tu mando sabe que has escrito pero no puede saber qué
+              has escrito. Sirve para el buen orden interno de la entidad y se genera de forma
+              automática, sin intervención de nadie.
+            </p>
+            <p>
+              Conservamos estos datos mientras dure tu condición de miembro. Los mensajes y los
+              avisos se conservan mientras tanto, y archivar un mensaje lo aparta de la bandeja pero
+              no lo borra. Al causar baja, la cuenta se desactiva y deja de dar acceso, pero no se
+              borra, para poder reactivarla si vuelves y para dejar constancia de quién ha formado
+              parte de la entidad. Si nos pides la supresión, la atendemos como se explica en el
+              apartado de tus derechos, salvo lo que haya que guardar por obligación legal.
             </p>
           </SeccionLegal>
 
