@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Archive, ArchiveRestore, Check, Mail, MailOpen, ShieldAlert, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, Check, Info, Mail, MailOpen, Trash2 } from 'lucide-react';
 import type { EntradaBuzon } from '../../lib/enlace-types';
 import { formatoFechaHora } from '../../lib/enlace-buzon';
 
@@ -48,14 +48,14 @@ export default function TarjetaEntrada({
     return (
       <article className="rounded-sm border border-fasor-gold/40 bg-fasor-surface2 p-4 sm:p-5">
         <p className="etiqueta mb-2 flex items-center gap-2">
-          <ShieldAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {/* Icono de información y no de alerta: el aviso notifica, no señala */}
+          <Info className="h-4 w-4 shrink-0" aria-hidden="true" />
           Aviso de mando
         </p>
 
         <p className="text-sm leading-relaxed text-fasor-bone">
           <span className="font-semibold">{nombreDe(aviso.remitente)}</span> ha escrito a{' '}
-          <span className="font-semibold">{nombreDe(aviso.destinatario)}</span>, saltándose la
-          cadena de mando.
+          <span className="font-semibold">{nombreDe(aviso.destinatario)}</span>.
         </p>
 
         <p className="mt-2 font-mono text-xs uppercase tracking-widest text-fasor-sage">
@@ -64,10 +64,12 @@ export default function TarjetaEntrada({
         </p>
 
         {/* Esto es una decisión del sistema, no una limitación de la pantalla,
-            así que se le dice al mando en vez de dejarle buscando el botón. */}
+            así que se le dice al mando en vez de dejarle buscando el botón. El
+            tono es el de una notificación, no el de un parte de incidencias:
+            informa de que se ha escrito, no señala a nadie. */}
         <p className="mt-3 text-xs leading-relaxed text-fasor-sage">
-          El aviso deja constancia de que ocurrió. No da acceso al mensaje ni a su asunto, y por eso
-          no se puede abrir ni responder.
+          Es solo un aviso informativo. No da acceso al mensaje ni a su asunto, y por eso no se
+          puede abrir ni responder.
         </p>
 
         {confirmando ? (

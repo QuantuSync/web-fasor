@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Send, ShieldAlert, X } from 'lucide-react';
+import { Info, Send, ShieldAlert, X } from 'lucide-react';
 import { ETIQUETA_RANGO, type MiembroDirectorio, type Perfil } from '../../lib/enlace-types';
 import { haySaltoDeCadena, rangoQueRecibeElAviso } from '../../lib/enlace-buzon';
 import SelectorDestinatario from './SelectorDestinatario';
@@ -8,12 +8,13 @@ import SelectorDestinatario from './SelectorDestinatario';
  * Redacción de un mensaje. Se despliega en el sitio de la lista, sin ventana
  * flotante, igual que el resto de la zona interna.
  *
- * Cuando el destinatario elegido supone un salto de cadena de mando se dice
- * antes de enviar. NO es una advertencia que bloquee ni una petición de
- * permiso: el mensaje sale igual. Es honestidad con el remitente, porque el
- * aviso al mando se va a registrar en el servidor lo diga aquí la pantalla o
- * no. Y se explica exactamente qué se registra, que es el hecho y no el
- * contenido.
+ * Cuando el destinatario elegido va a generar un aviso al mando, se dice antes
+ * de enviar. NO es una advertencia, ni una petición de permiso, ni un intento
+ * de disuadir: el mensaje sale igual y escribir a quien haga falta es legítimo.
+ * Es honestidad con el remitente, porque el aviso se registra en el servidor lo
+ * diga aquí la pantalla o no, y por eso el texto informa de qué se registra (el
+ * hecho, no el contenido) en lugar de reprochar nada. El icono es de
+ * información, no de alerta, y en eso también va el tono.
  */
 
 /** Datos que hereda una respuesta. El asunto va tal cual, sin prefijo. */
@@ -105,7 +106,7 @@ export default function RedactarMensaje({
 
       {borrador && !esRespuesta && (
         <p className="flex items-start gap-2 text-sm leading-relaxed text-fasor-bone">
-          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
           Quien mantenía contigo esa conversación ya no está de alta, así que no se le puede
           responder. Se conserva el asunto y eliges tú a quién se lo escribes.
         </p>
@@ -113,11 +114,10 @@ export default function RedactarMensaje({
 
       {salto && rangoAvisado && (
         <p className="flex items-start gap-2 text-sm leading-relaxed text-fasor-bone">
-          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
           <span>
-            Escribes por encima de tu superior inmediato, así que tu{' '}
-            {ETIQUETA_RANGO[rangoAvisado] ?? rangoAvisado} quedará informado de que has escrito y a
-            quién. Del asunto y del contenido no verá nada. El mensaje se envía igual.
+            Tu {ETIQUETA_RANGO[rangoAvisado] ?? rangoAvisado} recibirá un aviso de que has escrito y
+            a quién, sin el asunto ni el contenido. Es solo informativo.
           </span>
         </p>
       )}
