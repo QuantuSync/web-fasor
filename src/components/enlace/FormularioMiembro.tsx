@@ -53,6 +53,16 @@ export default function FormularioMiembro({
     permitidas === 'todas' ? unidades : unidades.filter((u) => permitidas.includes(u.id));
   const obligatoria = unidadObligatoria(gestor);
 
+  /*
+   * Editarse a uno mismo. El rango propio no se toca nunca, ni hacia arriba ni
+   * hacia abajo, y un capitán tampoco su unidad, porque perdería el mando sobre
+   * la suya. Lo impide el trigger de la base de datos; aquí solo se deshabilita
+   * para no ofrecer una acción que va a rebotar. El nombre sí se puede cambiar.
+   */
+  const esUnoMismo = !!miembro && miembro.id === gestor.id;
+  const rangoBloqueado = esUnoMismo;
+  const unidadBloqueada = esUnoMismo && gestor.rango === 'capitan';
+
   const [nombre, setNombre] = useState(miembro?.nombre ?? '');
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -182,8 +192,8 @@ export default function FormularioMiembro({
           id={`rango-${idFormulario}`}
           value={rango}
           onChange={(e) => setRango(e.target.value as Rango)}
-          disabled={enviando}
-          className="!text-base"
+          disabled={enviando || rangoBloqueado}
+          className="!text-base disabled:cursor-not-allowed disabled:opacity-60"
         >
           {rangos.map((r) => (
             <option key={r} value={r}>
@@ -191,6 +201,12 @@ export default function FormularioMiembro({
             </option>
           ))}
         </select>
+        {rangoBloqueado && (
+          <p className="mt-2 text-xs leading-relaxed text-fasor-sage">
+            Tu propio rango no se puede cambiar, ni subirlo ni bajarlo. Te lo tiene que cambiar otro
+            mando.
+          </p>
+        )}
       </div>
 
       <div>
@@ -199,8 +215,8 @@ export default function FormularioMiembro({
           id={`unidad-${idFormulario}`}
           value={unidad}
           onChange={(e) => setUnidad(e.target.value as Unidad | '')}
-          disabled={enviando || (obligatoria && unidadesOfrecidas.length === 1)}
-          className="!text-base"
+          disabled={enviando || unidadBloqueada || (obligatoria && unidadesOfrecidas.length === 1)}
+          className="!text-base disabled:cursor-not-allowed disabled:opacity-60"
         >
           {!obligatoria && <option value="">Sin unidad</option>}
           {unidadesOfrecidas.map((u) => (
@@ -209,6 +225,11 @@ export default function FormularioMiembro({
             </option>
           ))}
         </select>
+        {unidadBloqueada && (
+          <p className="mt-2 text-xs leading-relaxed text-fasor-sage">
+            Tu propia unidad no se puede cambiar, perderías el mando sobre la tuya.
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row">

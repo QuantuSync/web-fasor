@@ -83,9 +83,13 @@ const CODIGOS: Record<string, string> = {
 };
 
 /**
- * Mensaje en español para lo que devuelva Supabase. Los errores del trigger
- * llegan como texto ya redactado («No puedes cambiar tu propio rango»), así que
- * esos se dejan pasar tal cual.
+ * Mensaje en español para lo que devuelva Supabase.
+ *
+ * Los `raise exception` del trigger llegan con código P0001 y con el texto ya
+ * redactado en español («No puedes cambiar tu propio rango», «No puedes dejar a
+ * la entidad sin ningún comandante activo»). Se dejan pasar tal cual, porque
+ * son exactamente lo que hay que enseñar, y así una regla nueva en el trigger
+ * no necesita tocar este archivo para que se lea bien.
  */
 export function mensajeDeError(error: unknown, porDefecto: string): string {
   if (!error) return porDefecto;
@@ -94,8 +98,7 @@ export function mensajeDeError(error: unknown, porDefecto: string): string {
   if (e.code && CODIGOS[e.code]) return CODIGOS[e.code];
 
   const mensaje = e.message ?? '';
-  if (/No puedes cambiar tu propi/i.test(mensaje)) return mensaje;
-  if (/identificador de un perfil/i.test(mensaje)) return mensaje;
+  if (e.code === 'P0001' && mensaje) return mensaje;
   if (/Failed to fetch|NetworkError|network/i.test(mensaje)) {
     return 'No se ha podido conectar. Inténtalo de nuevo en unos minutos.';
   }
