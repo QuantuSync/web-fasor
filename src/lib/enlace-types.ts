@@ -21,6 +21,65 @@ export interface Perfil {
 }
 
 /*
+ * Miembro tal y como lo devuelve la vista `directorio` de la base de datos.
+ *
+ * Es lo único que un miembro cualquiera puede ver de los demás, y existe porque
+ * la política de lectura de `perfiles` es estrecha a propósito (un cadete solo
+ * se ve a sí mismo). Incluye a los de baja, para poder poner nombre al
+ * remitente de un mensaje antiguo de alguien que ya no está; escribirles es
+ * otra cosa, y eso lo impide la base de datos.
+ */
+export interface MiembroDirectorio {
+  id: string;
+  nombre: string;
+  rango: Rango;
+  unidad: Unidad | null;
+  activo: boolean;
+}
+
+/** Un mensaje del buzón interno. Los campos son los de la tabla `mensajes`. */
+export interface Mensaje {
+  id: string;
+  remitente: string;
+  destinatario: string;
+  asunto: string;
+  cuerpo: string;
+  creado_en: string;
+  leido_en: string | null;
+  archivado_remitente: boolean;
+  archivado_destinatario: boolean;
+  responde_a: string | null;
+  hilo: string;
+}
+
+/*
+ * Aviso de salto de cadena de mando.
+ *
+ * Fíjate en lo que NO hay aquí y no debe añadirse nunca: ni asunto, ni cuerpo,
+ * ni identificador del mensaje que lo originó. El aviso dice quién ha escrito,
+ * a quién y cuándo, y ahí se acaba. El mando se entera de que ha ocurrido, no
+ * de lo que se dijo. La tabla de la base de datos está construida igual, sin
+ * ninguna columna que apunte a `mensajes`, así que no hay forma de llegar al
+ * contenido ni siquiera por referencia.
+ */
+export interface AvisoCadena {
+  id: string;
+  /** El mando que lo recibe */
+  mando: string;
+  /** Quién escribió */
+  remitente: string;
+  /** A quién escribió */
+  destinatario: string;
+  creado_en: string;
+  leido_en: string | null;
+  archivado: boolean;
+}
+
+/** Lo que se pinta en la bandeja, que mezcla las dos cosas ordenadas por fecha. */
+export type EntradaBuzon =
+  { tipo: 'mensaje'; mensaje: Mensaje } | { tipo: 'aviso'; aviso: AvisoCadena };
+
+/*
  * Etiquetas legibles de rango para pantalla. No se toman de `escalafon.ts`
  * porque allí los nombres van numerados («1. Comandante»), y en la zona interna
  * el rango se muestra suelto, sin su posición en el escalafón.
