@@ -46,14 +46,21 @@ export default function RedactarMensaje({
   onEnviar,
   onCancelar,
 }: Props) {
-  const [destinatario, setDestinatario] = useState<MiembroDirectorio | null>(
-    borrador ? (miembros.find((m) => m.id === borrador.destinatario) ?? null) : null
-  );
+  /*
+   * La otra parte de la conversación puede haber causado baja entre el mensaje
+   * y la respuesta, y entonces ya no está en la lista de destinatarios. En ese
+   * caso esto deja de ser una respuesta: se conserva el asunto, se suelta el
+   * enlace con la conversación y el destinatario vuelve a elegirse. Enlazar la
+   * respuesta a un hilo ajeno al nuevo destinatario sería peor que perder el
+   * hilo.
+   */
+  const inicial = borrador ? (miembros.find((m) => m.id === borrador.destinatario) ?? null) : null;
+  const esRespuesta = !!borrador && !!inicial;
+
+  const [destinatario, setDestinatario] = useState<MiembroDirectorio | null>(inicial);
   const [asunto, setAsunto] = useState(borrador?.asunto ?? '');
   const [cuerpo, setCuerpo] = useState('');
   const [faltaDestinatario, setFaltaDestinatario] = useState(false);
-
-  const esRespuesta = !!borrador;
   const salto = destinatario ? haySaltoDeCadena(perfil.rango, destinatario.rango) : false;
   const rangoAvisado = rangoQueRecibeElAviso(perfil.rango);
 
@@ -70,7 +77,7 @@ export default function RedactarMensaje({
       destinatario: destinatario.id,
       asunto: asunto.trim(),
       cuerpo: cuerpo.trim(),
-      respondeA: borrador?.respondeA ?? null,
+      respondeA: esRespuesta ? (borrador?.respondeA ?? null) : null,
     });
   };
 
@@ -93,6 +100,14 @@ export default function RedactarMensaje({
         <p className="flex items-start gap-2 text-sm text-fasor-bone">
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
           Elige a quién se lo escribes.
+        </p>
+      )}
+
+      {borrador && !esRespuesta && (
+        <p className="flex items-start gap-2 text-sm leading-relaxed text-fasor-bone">
+          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+          Quien mantenía contigo esa conversación ya no está de alta, así que no se le puede
+          responder. Se conserva el asunto y eliges tú a quién se lo escribes.
         </p>
       )}
 

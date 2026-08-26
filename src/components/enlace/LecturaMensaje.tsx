@@ -43,6 +43,14 @@ export default function LecturaMensaje({
   useEffect(() => {
     let vigente = true;
 
+    // Un mensaje siempre nace con hilo, se lo pone el servidor. Si llegara sin
+    // él (una fila vieja de antes del buzón), no se pregunta por la
+    // conversación en vez de mandar una consulta sin sentido.
+    if (!mensaje.hilo) {
+      setHilo([]);
+      return;
+    }
+
     listarHilo(mensaje.hilo)
       .then((mensajes) => {
         if (vigente) setHilo(mensajes);
