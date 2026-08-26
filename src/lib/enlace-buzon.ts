@@ -18,7 +18,7 @@ import type { AvisoCadena, Mensaje, MiembroDirectorio, Rango } from './enlace-ty
  */
 
 const CAMPOS_MENSAJE =
-  'id, remitente, destinatario, asunto, cuerpo, creado_en, leido_en, archivado_remitente, archivado_destinatario, responde_a, hilo';
+  'id, remitente, destinatario, asunto, cuerpo, creado_en, leido_en, archivado_remitente, archivado_destinatario, eliminado_remitente, eliminado_destinatario, responde_a, hilo';
 
 const CAMPOS_AVISO = 'id, mando, remitente, destinatario, creado_en, leido_en, archivado';
 
@@ -109,25 +109,28 @@ export async function cargarDirectorio(): Promise<MiembroDirectorio[]> {
 
 /**
  * Bandeja de entrada. El filtro por destinatario separa recibidos de enviados;
- * que sean solo los tuyos ya lo garantiza la política de lectura.
+ * que sean solo los tuyos ya lo garantiza la política de lectura. Lo eliminado
+ * por este lado no vuelve a aparecer, aunque el remitente lo conserve.
  */
 export async function listarRecibidos(idPropio: string): Promise<Mensaje[]> {
   const { data, error } = await getSupabase()
     .from('mensajes')
     .select(CAMPOS_MENSAJE)
     .eq('destinatario', idPropio)
+    .eq('eliminado_destinatario', false)
     .order('creado_en', { ascending: false });
 
   if (error) throw error;
   return (data ?? []) as Mensaje[];
 }
 
-/** Enviados. */
+/** Enviados, sin lo que uno haya eliminado por su lado. */
 export async function listarEnviados(idPropio: string): Promise<Mensaje[]> {
   const { data, error } = await getSupabase()
     .from('mensajes')
     .select(CAMPOS_MENSAJE)
     .eq('remitente', idPropio)
+    .eq('eliminado_remitente', false)
     .order('creado_en', { ascending: false });
 
   if (error) throw error;
@@ -150,12 +153,20 @@ export async function listarAvisos(idPropio: string): Promise<AvisoCadena[]> {
  * Conversación completa, de la más antigua a la más reciente. Devuelve solo los
  * mensajes del hilo en los que uno participa, porque el recorte lo hace la
  * política de lectura y no este filtro.
+ *
+ * El `or` sí hace falta aquí: lo que uno eliminó no debe reaparecer por la
+ * puerta de atrás del hilo, y cada lado tiene su propia columna, así que hay
+ * que mirar la que corresponde según se sea remitente o destinatario.
  */
-export async function listarHilo(hilo: string): Promise<Mensaje[]> {
+export async function listarHilo(hilo: string, idPropio: string): Promise<Mensaje[]> {
   const { data, error } = await getSupabase()
     .from('mensajes')
     .select(CAMPOS_MENSAJE)
     .eq('hilo', hilo)
+    .or(
+      `and(remitente.eq.${idPropio},eliminado_remitente.is.false),` +
+        `and(destinatario.eq.${idPropio},eliminado_destinatario.is.false)`
+    )
     .order('creado_en', { ascending: true });
 
   if (error) throw error;
@@ -226,6 +237,40 @@ export async function archivarMensaje(
 
   if (error) throw error;
   return data as Mensaje;
+}
+
+/**
+ * Elimina un mensaje de la vista propia, para siempre.
+ *
+ * No borra la fila: pone la columna del lado que elimina, y la otra parte
+ * conserva su copia. Cuando las dos partes lo han eliminado, la fila la borra
+ * el servidor. Que cada uno solo pueda tocar su lado lo comprueba el trigger de
+ * protecciones, no esta función.
+ *
+ * A diferencia del resto de escrituras, esta no pide la fila de vuelta: si
+ * resulta ser la segunda eliminación, la fila deja de existir en ese mismo
+ * momento y no habría nada que devolver.
+ */
+export async function eliminarMensaje(id: string, lado: 'recibido' | 'enviado'): Promise<void> {
+  const campo = lado === 'recibido' ? 'eliminado_destinatario' : 'eliminado_remitente';
+
+  const { error } = await getSupabase()
+    .from('mensajes')
+    .update({ [campo]: true })
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+/**
+ * Elimina un aviso, para siempre. Aquí sí se borra la fila, porque un aviso
+ * solo lo ve su mando y en cuanto lo elimina no queda nadie que pueda verlo.
+ * Que sea el suyo lo comprueba la política de borrado.
+ */
+export async function eliminarAviso(id: string): Promise<void> {
+  const { error } = await getSupabase().from('avisos_cadena').delete().eq('id', id);
+
+  if (error) throw error;
 }
 
 /** Marca leído un aviso. No hay nada que abrir, así que se marca desde la lista. */

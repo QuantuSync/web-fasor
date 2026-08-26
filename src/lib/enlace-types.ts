@@ -48,6 +48,14 @@ export interface Mensaje {
   leido_en: string | null;
   archivado_remitente: boolean;
   archivado_destinatario: boolean;
+  /*
+   * Eliminado por cada lado, por separado. Eliminar es permanente y afecta solo
+   * a la vista de quien elimina: si el destinatario borra el mensaje, el
+   * remitente lo conserva en Enviados, y al revés. Cuando las dos partes lo han
+   * eliminado, la fila se borra de verdad en el servidor.
+   */
+  eliminado_remitente: boolean;
+  eliminado_destinatario: boolean;
   responde_a: string | null;
   hilo: string;
 }
