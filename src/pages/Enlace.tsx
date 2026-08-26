@@ -6,6 +6,7 @@ import Galon from '../components/Galon';
 import { RankDivisa } from '../components/RankInsignia';
 import SesionProvider from '../context/SesionContext';
 import { useSesion } from '../context/useSesion';
+import Buzon from '../components/enlace/Buzon';
 import GestionMiembros from '../components/enlace/GestionMiembros';
 import { escalafon } from '../data/escalafon';
 import { getSupabase } from '../lib/supabase';
@@ -13,14 +14,15 @@ import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../l
 import { puedeGestionarMiembros } from '../lib/enlace-gestion';
 
 /*
- * Zona interna de FASOR (/enlace). Acceso y gestión de miembros.
+ * Zona interna de FASOR (/enlace). Acceso, buzón y gestión de miembros.
  *
  * Es la única ruta del sitio que se renderiza en cliente. Todo lo que depende
  * de la sesión vive dentro de <ClientOnly>, así que el HTML pre-renderizado de
  * esta ruta contiene la maqueta y el panel de espera, nada más. El resto del
  * sitio sigue siendo SSG intacto.
  *
- * El buzón de mensajes es la fase 2 y aquí no se implementa ni se maqueta.
+ * Dentro conviven el buzón interno de mensajes y, para comandante y capitán,
+ * la gestión de miembros.
  */
 
 // Un único mensaje para cualquier fallo de credenciales. No se distingue si la
@@ -38,8 +40,8 @@ const ALTO_CABECERA = 48;
  * ventana se recorta por arriba y deja parte inalcanzable, y la lista de
  * miembros puede ser larga. Los márgenes automáticos no tienen ese problema.
  *
- * Se ensancha a max-w-2xl solo cuando hay gestión de miembros; el acceso y los
- * avisos siguen en max-w-md.
+ * El interior va a max-w-2xl, porque lleva el buzón y puede llevar la lista de
+ * miembros; el acceso y los avisos de cuenta siguen en max-w-md.
  */
 function Columna({ children, ancho = 'max-w-md' }: { children: ReactNode; ancho?: string }) {
   return <div className={`m-auto w-full ${ancho}`}>{children}</div>;
@@ -231,8 +233,8 @@ function AvisoCuenta({ mensaje }: { mensaje: string }) {
   );
 }
 
-// Pantalla interior, provisional en esta fase. Saluda al miembro con su rango y
-// su unidad, y avisa de que el buzón todavía no está en servicio.
+// Pantalla interior. Saluda al miembro con su rango y su unidad, y debajo monta
+// el buzón (todos) y la gestión de miembros (solo comandante y capitán).
 function Interior({ perfil }: { perfil: Perfil }) {
   const rango = ETIQUETA_RANGO[perfil.rango] ?? perfil.rango;
   const unidad = perfil.unidad ? etiquetaUnidad(perfil.unidad) : null;
@@ -246,7 +248,8 @@ function Interior({ perfil }: { perfil: Perfil }) {
   const gestiona = puedeGestionarMiembros(perfil);
 
   return (
-    <Columna ancho={gestiona ? 'max-w-2xl' : 'max-w-md'}>
+    // Siempre ancha: el buzón lo tienen todos los miembros, no solo los mandos.
+    <Columna ancho="max-w-2xl">
       <Panel
         distintivo={
           divisa && (
@@ -278,12 +281,12 @@ function Interior({ perfil }: { perfil: Perfil }) {
         </Rotulo>
 
         <p className="mt-6 text-sm leading-relaxed text-fasor-sage">
-          El buzón interno está en preparación. Cuando entre en servicio verás aquí las
-          comunicaciones oficiales de la entidad.
+          Esta es la vía oficial de comunicación de la entidad. Debajo tienes tu buzón interno.
         </p>
 
         <BotonSalir />
       </Panel>
+      <Buzon perfil={perfil} />
       {gestiona && <GestionMiembros gestor={perfil} />}
     </Columna>
   );
