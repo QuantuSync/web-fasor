@@ -12,7 +12,7 @@ const DEFAULT_DESCRIPTION =
 
 const OG_IMAGE = `${SITE_URL}/og/portada.png`;
 
-type RouteMeta = { title: string; description: string; noindex?: boolean };
+type RouteMeta = { title: string; description: string; noindex?: boolean; nofollow?: boolean };
 
 // Componente de carga para transiciones (fallback de Suspense)
 const PageLoader = () => (
@@ -35,13 +35,17 @@ function RouteHead() {
   const description = meta?.description ?? DEFAULT_DESCRIPTION;
   // Canonical por ruta sobre el dominio de producción ('/': con barra final)
   const canonical = location.pathname === '/' ? `${SITE_URL}/` : SITE_URL + location.pathname;
+  // Directivas para buscadores; se omite la meta entera si la ruta es indexable
+  const robots = [meta?.noindex && 'noindex', meta?.nofollow && 'nofollow']
+    .filter(Boolean)
+    .join(',');
 
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={canonical} />
-      {meta?.noindex && <meta name="robots" content="noindex" />}
+      {robots && <meta name="robots" content={robots} />}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
@@ -183,7 +187,19 @@ export const routes: RouteRecord[] = [
         handle: {
           title: 'Política de Privacidad · FASOR',
           description:
-            'Política de privacidad de FASOR. Qué datos tratamos, con qué base, y cuáles son tus derechos.',
+            'Política de privacidad de FASOR. Qué datos tratamos, tanto los del formulario de ingreso como los de la zona interna, con qué base, y cuáles son tus derechos.',
+        } satisfies RouteMeta,
+      },
+      // Zona interna. Única ruta que se renderiza en cliente (ver Enlace.tsx).
+      // No va en el navbar ni en el sitemap, y se marca noindex,nofollow.
+      {
+        path: 'enlace',
+        lazy: () => import('./pages/Enlace').then((m) => ({ Component: m.default })),
+        handle: {
+          title: 'Enlace · FASOR',
+          description: 'Zona interna de FASOR, reservada a los miembros de la entidad.',
+          noindex: true,
+          nofollow: true,
         } satisfies RouteMeta,
       },
       {

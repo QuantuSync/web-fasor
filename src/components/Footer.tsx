@@ -141,6 +141,10 @@ export default function Footer() {
             >
               Privacidad
             </a>
+            {/* Zona interna: entrada discreta, no va en la navegación principal */}
+            <a href="/enlace" className="underline-offset-2 hover:text-fasor-gold hover:underline">
+              Acceso interno
+            </a>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="underline-offset-2 hover:text-fasor-gold hover:underline"

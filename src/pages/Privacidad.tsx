@@ -60,7 +60,7 @@ export default function Privacidad() {
           <div className="linea-fade mt-6" aria-hidden="true"></div>
           <p className="mt-6 max-w-2xl leading-relaxed text-fasor-sage">
             Aquí te explicamos, de forma clara, qué hacemos con tus datos cuando usas el formulario
-            de ingreso.
+            de ingreso y cuando entras en la zona interna de la entidad.
           </p>
         </div>
       </header>
@@ -105,7 +105,41 @@ export default function Privacidad() {
             </p>
           </SeccionLegal>
 
-          <SeccionLegal numero="06" titulo="Tus derechos">
+          <SeccionLegal numero="06" titulo="Zona interna de acceso restringido">
+            <p>
+              La web tiene una zona interna reservada a los miembros de FASOR, que es la vía oficial
+              de comunicación de la entidad. Para entrar hace falta una cuenta que crea la Junta
+              Directiva, no hay registro abierto. FASOR es el responsable de este tratamiento, igual
+              que del formulario de ingreso.
+            </p>
+            <p>
+              De cada cuenta tratamos un identificador interno de acceso, la contraseña (que se
+              guarda cifrada y no es legible ni para FASOR), el nombre del miembro, su rango, su
+              unidad si tiene una asignada y si el alta sigue activa. Todo ello sirve para dar
+              acceso a la zona interna y para saber quién entra.
+            </p>
+            <p>
+              La base jurídica es tu relación con la entidad y el cumplimiento de los fines
+              recogidos en los estatutos.
+            </p>
+            <p>
+              El servicio de acceso y la base de datos están alojados en Supabase, que actúa como
+              proveedor por cuenta de FASOR. No cedemos estos datos a nadie más, salvo obligación
+              legal.
+            </p>
+            <p>
+              Cuando el buzón interno entre en servicio trataremos también el contenido de las
+              comunicaciones internas, con la única finalidad de sostener esa comunicación oficial
+              entre miembros.
+            </p>
+            <p>
+              Conservamos estos datos mientras dure tu condición de miembro. Al causar baja la
+              cuenta se desactiva y los datos se eliminan, salvo los que haya que guardar por
+              obligación legal.
+            </p>
+          </SeccionLegal>
+
+          <SeccionLegal numero="07" titulo="Tus derechos">
             <p>
               Puedes pedirnos acceso a tus datos, corregirlos, suprimirlos, oponerte a su
               tratamiento, limitarlo o llevártelos (portabilidad). Basta con escribir a{' '}
@@ -117,7 +151,7 @@ export default function Privacidad() {
             </p>
           </SeccionLegal>
 
-          <SeccionLegal numero="07" titulo="Menores">
+          <SeccionLegal numero="08" titulo="Menores">
             <p>
               El formulario de ingreso está reservado a mayores de 18 años; por eso te pedimos que
               lo declares antes de enviarlo.
