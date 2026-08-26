@@ -123,6 +123,12 @@ export default function Privacidad() {
               recogidos en los estatutos.
             </p>
             <p>
+              Las altas, las bajas y las credenciales las gestionan desde la propia zona interna los
+              cargos autorizados de la entidad, y cada uno alcanza solo a quien le corresponde, el
+              Comandante a todos los miembros y cada Capitán de Unidad a los de su unidad. Ese
+              límite no depende de lo que muestre la pantalla, lo aplica la propia base de datos.
+            </p>
+            <p>
               El servicio de acceso y la base de datos están alojados en Supabase, que actúa como
               proveedor por cuenta de FASOR. No cedemos estos datos a nadie más, salvo obligación
               legal.
@@ -133,9 +139,11 @@ export default function Privacidad() {
               entre miembros.
             </p>
             <p>
-              Conservamos estos datos mientras dure tu condición de miembro. Al causar baja la
-              cuenta se desactiva y los datos se eliminan, salvo los que haya que guardar por
-              obligación legal.
+              Conservamos estos datos mientras dure tu condición de miembro. Al causar baja, la
+              cuenta se desactiva y deja de dar acceso, pero no se borra, para poder reactivarla si
+              vuelves y para dejar constancia de quién ha formado parte de la entidad. Si nos pides
+              la supresión, la atendemos como se explica en el apartado de tus derechos, salvo lo
+              que haya que guardar por obligación legal.
             </p>
           </SeccionLegal>
 
