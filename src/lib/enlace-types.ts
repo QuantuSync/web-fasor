@@ -25,6 +25,13 @@ export interface Perfil {
  * porque allí los nombres van numerados («1. Comandante»), y en la zona interna
  * el rango se muestra suelto, sin su posición en el escalafón.
  */
+/*
+ * Dominio de los identificadores internos. Los miembros no usan correos reales:
+ * la Junta usa direcciones @fasor.es y el resto identificadores @fasor.local,
+ * que nunca reciben correo. Si un usuario se escribe sin arroba, se le añade.
+ */
+export const DOMINIO_INTERNO = '@fasor.local';
+
 export const ETIQUETA_RANGO: Record<Rango, string> = {
   comandante: 'Comandante',
   capitan: 'Capitán de Unidad',

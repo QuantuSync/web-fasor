@@ -6,19 +6,21 @@ import Galon from '../components/Galon';
 import { RankDivisa } from '../components/RankInsignia';
 import SesionProvider from '../context/SesionContext';
 import { useSesion } from '../context/useSesion';
+import GestionMiembros from '../components/enlace/GestionMiembros';
 import { escalafon } from '../data/escalafon';
 import { getSupabase } from '../lib/supabase';
 import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../lib/enlace-types';
+import { puedeGestionarMiembros } from '../lib/enlace-gestion';
 
 /*
- * Zona interna de FASOR (/enlace). Fase 1, solo el acceso.
+ * Zona interna de FASOR (/enlace). Acceso y gestión de miembros.
  *
  * Es la única ruta del sitio que se renderiza en cliente. Todo lo que depende
  * de la sesión vive dentro de <ClientOnly>, así que el HTML pre-renderizado de
  * esta ruta contiene la maqueta y el panel de espera, nada más. El resto del
  * sitio sigue siendo SSG intacto.
  *
- * Los mensajes son la fase 2 y aquí no se implementan ni se maquetan.
+ * El buzón de mensajes es la fase 2 y aquí no se implementa ni se maqueta.
  */
 
 // Un único mensaje para cualquier fallo de credenciales. No se distingue si la
@@ -30,6 +32,19 @@ const ERROR_RED = 'No se ha podido conectar. Inténtalo de nuevo en unos minutos
 // Alto del sello y, por tanto, del distintivo de rango que lo acompaña
 const ALTO_CABECERA = 48;
 
+/*
+ * Columna que centra el contenido. Usa `m-auto` en lugar de `items-center` en
+ * el contenedor: con centrado por alineación, un contenido más alto que la
+ * ventana se recorta por arriba y deja parte inalcanzable, y la lista de
+ * miembros puede ser larga. Los márgenes automáticos no tienen ese problema.
+ *
+ * Se ensancha a max-w-2xl solo cuando hay gestión de miembros; el acceso y los
+ * avisos siguen en max-w-md.
+ */
+function Columna({ children, ancho = 'max-w-md' }: { children: ReactNode; ancho?: string }) {
+  return <div className={`m-auto w-full ${ancho}`}>{children}</div>;
+}
+
 // Panel común a todos los estados. Superficie con filete dorado de 1px, radio
 // de 4px, sin sombras ni brillos. A 360px ocupa el ancho disponible.
 //
@@ -38,7 +53,7 @@ const ALTO_CABECERA = 48;
 // pantallas estrechas repartan el hueco sin comprimirse.
 function Panel({ children, distintivo }: { children: ReactNode; distintivo?: ReactNode }) {
   return (
-    <div className="w-full max-w-md rounded-sm border border-fasor-gold/40 bg-fasor-surface p-6 sm:p-8">
+    <div className="w-full rounded-sm border border-fasor-gold/40 bg-fasor-surface p-6 sm:p-8">
       <div className="mb-5 flex items-center justify-between gap-4">
         <img
           src={fasorLogo}
@@ -72,12 +87,14 @@ function Rotulo({ titulo, children }: { titulo: string; children?: ReactNode }) 
 // Estado de espera, mientras se resuelve la sesión (y en el HTML pre-renderizado)
 function Cargando() {
   return (
-    <Panel>
-      <Rotulo titulo="Enlace" />
-      <p className="mt-6 font-mono text-xs tracking-widest text-fasor-gold" role="status">
-        COMPROBANDO ACCESO
-      </p>
-    </Panel>
+    <Columna>
+      <Panel>
+        <Rotulo titulo="Enlace" />
+        <p className="mt-6 font-mono text-xs tracking-widest text-fasor-gold" role="status">
+          COMPROBANDO ACCESO
+        </p>
+      </Panel>
+    </Columna>
   );
 }
 
@@ -115,69 +132,74 @@ function Acceso() {
   };
 
   return (
-    <Panel>
-      <Rotulo titulo="Enlace">
-        <p className="mt-4 text-sm leading-relaxed text-fasor-sage">
-          Vía oficial de comunicación de FASOR. El acceso está reservado a los miembros de la
-          entidad.
-        </p>
-      </Rotulo>
+    <Columna>
+      <Panel>
+        <Rotulo titulo="Enlace">
+          <p className="mt-4 text-sm leading-relaxed text-fasor-sage">
+            Vía oficial de comunicación de FASOR. El acceso está reservado a los miembros de la
+            entidad.
+          </p>
+        </Rotulo>
 
-      <form className="form-tactico mt-8" onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="usuario">Usuario</label>
-          <input
-            id="usuario"
-            type="email"
-            required
-            autoComplete="username"
-            inputMode="email"
-            autoCapitalize="none"
-            spellCheck={false}
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-            disabled={enviando}
-            className="!text-base"
-          />
-        </div>
+        <form className="form-tactico mt-8" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="usuario">Usuario</label>
+            <input
+              id="usuario"
+              type="email"
+              required
+              autoComplete="username"
+              inputMode="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+              disabled={enviando}
+              className="!text-base"
+            />
+          </div>
 
-        <div>
-          <label htmlFor="contrasena">Contraseña</label>
-          <input
-            id="contrasena"
-            type="password"
-            required
-            autoComplete="current-password"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-            disabled={enviando}
-            className="!text-base"
-          />
-        </div>
+          <div>
+            <label htmlFor="contrasena">Contraseña</label>
+            <input
+              id="contrasena"
+              type="password"
+              required
+              autoComplete="current-password"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              disabled={enviando}
+              className="!text-base"
+            />
+          </div>
 
-        <button type="submit" className="btn-solido w-full" disabled={enviando}>
-          <LogIn className="h-4 w-4" aria-hidden="true" />
-          {enviando ? 'Accediendo' : 'Acceder'}
-        </button>
+          <button type="submit" className="btn-solido w-full" disabled={enviando}>
+            <LogIn className="h-4 w-4" aria-hidden="true" />
+            {enviando ? 'Accediendo' : 'Acceder'}
+          </button>
 
-        {/* El error va en bone con el icono dorado, no en estado-rojo: los
+          {/* El error va en bone con el icono dorado, no en estado-rojo: los
             colores estado-* están reservados al Protocolo de Activación, y
             además el rojo no llega a AA sobre esta superficie. */}
-        <div aria-live="polite" role="status" className="min-h-[1.25rem]">
-          {error && (
-            <p className="flex items-start gap-2 text-sm text-fasor-bone">
-              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
-              {error}
-            </p>
-          )}
-        </div>
-      </form>
+          <div aria-live="polite" role="status" className="min-h-[1.25rem]">
+            {error && (
+              <p className="flex items-start gap-2 text-sm text-fasor-bone">
+                <ShieldAlert
+                  className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold"
+                  aria-hidden="true"
+                />
+                {error}
+              </p>
+            )}
+          </div>
+        </form>
 
-      <p className="mt-6 border-t border-fasor-line pt-5 text-xs leading-relaxed text-fasor-sage">
-        Las cuentas las crea la Junta Directiva. Desde aquí no hay registro ni recuperación de
-        contraseña.
-      </p>
-    </Panel>
+        <p className="mt-6 border-t border-fasor-line pt-5 text-xs leading-relaxed text-fasor-sage">
+          Las cuentas las crea la Junta Directiva. Desde aquí no hay registro ni recuperación de
+          contraseña.
+        </p>
+      </Panel>
+    </Columna>
   );
 }
 
@@ -196,14 +218,16 @@ function BotonSalir() {
 // culpa del miembro, así que se explica y se ofrece la salida.
 function AvisoCuenta({ mensaje }: { mensaje: string }) {
   return (
-    <Panel>
-      <Rotulo titulo="Enlace" />
-      <p className="mt-6 flex items-start gap-2 text-sm leading-relaxed text-fasor-bone">
-        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
-        {mensaje}
-      </p>
-      <BotonSalir />
-    </Panel>
+    <Columna>
+      <Panel>
+        <Rotulo titulo="Enlace" />
+        <p className="mt-6 flex items-start gap-2 text-sm leading-relaxed text-fasor-bone">
+          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+          {mensaje}
+        </p>
+        <BotonSalir />
+      </Panel>
+    </Columna>
   );
 }
 
@@ -217,45 +241,51 @@ function Interior({ perfil }: { perfil: Perfil }) {
   // la base de datos, y si un día no cuadrara con el escalafón la pantalla se
   // queda sin distintivo, no rota. El rango sigue leyéndose en texto.
   const divisa = escalafon.find((r) => r.id === perfil.rango)?.insignia ?? null;
+  // La sección de gestión solo se monta para comandante y capitán: los demás
+  // ni la ven ni piden la lista de miembros.
+  const gestiona = puedeGestionarMiembros(perfil);
 
   return (
-    <Panel
-      distintivo={
-        divisa && (
-          // Decorativo: el rango va escrito justo debajo, así que se oculta
-          // entero a los lectores de pantalla (incluido el aria-label propio
-          // de la divisa).
-          <span aria-hidden="true" className="shrink-0">
-            <RankDivisa divisa={divisa} alto={ALTO_CABECERA} />
-          </span>
-        )
-      }
-    >
-      <Rotulo titulo={perfil.nombre}>
-        <p className="mt-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
-          {rango}
-          {emblema && (
-            <img
-              src={emblema}
-              alt=""
-              aria-hidden="true"
-              title={unidad ?? undefined}
-              width={24}
-              height={24}
-              className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
-            />
-          )}
+    <Columna ancho={gestiona ? 'max-w-2xl' : 'max-w-md'}>
+      <Panel
+        distintivo={
+          divisa && (
+            // Decorativo: el rango va escrito justo debajo, así que se oculta
+            // entero a los lectores de pantalla (incluido el aria-label propio
+            // de la divisa).
+            <span aria-hidden="true" className="shrink-0">
+              <RankDivisa divisa={divisa} alto={ALTO_CABECERA} />
+            </span>
+          )
+        }
+      >
+        <Rotulo titulo={perfil.nombre}>
+          <p className="mt-4 flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
+            {rango}
+            {emblema && (
+              <img
+                src={emblema}
+                alt=""
+                aria-hidden="true"
+                title={unidad ?? undefined}
+                width={24}
+                height={24}
+                className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+              />
+            )}
+          </p>
+          {unidad && <p className="mt-1 text-sm text-fasor-sage">{unidad}</p>}
+        </Rotulo>
+
+        <p className="mt-6 text-sm leading-relaxed text-fasor-sage">
+          El buzón interno está en preparación. Cuando entre en servicio verás aquí las
+          comunicaciones oficiales de la entidad.
         </p>
-        {unidad && <p className="mt-1 text-sm text-fasor-sage">{unidad}</p>}
-      </Rotulo>
 
-      <p className="mt-6 text-sm leading-relaxed text-fasor-sage">
-        El buzón interno está en preparación. Cuando entre en servicio verás aquí las comunicaciones
-        oficiales de la entidad.
-      </p>
-
-      <BotonSalir />
-    </Panel>
+        <BotonSalir />
+      </Panel>
+      {gestiona && <GestionMiembros gestor={perfil} />}
+    </Columna>
   );
 }
 
@@ -281,7 +311,7 @@ function Zona() {
 
 export default function Enlace() {
   return (
-    <div className="content-container flex min-h-[70vh] items-center justify-center py-14 md:py-20">
+    <div className="content-container flex min-h-[70vh] py-14 md:py-20">
       <ClientOnly fallback={<Cargando />}>
         {() => (
           <SesionProvider>
