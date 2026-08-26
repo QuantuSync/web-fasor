@@ -1,0 +1,11 @@
+# Configuración mínima del proyecto para el CLI de Supabase.
+# Solo se usan las funciones Edge; no hay entorno local levantado.
+project_id = "web-fasor"
+
+# Ambas funciones exigen un JWT válido. Es la primera barrera, pero no la que
+# autoriza: cada función recalcula el perfil de quien llama desde ese JWT.
+[functions.crear-miembro]
+verify_jwt = true
+
+[functions.restablecer-contrasena]
+verify_jwt = true

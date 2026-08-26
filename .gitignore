@@ -27,3 +27,7 @@ CLAUDE.md
 *.njsproj
 *.sln
 *.sw?
+
+# Temporales del CLI de Supabase (las funciones Edge sí se versionan)
+supabase/.temp/
+supabase/.branches/
