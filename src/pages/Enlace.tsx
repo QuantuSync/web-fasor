@@ -240,9 +240,9 @@ function Interior({ perfil }: { perfil: Perfil }) {
               alt=""
               aria-hidden="true"
               title={unidad ?? undefined}
-              width={18}
-              height={18}
-              className="h-[18px] w-[18px] shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+              width={24}
+              height={24}
+              className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
             />
           )}
         </p>
