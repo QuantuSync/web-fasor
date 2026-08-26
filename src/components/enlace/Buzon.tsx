@@ -13,6 +13,8 @@ import {
   archivarAviso,
   archivarMensaje,
   cargarDirectorio,
+  eliminarAviso,
+  eliminarMensaje,
   enviarMensaje,
   listarAvisos,
   listarEnviados,
@@ -186,6 +188,39 @@ export default function Buzon({ perfil }: { perfil: Perfil }) {
     }
   };
 
+  /*
+   * Eliminar es permanente y solo afecta a la vista de quien elimina. Por eso
+   * la entrada sale de la lista en memoria en vez de actualizarse: no hay
+   * estado al que volver, y la otra parte conserva su copia intacta.
+   */
+  const handleEliminarMensaje = async (mensaje: Mensaje) => {
+    setError('');
+    setAviso('');
+    const lado = mensaje.destinatario === perfil.id ? 'recibido' : 'enviado';
+    try {
+      await eliminarMensaje(mensaje.id, lado);
+      const quitar = (lista: Mensaje[]) => lista.filter((m) => m.id !== mensaje.id);
+      if (lado === 'recibido') setRecibidos(quitar);
+      else setEnviados(quitar);
+      setAbierto(null);
+      setAviso('Mensaje eliminado.');
+    } catch (e) {
+      setError(mensajeDeError(e, 'No se ha podido eliminar el mensaje.'));
+    }
+  };
+
+  const handleEliminarAviso = async (avisoCadena: AvisoCadena) => {
+    setError('');
+    setAviso('');
+    try {
+      await eliminarAviso(avisoCadena.id);
+      setAvisos((previos) => previos.filter((a) => a.id !== avisoCadena.id));
+      setAviso('Aviso eliminado.');
+    } catch (e) {
+      setError(mensajeDeError(e, 'No se ha podido eliminar el aviso.'));
+    }
+  };
+
   const handleEnviar = async (datos: {
     destinatario: string;
     asunto: string;
@@ -254,6 +289,7 @@ export default function Buzon({ perfil }: { perfil: Perfil }) {
                 : abierto.archivado_remitente)
             )
           }
+          onEliminar={() => void handleEliminarMensaje(abierto)}
         />
       ) : (
         <>
@@ -323,6 +359,7 @@ export default function Buzon({ perfil }: { perfil: Perfil }) {
                           onArchivar={() =>
                             void handleArchivarMensaje(entrada.mensaje, !verArchivados)
                           }
+                          onEliminar={() => void handleEliminarMensaje(entrada.mensaje)}
                         />
                       ) : (
                         <TarjetaEntrada
@@ -332,6 +369,7 @@ export default function Buzon({ perfil }: { perfil: Perfil }) {
                           nombreDe={nombreDe}
                           onMarcarLeido={() => void handleMarcarAviso(entrada.aviso)}
                           onArchivar={() => void handleArchivarAviso(entrada.aviso, !verArchivados)}
+                          onEliminar={() => void handleEliminarAviso(entrada.aviso)}
                         />
                       )
                     )}
@@ -345,6 +383,7 @@ export default function Buzon({ perfil }: { perfil: Perfil }) {
                         nombreDe={nombreDe}
                         onAbrir={() => void abrirMensaje(mensaje)}
                         onArchivar={() => void handleArchivarMensaje(mensaje, !verArchivados)}
+                        onEliminar={() => void handleEliminarMensaje(mensaje)}
                       />
                     ))}
 

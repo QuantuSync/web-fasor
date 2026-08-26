@@ -1,4 +1,5 @@
-import { Archive, ArchiveRestore, Check, Mail, MailOpen, ShieldAlert } from 'lucide-react';
+import { useState } from 'react';
+import { Archive, ArchiveRestore, Check, Mail, MailOpen, ShieldAlert, Trash2 } from 'lucide-react';
 import type { EntradaBuzon } from '../../lib/enlace-types';
 import { formatoFechaHora } from '../../lib/enlace-buzon';
 
@@ -8,9 +9,14 @@ import { formatoFechaHora } from '../../lib/enlace-buzon';
  * el pulgar.
  *
  * Sirve para las dos cosas que caben en la bandeja, un mensaje y un aviso de
- * salto de cadena de mando, y las pinta claramente distintas. El aviso no se
- * abre ni se responde, y no lleva asunto porque no lo tiene: solo consta quién
- * escribió a quién y cuándo.
+ * cadena de mando, y las pinta claramente distintas. El aviso no se abre ni se
+ * responde, y no lleva asunto porque no lo tiene: solo consta quién ha escrito
+ * a quién y cuándo.
+ *
+ * Eliminar no se ejecuta al primer toque, abre su confirmación dentro de la
+ * propia tarjeta, sin diálogo modal. El texto dice las dos cosas que hay que
+ * saber antes de tocarlo, que es permanente y que solo afecta a la vista de
+ * quien elimina.
  */
 
 interface Props {
@@ -21,6 +27,7 @@ interface Props {
   onAbrir?: () => void;
   onMarcarLeido?: () => void;
   onArchivar: () => void;
+  onEliminar: () => void;
 }
 
 export default function TarjetaEntrada({
@@ -30,7 +37,10 @@ export default function TarjetaEntrada({
   onAbrir,
   onMarcarLeido,
   onArchivar,
+  onEliminar,
 }: Props) {
+  const [confirmando, setConfirmando] = useState(false);
+
   if (entrada.tipo === 'aviso') {
     const { aviso } = entrada;
     const sinLeer = !aviso.leido_en;
@@ -60,16 +70,28 @@ export default function TarjetaEntrada({
           no se puede abrir ni responder.
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-2 border-t border-fasor-line pt-4">
-          {sinLeer && onMarcarLeido && (
-            <Accion icono={Check} rotulo="Marcar leído" onClick={onMarcarLeido} />
-          )}
-          <Accion
-            icono={aviso.archivado ? ArchiveRestore : Archive}
-            rotulo={aviso.archivado ? 'Devolver' : 'Archivar'}
-            onClick={onArchivar}
+        {confirmando ? (
+          <Confirmacion
+            pregunta="Vas a eliminar este aviso. Es permanente y no se puede deshacer. Los avisos solo los ves tú, así que desaparece del todo."
+            onConfirmar={() => {
+              setConfirmando(false);
+              onEliminar();
+            }}
+            onCancelar={() => setConfirmando(false)}
           />
-        </div>
+        ) : (
+          <div className="mt-4 flex flex-wrap gap-2 border-t border-fasor-line pt-4">
+            {sinLeer && onMarcarLeido && (
+              <Accion icono={Check} rotulo="Marcar leído" onClick={onMarcarLeido} />
+            )}
+            <Accion
+              icono={aviso.archivado ? ArchiveRestore : Archive}
+              rotulo={aviso.archivado ? 'Devolver' : 'Archivar'}
+              onClick={onArchivar}
+            />
+            <Accion icono={Trash2} rotulo="Eliminar" onClick={() => setConfirmando(true)} />
+          </div>
+        )}
       </article>
     );
   }
@@ -89,7 +111,7 @@ export default function TarjetaEntrada({
       <button
         type="button"
         onClick={onAbrir}
-        className="block w-full min-h-[44px] text-left transition-colors duration-200 hover:opacity-90"
+        className="block min-h-[44px] w-full text-left transition-colors duration-200 hover:opacity-90"
       >
         <span className="flex items-start gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
           {sinLeer ? (
@@ -114,13 +136,29 @@ export default function TarjetaEntrada({
         </span>
       </button>
 
-      <div className="mt-4 flex flex-wrap gap-2 border-t border-fasor-line pt-4">
-        <Accion
-          icono={archivado ? ArchiveRestore : Archive}
-          rotulo={archivado ? 'Devolver' : 'Archivar'}
-          onClick={onArchivar}
+      {confirmando ? (
+        <Confirmacion
+          pregunta={
+            esRecibido
+              ? `Vas a eliminar este mensaje de tu bandeja. Es permanente y no se puede deshacer. Solo desaparece de tu vista, ${nombreDe(quien)} conserva su copia en Enviados.`
+              : `Vas a eliminar este mensaje de tus enviados. Es permanente y no se puede deshacer. Solo desaparece de tu vista, ${nombreDe(quien)} conserva el que recibió.`
+          }
+          onConfirmar={() => {
+            setConfirmando(false);
+            onEliminar();
+          }}
+          onCancelar={() => setConfirmando(false)}
         />
-      </div>
+      ) : (
+        <div className="mt-4 flex flex-wrap gap-2 border-t border-fasor-line pt-4">
+          <Accion
+            icono={archivado ? ArchiveRestore : Archive}
+            rotulo={archivado ? 'Devolver' : 'Archivar'}
+            onClick={onArchivar}
+          />
+          <Accion icono={Trash2} rotulo="Eliminar" onClick={() => setConfirmando(true)} />
+        </div>
+      )}
     </article>
   );
 }
@@ -147,5 +185,31 @@ function Accion({
       <Icono className="h-4 w-4" aria-hidden="true" />
       {rotulo}
     </button>
+  );
+}
+
+// Confirmación explícita dentro de la tarjeta, como en la gestión de miembros
+function Confirmacion({
+  pregunta,
+  onConfirmar,
+  onCancelar,
+}: {
+  pregunta: string;
+  onConfirmar: () => void;
+  onCancelar: () => void;
+}) {
+  return (
+    <div className="mt-4 border-t border-fasor-line pt-4">
+      <p className="text-sm leading-relaxed text-fasor-bone">{pregunta}</p>
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <button type="button" className="btn-solido w-full sm:w-auto" onClick={onConfirmar}>
+          <Trash2 className="h-4 w-4" aria-hidden="true" />
+          Eliminar
+        </button>
+        <button type="button" className="btn-contorno w-full sm:w-auto" onClick={onCancelar}>
+          Cancelar
+        </button>
+      </div>
+    </div>
   );
 }

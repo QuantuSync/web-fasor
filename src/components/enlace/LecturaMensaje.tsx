@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Archive, ArchiveRestore, ArrowLeft, Reply } from 'lucide-react';
+import { Archive, ArchiveRestore, ArrowLeft, Reply, Trash2 } from 'lucide-react';
 import Galon from '../Galon';
 import type { Mensaje, Perfil } from '../../lib/enlace-types';
 import { formatoFechaHora, listarHilo } from '../../lib/enlace-buzon';
@@ -21,6 +21,7 @@ interface Props {
   onVolver: () => void;
   onResponder: () => void;
   onArchivar: () => void;
+  onEliminar: () => void;
 }
 
 export default function LecturaMensaje({
@@ -30,8 +31,10 @@ export default function LecturaMensaje({
   onVolver,
   onResponder,
   onArchivar,
+  onEliminar,
 }: Props) {
   const [hilo, setHilo] = useState<Mensaje[]>([]);
+  const [confirmando, setConfirmando] = useState(false);
   const titular = useRef<HTMLHeadingElement>(null);
 
   // El foco va al asunto al abrir, para que un lector de pantalla anuncie el
@@ -51,7 +54,7 @@ export default function LecturaMensaje({
       return;
     }
 
-    listarHilo(mensaje.hilo)
+    listarHilo(mensaje.hilo, perfil.id)
       .then((mensajes) => {
         if (vigente) setHilo(mensajes);
       })
@@ -64,7 +67,7 @@ export default function LecturaMensaje({
     return () => {
       vigente = false;
     };
-  }, [mensaje.hilo]);
+  }, [mensaje.hilo, perfil.id]);
 
   const esRecibido = mensaje.destinatario === perfil.id;
   const archivado = esRecibido ? mensaje.archivado_destinatario : mensaje.archivado_remitente;
@@ -104,20 +107,60 @@ export default function LecturaMensaje({
         {mensaje.cuerpo}
       </p>
 
-      <div className="mt-8 flex flex-col gap-2 sm:flex-row">
-        <button type="button" className="btn-solido w-full sm:w-auto" onClick={onResponder}>
-          <Reply className="h-4 w-4" aria-hidden="true" />
-          Responder
-        </button>
-        <button type="button" className="btn-contorno w-full sm:w-auto" onClick={onArchivar}>
-          {archivado ? (
-            <ArchiveRestore className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <Archive className="h-4 w-4" aria-hidden="true" />
-          )}
-          {archivado ? 'Devolver a la bandeja' : 'Archivar'}
-        </button>
-      </div>
+      {confirmando ? (
+        // Confirmación en dos pasos, dentro de la propia lectura y sin diálogo
+        // modal, igual que en la gestión de miembros.
+        <div className="mt-8 border-t border-fasor-line pt-6">
+          <p className="text-sm leading-relaxed text-fasor-bone">
+            Vas a eliminar este mensaje de {esRecibido ? 'tu bandeja' : 'tus enviados'}. Es
+            permanente y no se puede deshacer. Solo desaparece de tu vista, {nombreDe(otro)}{' '}
+            conserva su copia.
+          </p>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              className="btn-solido w-full sm:w-auto"
+              onClick={() => {
+                setConfirmando(false);
+                onEliminar();
+              }}
+            >
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+              Eliminar
+            </button>
+            <button
+              type="button"
+              className="btn-contorno w-full sm:w-auto"
+              onClick={() => setConfirmando(false)}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8 flex flex-col gap-2 sm:flex-row">
+          <button type="button" className="btn-solido w-full sm:w-auto" onClick={onResponder}>
+            <Reply className="h-4 w-4" aria-hidden="true" />
+            Responder
+          </button>
+          <button type="button" className="btn-contorno w-full sm:w-auto" onClick={onArchivar}>
+            {archivado ? (
+              <ArchiveRestore className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Archive className="h-4 w-4" aria-hidden="true" />
+            )}
+            {archivado ? 'Devolver a la bandeja' : 'Archivar'}
+          </button>
+          <button
+            type="button"
+            className="btn-contorno w-full sm:w-auto"
+            onClick={() => setConfirmando(true)}
+          >
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
+            Eliminar
+          </button>
+        </div>
+      )}
 
       {anteriores.length > 0 && (
         <div className="mt-10 border-t border-fasor-line pt-6">
