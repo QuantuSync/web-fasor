@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { KeyRound, Pencil, UserCheck, UserMinus } from 'lucide-react';
+import { KeyRound, Lock, Pencil, UserCheck, UserMinus } from 'lucide-react';
 import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../../lib/enlace-types';
 import { puedeGestionar } from '../../lib/enlace-gestion';
 import FormularioMiembro, { type DatosMiembro } from './FormularioMiembro';
@@ -40,6 +40,13 @@ export default function TarjetaMiembro({
   // autorización de verdad está en la política de la base de datos.
   const gestionable = puedeGestionar(gestor, miembro);
   const esUnoMismo = miembro.id === gestor.id;
+  /*
+   * El nombre propio se puede cambiar siempre, aunque uno no se gestione a sí
+   * mismo por jerarquía (un capitán, un secretario, un tesorero). Cambiarse el
+   * nombre no da poder sobre nadie. El formulario deja lo demás deshabilitado,
+   * y el trigger de la base de datos rechaza cualquier otra columna.
+   */
+  const editable = gestionable || esUnoMismo;
   // Nadie se da de baja a sí mismo. El servidor lo impide igual, con un trigger.
   const puedeCambiarAlta = gestionable && !esUnoMismo;
 
@@ -89,10 +96,22 @@ export default function TarjetaMiembro({
         </span>
       </div>
 
-      {gestionable && panel === 'ninguno' && (
+      {/* Ficha bloqueada. Un cargo de Junta ve al comandante y no lo toca, y un
+          capitán ve a otro capitán de su unidad y tampoco. Se dice, en vez de
+          dejar la tarjeta muda sin botones y sin explicación. */}
+      {!editable && (
+        <p className="mt-4 flex items-start gap-2 border-t border-fasor-line pt-4 text-xs leading-relaxed text-fasor-sage">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+          Esta ficha solo la gestiona el comandante.
+        </p>
+      )}
+
+      {editable && panel === 'ninguno' && (
         <div className="mt-4 flex flex-wrap gap-2 border-t border-fasor-line pt-4">
           <Accion icono={Pencil} rotulo="Editar" onClick={() => setPanel('editar')} />
-          <Accion icono={KeyRound} rotulo="Contraseña" onClick={() => setPanel('contrasena')} />
+          {gestionable && (
+            <Accion icono={KeyRound} rotulo="Contraseña" onClick={() => setPanel('contrasena')} />
+          )}
           {puedeCambiarAlta && (
             <Accion
               icono={miembro.activo ? UserMinus : UserCheck}

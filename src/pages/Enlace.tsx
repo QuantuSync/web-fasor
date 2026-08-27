@@ -262,12 +262,22 @@ function Interior({ perfil }: { perfil: Perfil }) {
   const rango = ETIQUETA_RANGO[perfil.rango] ?? perfil.rango;
   const unidad = perfil.unidad ? etiquetaUnidad(perfil.unidad) : null;
   const emblema = perfil.unidad ? emblemaUnidad(perfil.unidad) : null;
-  // Búsqueda tolerante en lugar de `rangoPorId`, que lanza: el rango llega de
-  // la base de datos, y si un día no cuadrara con el escalafón la pantalla se
-  // queda sin distintivo, no rota. El rango sigue leyéndose en texto.
+  /*
+   * Búsqueda tolerante en lugar de `rangoPorId`, que lanza: el rango llega de
+   * la base de datos, y si un día no cuadrara con el escalafón la pantalla se
+   * queda sin distintivo, no rota. El rango sigue leyéndose en texto.
+   *
+   * Y hay un caso en que la ausencia es DELIBERADA y no un accidente: los
+   * cargos de Junta Directiva (secretario y tesorero) no están en el escalafón
+   * y NO llevan distintivo, porque no son un rango militar. Donde los demás
+   * muestran su divisa, ellos no muestran nada, y tampoco se les reserva hueco
+   * (el `distintivo` del Panel queda sin pasar y la fila se queda con el sello
+   * solo). No se les invente una insignia ni se les dé un sitio en
+   * `escalafon.ts`, que es el escalafón operativo.
+   */
   const divisa = escalafon.find((r) => r.id === perfil.rango)?.insignia ?? null;
-  // La sección de gestión solo se monta para comandante y capitán: los demás
-  // ni la ven ni piden la lista de miembros.
+  // La sección de gestión solo se monta para el comandante, el capitán y los
+  // cargos de Junta: los demás ni la ven ni piden la lista de miembros.
   const gestiona = puedeGestionarMiembros(perfil);
 
   return (

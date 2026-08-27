@@ -1,5 +1,11 @@
 import { getSupabase } from './supabase';
-import { DOMINIO_INTERNO, type Perfil, type Rango, type Unidad } from './enlace-types';
+import {
+  DOMINIO_INTERNO,
+  esCargoJunta,
+  type Perfil,
+  type Rango,
+  type Unidad,
+} from './enlace-types';
 
 /*
  * Gestión de miembros de la zona interna.
@@ -15,7 +21,37 @@ import { DOMINIO_INTERNO, type Perfil, type Rango, type Unidad } from './enlace-
 /** Rangos que un capitán puede asignar. Nunca capitán ni comandante. */
 const RANGOS_DE_CAPITAN: Rango[] = ['teniente', 'operador', 'cadete'];
 
-const TODOS_LOS_RANGOS: Rango[] = ['comandante', 'capitan', 'teniente', 'operador', 'cadete'];
+/*
+ * Los tres cargos que SOLO otorga el comandante. Un secretario o un tesorero no
+ * pueden crear ni ascender a ninguno de ellos, y de ahí se sigue que tampoco se
+ * nombran entre ellos ni a sí mismos. Sin esta lista tendrían una vía indirecta
+ * para saltarse la otra excepción, que es no poder tocar a un comandante.
+ */
+const SOLO_LOS_DA_EL_COMANDANTE: Rango[] = ['comandante', 'secretario', 'tesorero'];
+
+/** Rangos que un cargo de Junta puede asignar, o sea todos menos esos tres. */
+const RANGOS_DE_JUNTA: Rango[] = ['capitan', 'teniente', 'operador', 'cadete'];
+
+/*
+ * El escalafón primero y los cargos de Junta después, porque están fuera de él.
+ * El orden es solo de presentación en el desplegable, no una jerarquía.
+ */
+const TODOS_LOS_RANGOS: Rango[] = [
+  'comandante',
+  'capitan',
+  'teniente',
+  'operador',
+  'cadete',
+  'secretario',
+  'tesorero',
+];
+
+/**
+ * Rango con el que arranca el formulario de alta. Explícito y no «el último de
+ * la lista»: con los cargos de Junta al final, esa cuenta daría «Tesorero» por
+ * defecto, y lo prudente al dar de alta a alguien es empezar por abajo.
+ */
+const RANGO_POR_DEFECTO: Rango = 'cadete';
 
 /** Misma regla que `puede_gestionar()` en SQL y en las funciones Edge. */
 export function puedeGestionar(
@@ -30,27 +66,46 @@ export function puedeGestionar(
       objetivo.unidad === gestor.unidad
     );
   }
+  // Secretario y tesorero, cualquier miembro de cualquier unidad salvo los tres
+  // cargos de arriba. Al comandante no lo tocan de ninguna forma.
+  if (esCargoJunta(gestor.rango)) {
+    return !SOLO_LOS_DA_EL_COMANDANTE.includes(objetivo.rango);
+  }
   return false;
 }
 
 /** Si no puede gestionar a nadie, la sección de gestión ni se monta. */
 export function puedeGestionarMiembros(perfil: Perfil): boolean {
-  return perfil.rango === 'comandante' || perfil.rango === 'capitan';
+  return perfil.rango === 'comandante' || perfil.rango === 'capitan' || esCargoJunta(perfil.rango);
+}
+
+/** ¿Este gestor ve a toda la entidad o solo a su unidad? */
+export function veTodaLaEntidad(gestor: Perfil): boolean {
+  return gestor.rango !== 'capitan';
 }
 
 /** Rangos que este gestor puede poner en el formulario. */
 export function rangosAsignables(gestor: Perfil): Rango[] {
   if (gestor.rango === 'comandante') return TODOS_LOS_RANGOS;
   if (gestor.rango === 'capitan') return RANGOS_DE_CAPITAN;
+  if (esCargoJunta(gestor.rango)) return RANGOS_DE_JUNTA;
   return [];
+}
+
+/** Rango con el que se abre el formulario de alta, siempre dentro de lo asignable. */
+export function rangoInicial(gestor: Perfil): Rango {
+  const rangos = rangosAsignables(gestor);
+  return rangos.includes(RANGO_POR_DEFECTO) ? RANGO_POR_DEFECTO : rangos[rangos.length - 1];
 }
 
 /**
  * Unidades que este gestor puede poner. El capitán solo la suya, y encima le
  * es obligatoria, porque un miembro sin unidad no sería gestionable por él.
+ * Los cargos de Junta gestionan a toda la entidad, así que las ponen todas.
  */
 export function unidadesAsignables(gestor: Perfil): Unidad[] | 'todas' {
   if (gestor.rango === 'comandante') return 'todas';
+  if (esCargoJunta(gestor.rango)) return 'todas';
   if (gestor.rango === 'capitan' && gestor.unidad) return [gestor.unidad];
   return [];
 }
@@ -95,9 +150,17 @@ export function mensajeDeError(error: unknown, porDefecto: string): string {
   if (!error) return porDefecto;
 
   const e = error as { code?: string; message?: string };
+  const mensaje = e.message ?? '';
+
+  // La restricción de la base de datos que impide dar unidad a un cargo de
+  // Junta llega como un 23514 genérico, así que se reconoce por su nombre para
+  // poder decir qué ha pasado en lugar de «alguno de los datos no es válido».
+  if (/perfiles_cargo_junta_sin_unidad/.test(mensaje)) {
+    return 'Los cargos de Junta Directiva no llevan unidad.';
+  }
+
   if (e.code && CODIGOS[e.code]) return CODIGOS[e.code];
 
-  const mensaje = e.message ?? '';
   if (e.code === 'P0001' && mensaje) return mensaje;
   if (/Failed to fetch|NetworkError|network/i.test(mensaje)) {
     return 'No se ha podido conectar. Inténtalo de nuevo en unos minutos.';

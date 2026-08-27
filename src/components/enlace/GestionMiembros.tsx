@@ -9,17 +9,20 @@ import {
   listarMiembros,
   mensajeDeError,
   restablecerContrasena,
+  veTodaLaEntidad,
 } from '../../lib/enlace-gestion';
 import TarjetaMiembro from './TarjetaMiembro';
 import FormularioMiembro, { type DatosMiembro } from './FormularioMiembro';
 
 /*
- * Sección de gestión de miembros. Solo se monta para comandante y capitán, así
- * que un teniente, un operador o un cadete ni la ven ni piden la lista.
+ * Sección de gestión de miembros. Solo se monta para el comandante, el capitán
+ * y los dos cargos de Junta Directiva, así que un teniente, un operador o un
+ * cadete ni la ven ni piden la lista.
  *
  * La lista no lleva filtro de unidad: lo recorta la política de lectura de la
- * base de datos, de modo que el comandante recibe a todos y el capitán solo su
- * unidad sin que el navegador tenga que pedirlo ni pueda evitarlo.
+ * base de datos, de modo que el comandante y los cargos de Junta reciben a
+ * todos y el capitán solo su unidad, sin que el navegador tenga que pedirlo ni
+ * pueda evitarlo.
  */
 
 export default function GestionMiembros({ gestor }: { gestor: Perfil }) {
@@ -117,7 +120,7 @@ export default function GestionMiembros({ gestor }: { gestor: Perfil }) {
       <div className="linea-fade mt-4" aria-hidden="true"></div>
 
       <p className="mt-4 text-sm leading-relaxed text-fasor-sage">
-        {gestor.rango === 'comandante'
+        {veTodaLaEntidad(gestor)
           ? 'Ves a todos los miembros de la entidad.'
           : 'Ves a los miembros de tu unidad.'}
       </p>

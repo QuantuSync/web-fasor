@@ -28,22 +28,32 @@ const CAMPOS_DIRECTORIO = 'id, nombre, rango, unidad, activo';
 // Cadena de mando (copia informativa de la que aplica el servidor)
 // ---------------------------------------------------------------------------
 
-/** Posición en el escalafón. El comandante es el 1. */
-const NIVEL_RANGO: Record<Rango, number> = {
+/**
+ * Posición en el escalafón. El comandante es el 1.
+ *
+ * Los cargos de Junta Directiva valen null, igual que en `nivel_rango()` de la
+ * base de datos: están fuera del escalafón, no son superiores ni inferiores de
+ * nadie, y darles un número los haría comparables, que es justo lo que no son.
+ */
+const NIVEL_RANGO: Record<Rango, number | null> = {
   comandante: 1,
   capitan: 2,
   teniente: 3,
   operador: 4,
   cadete: 5,
+  secretario: null,
+  tesorero: null,
 };
 
-/** Superior inmediato de cada rango. El comandante no tiene. */
+/** Superior inmediato de cada rango. Ni el comandante ni los cargos de Junta tienen. */
 const SUPERIOR_INMEDIATO: Record<Rango, Rango | null> = {
   comandante: null,
   capitan: 'comandante',
   teniente: 'capitan',
   operador: 'teniente',
   cadete: 'teniente',
+  secretario: null,
+  tesorero: null,
 };
 
 /**
@@ -53,11 +63,24 @@ const SUPERIOR_INMEDIATO: Record<Rango, Rango | null> = {
  * inmediato del remitente. Un cadete que escribe a su teniente no salta; si
  * escribe al capitán, sí. Sirve solo para avisar al remitente antes de enviar,
  * nunca para impedir el envío, que no se bloquea nunca por esto.
+ *
+ * Quien está fuera del escalafón queda fuera de la cadena por los dos lados, y
+ * el null hay que comprobarlo A MANO, antes de comparar: en JavaScript
+ * `null < 3` es true, así que escribir a un secretario habría salido como salto
+ * de cadena. Es la misma trampa que en SQL, donde la comparación con NULL no
+ * vale falso sino NULL, solo que aquí falla al revés, en abierto y en silencio.
  */
 export function haySaltoDeCadena(rangoRemitente: Rango, rangoDestinatario: Rango): boolean {
+  const nivelDestinatario = NIVEL_RANGO[rangoDestinatario];
+  if (NIVEL_RANGO[rangoRemitente] === null || nivelDestinatario === null) return false;
+
   const superior = SUPERIOR_INMEDIATO[rangoRemitente];
   if (!superior) return false;
-  return NIVEL_RANGO[rangoDestinatario] < NIVEL_RANGO[superior];
+
+  const nivelSuperior = NIVEL_RANGO[superior];
+  if (nivelSuperior === null) return false;
+
+  return nivelDestinatario < nivelSuperior;
 }
 
 /** Rango que recibirá el aviso, para poder nombrarlo en el texto de cortesía. */

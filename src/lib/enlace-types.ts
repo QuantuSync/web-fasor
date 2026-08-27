@@ -2,13 +2,30 @@ import { unidades, type UnidadId } from '../data/unidades';
 
 /*
  * Tipos de la zona interna (/enlace), en correspondencia con la base de datos.
- *
+ */
+
+/*
+ * Los cinco rangos del escalafón operativo (src/data/escalafon.ts) más los dos
+ * cargos de la Junta Directiva, que son órgano de gobierno estatutario y NO
+ * están en el escalafón: no son superiores ni inferiores de nadie, no tienen
+ * unidad, no entran en la cadena de mando del buzón y no llevan distintivo.
+ */
+export type Rango =
+  'comandante' | 'capitan' | 'teniente' | 'operador' | 'cadete' | 'secretario' | 'tesorero';
+
+/** Los dos cargos de Junta Directiva, para no repetir la pareja por ahí suelta. */
+export const CARGOS_JUNTA: Rango[] = ['secretario', 'tesorero'];
+
+/** ¿Es un cargo de Junta Directiva y no un rango del escalafón? */
+export function esCargoJunta(rango: Rango): boolean {
+  return CARGOS_JUNTA.includes(rango);
+}
+
+/*
  * `Unidad` es el mismo conjunto de valores que `UnidadId` del sitio público
  * (buceadores, drones, forestal, terrestres, sanitario, comunicaciones), así
  * que se declara como alias en lugar de duplicar la lista.
  */
-export type Rango = 'comandante' | 'capitan' | 'teniente' | 'operador' | 'cadete';
-
 export type Unidad = UnidadId;
 
 export interface Perfil {
@@ -105,6 +122,10 @@ export const ETIQUETA_RANGO: Record<Rango, string> = {
   teniente: 'Teniente de Cuadrilla',
   operador: 'Operador Táctico',
   cadete: 'Cadete en Formación',
+  // Los cargos de Junta van sueltos, sin coletilla: donde los demás leen su
+  // rango, ellos leen SECRETARIO y TESORERO.
+  secretario: 'Secretario',
+  tesorero: 'Tesorero',
 };
 
 /*

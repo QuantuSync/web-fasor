@@ -1,8 +1,16 @@
 import { useState, type FormEvent } from 'react';
 import { Check, X } from 'lucide-react';
 import { unidades } from '../../data/unidades';
-import { ETIQUETA_RANGO, type Perfil, type Rango, type Unidad } from '../../lib/enlace-types';
 import {
+  ETIQUETA_RANGO,
+  esCargoJunta,
+  type Perfil,
+  type Rango,
+  type Unidad,
+} from '../../lib/enlace-types';
+import {
+  puedeGestionar,
+  rangoInicial,
   rangosAsignables,
   unidadesAsignables,
   unidadObligatoria,
@@ -47,31 +55,49 @@ export default function FormularioMiembro({
   onCancelar,
 }: Props) {
   const esAlta = !miembro;
-  const rangos = rangosAsignables(gestor);
+
+  /*
+   * Editarse a uno mismo. El rango propio no se toca nunca, ni hacia arriba ni
+   * hacia abajo. Y quien además no se gestiona a sí mismo por jerarquía (un
+   * capitán, un secretario, un tesorero) solo puede cambiarse el nombre. Lo
+   * impide el trigger de la base de datos; aquí solo se deshabilita para no
+   * ofrecer una acción que va a rebotar.
+   */
+  const esUnoMismo = !!miembro && miembro.id === gestor.id;
+  const soloElNombre = esUnoMismo && !puedeGestionar(gestor, miembro);
+  const rangoBloqueado = esUnoMismo;
+  const unidadBloqueada = soloElNombre;
+
+  /*
+   * Con el rango bloqueado se ofrece exactamente el que ya tiene, y no la lista
+   * de asignables: el rango propio no suele estar en esa lista (un capitán no
+   * se asigna «capitán», un secretario no se asigna «secretario»), y un select
+   * deshabilitado cuyo valor no está entre sus opciones se ve en blanco.
+   */
+  const rangos = rangoBloqueado && miembro ? [miembro.rango] : rangosAsignables(gestor);
   const permitidas = unidadesAsignables(gestor);
   const unidadesOfrecidas =
     permitidas === 'todas' ? unidades : unidades.filter((u) => permitidas.includes(u.id));
   const obligatoria = unidadObligatoria(gestor);
 
-  /*
-   * Editarse a uno mismo. El rango propio no se toca nunca, ni hacia arriba ni
-   * hacia abajo, y un capitán tampoco su unidad, porque perdería el mando sobre
-   * la suya. Lo impide el trigger de la base de datos; aquí solo se deshabilita
-   * para no ofrecer una acción que va a rebotar. El nombre sí se puede cambiar.
-   */
-  const esUnoMismo = !!miembro && miembro.id === gestor.id;
-  const rangoBloqueado = esUnoMismo;
-  const unidadBloqueada = esUnoMismo && gestor.rango === 'capitan';
-
   const [nombre, setNombre] = useState(miembro?.nombre ?? '');
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const [rango, setRango] = useState<Rango>(miembro?.rango ?? rangos[rangos.length - 1]);
+  const [rango, setRango] = useState<Rango>(miembro?.rango ?? rangoInicial(gestor));
   const [unidad, setUnidad] = useState<Unidad | ''>(
     miembro?.unidad ?? (obligatoria ? (unidadesOfrecidas[0]?.id ?? '') : '')
   );
   // Paso de revisión antes del alta, para que el usuario final se vea claro
   const [revisando, setRevisando] = useState(false);
+
+  /*
+   * Los cargos de Junta Directiva no llevan unidad. Se calcula del rango elegido
+   * en vez de guardarse en el estado, así que volver a un rango del escalafón
+   * recupera la unidad que hubiera puesta sin efectos raros de sincronización.
+   * La base de datos lo garantiza igual, con una restricción propia.
+   */
+  const cargoSinUnidad = esCargoJunta(rango);
+  const unidadEfectiva: Unidad | '' = cargoSinUnidad ? '' : unidad;
 
   const identificador = usuarioFinal(usuario);
   const idFormulario = miembro ? `editar-${miembro.id}` : 'alta';
@@ -87,13 +113,13 @@ export default function FormularioMiembro({
       usuario: identificador,
       contrasena,
       rango,
-      unidad: unidad === '' ? null : unidad,
+      unidad: unidadEfectiva === '' ? null : unidadEfectiva,
     });
   };
 
   // Revisión del alta. Se enseña el identificador final ya con el dominio.
   if (revisando) {
-    const nombreUnidad = unidades.find((u) => u.id === unidad)?.nombre ?? 'Sin unidad';
+    const nombreUnidad = unidades.find((u) => u.id === unidadEfectiva)?.nombre ?? 'Sin unidad';
     return (
       <form className="mt-4 border-t border-fasor-line pt-4" onSubmit={handleSubmit}>
         <p className="etiqueta mb-3">Revisa el alta</p>
@@ -213,21 +239,33 @@ export default function FormularioMiembro({
         <label htmlFor={`unidad-${idFormulario}`}>Unidad</label>
         <select
           id={`unidad-${idFormulario}`}
-          value={unidad}
+          value={unidadEfectiva}
           onChange={(e) => setUnidad(e.target.value as Unidad | '')}
-          disabled={enviando || unidadBloqueada || (obligatoria && unidadesOfrecidas.length === 1)}
+          disabled={
+            enviando ||
+            unidadBloqueada ||
+            cargoSinUnidad ||
+            (obligatoria && unidadesOfrecidas.length === 1)
+          }
           className="!text-base disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {!obligatoria && <option value="">Sin unidad</option>}
+          {(!obligatoria || cargoSinUnidad) && <option value="">Sin unidad</option>}
           {unidadesOfrecidas.map((u) => (
             <option key={u.id} value={u.id}>
               {u.nombre}
             </option>
           ))}
         </select>
-        {unidadBloqueada && (
+        {cargoSinUnidad && (
           <p className="mt-2 text-xs leading-relaxed text-fasor-sage">
-            Tu propia unidad no se puede cambiar, perderías el mando sobre la tuya.
+            Los cargos de Junta Directiva no llevan unidad.
+          </p>
+        )}
+        {unidadBloqueada && !cargoSinUnidad && (
+          <p className="mt-2 text-xs leading-relaxed text-fasor-sage">
+            {gestor.rango === 'capitan'
+              ? 'Tu propia unidad no se puede cambiar, perderías el mando sobre la tuya.'
+              : 'De tu propia ficha solo puedes cambiar el nombre.'}
           </p>
         )}
       </div>
