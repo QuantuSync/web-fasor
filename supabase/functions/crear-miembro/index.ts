@@ -72,6 +72,13 @@ Deno.serve(async (req) => {
     return fallo('La unidad indicada no existe.', 400);
   }
 
+  // Los cargos de Junta Directiva no llevan unidad. Lo garantiza también una
+  // restricción de la base de datos; aquí se rechaza antes para poder decirlo
+  // con un mensaje claro en vez de dejar que reviente contra la restricción.
+  if ((rango === 'secretario' || rango === 'tesorero') && unidad !== null) {
+    return fallo('Los cargos de Junta Directiva no llevan unidad.', 400);
+  }
+
   // ---- Jerarquía ----------------------------------------------------------
   // Comprobada aquí para dar un mensaje claro, y otra vez por RLS más abajo,
   // que es donde de verdad se autoriza.

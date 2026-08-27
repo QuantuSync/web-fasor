@@ -14,12 +14,33 @@
 
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
 
-export type Rango = 'comandante' | 'capitan' | 'teniente' | 'operador' | 'cadete';
+/*
+ * Los cinco rangos del escalafón operativo más los dos cargos de Junta
+ * Directiva, que no están en el escalafón: no mandan sobre nadie por cargo ni
+ * nadie manda sobre ellos, y no llevan unidad.
+ */
+export type Rango =
+  'comandante' | 'capitan' | 'teniente' | 'operador' | 'cadete' | 'secretario' | 'tesorero';
 
 export type Unidad =
   'buceadores' | 'drones' | 'forestal' | 'terrestres' | 'sanitario' | 'comunicaciones';
 
-export const RANGOS: Rango[] = ['comandante', 'capitan', 'teniente', 'operador', 'cadete'];
+export const RANGOS: Rango[] = [
+  'comandante',
+  'capitan',
+  'teniente',
+  'operador',
+  'cadete',
+  'secretario',
+  'tesorero',
+];
+
+/*
+ * Los tres cargos que solo otorga el comandante. Ni un secretario ni un
+ * tesorero pueden crear ni ascender a ninguno de ellos, y por tanto tampoco se
+ * nombran entre ellos ni a sí mismos.
+ */
+const SOLO_LOS_DA_EL_COMANDANTE: Rango[] = ['comandante', 'secretario', 'tesorero'];
 
 export const UNIDADES: Unidad[] = [
   'buceadores',
@@ -142,6 +163,13 @@ export function puedeGestionar(
       objetivo.unidad !== null &&
       objetivo.unidad === gestor.unidad
     );
+  }
+  // Secretario y tesorero, cualquier miembro de cualquier unidad salvo los tres
+  // cargos que solo otorga el comandante. Al comandante no lo tocan de ninguna
+  // forma, y sin la segunda mitad tendrían la vía indirecta de ascender a
+  // alguien para saltárselo.
+  if (gestor.rango === 'secretario' || gestor.rango === 'tesorero') {
+    return !SOLO_LOS_DA_EL_COMANDANTE.includes(objetivo.rango);
   }
   return false;
 }

@@ -61,6 +61,11 @@ Deno.serve(async (req) => {
 
   // Cambiarse la propia contraseña sí se permite: quien llama ya tiene la
   // sesión abierta, así que no hay nada que escalar.
+  //
+  // Ojo con esta línea: un secretario o un tesorero VEN al comandante (la
+  // política de lectura se lo permite, porque su ficha les tiene que aparecer
+  // bloqueada), así que lo único que separa a un cargo de Junta de la
+  // contraseña del comandante es este `puedeGestionar`. No lo debilites.
   if (objetivo.id !== gestor.id && !puedeGestionar(gestor, objetivo)) {
     return fallo('No tienes permiso para cambiar la contraseña de ese miembro.', 403);
   }
