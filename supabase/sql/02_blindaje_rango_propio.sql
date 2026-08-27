@@ -38,6 +38,17 @@
 -- regla 2, que es la que evita el bloqueo de la entidad, NO depende de eso.
 -- Se deja a propósito esa puerta para el SQL Editor: es la vía de rescate si
 -- algún día hay que arreglar a mano un perfil, y la regla 2 la sigue cubriendo.
+--
+-- ----------------------------------------------------------------------------
+-- OJO SI VUELVES A EJECUTAR ESTE ARCHIVO
+-- ----------------------------------------------------------------------------
+-- `05_cargos_junta.sql` REEMPLAZA `perfiles_protecciones()` con una versión que
+-- conserva estas tres reglas y añade una cuarta: quien no se gestiona a sí mismo
+-- por jerarquía, de su propia ficha solo puede cambiar el nombre. Esa cuarta
+-- regla es la que cierra lo que el 05 abre en la política de edición, así que si
+-- ejecutas este archivo, ejecuta el 05 a continuación. Si no, la política queda
+-- abierta y el trigger sin el cerrojo, y por ejemplo un teniente podría
+-- cambiarse su propia unidad.
 -- ============================================================================
 
 create or replace function public.perfiles_protecciones()

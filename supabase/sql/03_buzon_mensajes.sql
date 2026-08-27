@@ -926,3 +926,12 @@ revoke insert, delete on public.avisos_cadena from authenticated;
 --    dejaría un agujero justo donde no puede haberlo. Si la tabla vieja tenía
 --    alguna que quisieras conservar, la consulta (0.b) ejecutada ANTES de este
 --    archivo era el sitio donde verla.
+--
+-- 7. ESTE ARCHIVO SE QUEDÓ CORTO CON LOS RANGOS SIN NIVEL. La sección 6 decide
+--    si hay salto de cadena comparando `nivel_rango()`, y esa función devuelve
+--    NULL para los cargos de Junta Directiva (secretario y tesorero), que están
+--    fuera del escalafón. Una comparación con NULL no vale falso, vale NULL, y
+--    el IF no entra, así que la función seguía hasta el insert de avisos. Lo
+--    corrige `05_cargos_junta.sql`, que REEMPLAZA `nivel_rango()`,
+--    `superior_inmediato()` y `mensajes_aviso_cadena()`. Si vuelves a ejecutar
+--    este archivo, ejecuta el 05 a continuación, o el fallo en abierto vuelve.
