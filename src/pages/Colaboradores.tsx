@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { Globe, Camera, Users, Video, Briefcase, Mail, Phone, type LucideIcon } from 'lucide-react';
 import TituloSeccion from '../components/TituloSeccion';
 import Galon from '../components/Galon';
+import CorreoEnlace from '../components/CorreoEnlace';
 import {
   colaboradores,
   type EntidadColaboradora,
   type TipoColaborador,
+  type EnlaceColaborador,
+  type TipoEnlaceColaborador,
 } from '../data/colaboradores';
 
 // Etiqueta visible según el tipo de entidad colaboradora
@@ -15,6 +18,94 @@ const TIPOS: Record<TipoColaborador, string> = {
   administración: 'Administración',
   colectivo: 'Colectivo',
 };
+
+// lucide-react no trae iconos de marca (Instagram, Facebook, YouTube,
+// LinkedIn no existen en esta versión, igual que ya ocurre con GitHub).
+// Cada red usa un icono genérico distinto y va siempre acompañada de su
+// nombre en texto visible, así que el icono no es la única pista.
+const ETIQUETAS_ENLACE: Record<TipoEnlaceColaborador, string> = {
+  web: 'Web',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  youtube: 'YouTube',
+  linkedin: 'LinkedIn',
+  email: 'Correo',
+  telefono: 'Teléfono',
+};
+
+const ICONOS_ENLACE: Record<TipoEnlaceColaborador, LucideIcon> = {
+  web: Globe,
+  instagram: Camera,
+  facebook: Users,
+  youtube: Video,
+  linkedin: Briefcase,
+  email: Mail,
+  telefono: Phone,
+};
+
+// Un enlace de contacto o red social de una entidad colaboradora. El correo
+// reutiliza CorreoEnlace (tratamiento único de mailto: del sitio); el resto
+// son enlaces propios, con icono + nombre de la red y, si la nota lo trae
+// (dos Facebook de una misma entidad, por ejemplo), el matiz que los
+// distingue. Área táctil de 44px con separación entre enlaces.
+function EnlaceItem({
+  entidad,
+  enlace,
+}: {
+  entidad: EntidadColaboradora;
+  enlace: EnlaceColaborador;
+}) {
+  // El «·» separa visualmente etiqueta y nota; en el nombre accesible se lee
+  // como coma, más natural para un lector de pantalla.
+  const etiquetaVisible = enlace.nota
+    ? `${ETIQUETAS_ENLACE[enlace.tipo]} · ${enlace.nota}`
+    : ETIQUETAS_ENLACE[enlace.tipo];
+  const etiquetaAccesible = enlace.nota
+    ? `${ETIQUETAS_ENLACE[enlace.tipo]}, ${enlace.nota}`
+    : ETIQUETAS_ENLACE[enlace.tipo];
+
+  if (enlace.tipo === 'email') {
+    return (
+      <span className="flex min-h-11 items-center">
+        <CorreoEnlace email={enlace.valor} />
+      </span>
+    );
+  }
+
+  if (enlace.tipo === 'telefono') {
+    return (
+      <a
+        href={`tel:${enlace.valor}`}
+        aria-label={
+          enlace.nota ? `Llamar a ${entidad.nombre}, ${enlace.nota}` : `Llamar a ${entidad.nombre}`
+        }
+        className="flex min-h-11 items-center gap-2 border border-fasor-gold/25 px-3 text-sm text-fasor-bone transition-colors duration-200 hover:border-fasor-gold hover:text-fasor-gold"
+      >
+        <Phone className="h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+        {enlace.valor}
+      </a>
+    );
+  }
+
+  const Icono = ICONOS_ENLACE[enlace.tipo];
+  const aria =
+    enlace.tipo === 'web'
+      ? `Ir a la web de ${entidad.nombre}`
+      : `${entidad.nombre} en ${etiquetaAccesible}`;
+
+  return (
+    <a
+      href={enlace.valor}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${aria} (se abre en una pestaña nueva)`}
+      className="flex min-h-11 items-center gap-2 border border-fasor-gold/25 px-3 text-sm text-fasor-bone transition-colors duration-200 hover:border-fasor-gold hover:text-fasor-gold"
+    >
+      <Icono className="h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
+      {etiquetaVisible}
+    </a>
+  );
+}
 
 // Tarjeta plana de una entidad colaboradora: línea superior dorada, logo en
 // chip claro (los logos externos llegan con fondo y proporción propios, y no
@@ -59,22 +150,19 @@ function TarjetaColaborador({ entidad }: { entidad: EntidadColaboradora }) {
         </ul>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-fasor-line pt-4">
+      <div className="mt-6 border-t border-fasor-line pt-4">
         <span className="font-mono text-[11px] uppercase tracking-widest text-fasor-sage">
           Convenio firmado {entidad.fechaFirma}
         </span>
-        {entidad.enlace && (
-          <a
-            href={entidad.enlace}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Ir a la web de ${entidad.nombre} (se abre en una pestaña nueva)`}
-            className="inline-flex items-center gap-1.5 font-display text-xs font-semibold uppercase
-                       tracking-[0.15em] text-fasor-gold transition-colors duration-200 hover:text-fasor-bone"
-          >
-            Ver web
-            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-          </a>
+
+        {entidad.enlaces && entidad.enlaces.length > 0 && (
+          <ul className="m-0 mt-4 flex list-none flex-wrap gap-2 p-0">
+            {entidad.enlaces.map((enlace, indice) => (
+              <li key={`${enlace.tipo}-${indice}`}>
+                <EnlaceItem entidad={entidad} enlace={enlace} />
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </article>
