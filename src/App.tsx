@@ -147,6 +147,15 @@ export const routes: RouteRecord[] = [
         } satisfies RouteMeta,
       },
       {
+        path: 'colaboradores',
+        lazy: () => import('./pages/Colaboradores').then((m) => ({ Component: m.default })),
+        handle: {
+          title: 'Entidades colaboradoras · FASOR',
+          description:
+            'Las entidades externas con las que FASOR mantiene convenio de colaboración, con Casber como primera entidad.',
+        } satisfies RouteMeta,
+      },
+      {
         path: 'entidad',
         lazy: () => import('./pages/Entidad').then((m) => ({ Component: m.default })),
         handle: {

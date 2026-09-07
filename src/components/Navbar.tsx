@@ -14,6 +14,7 @@ const navigationItems = [
   { path: '/actuacion', label: 'Actuación' },
   { path: '/academy', label: 'Academy' },
   { path: '/actualidad', label: 'Actualidad' },
+  { path: '/colaboradores', label: 'Colaboradores' },
   { path: '/entidad', label: 'Entidad' },
   { path: '/unete', label: 'Únete' },
 ] as const;
