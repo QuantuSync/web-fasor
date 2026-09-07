@@ -24,4 +24,14 @@ export const actualidad: EntradaActualidad[] = [
       'Herramienta abierta y gratuita que traduce el avance del fuego en decisiones de evacuación por aldea, con datos reales de la comarca piloto de Valdeorras / Larouco (Ourense).',
     enlace: '/abeiro',
   },
+  {
+    id: 'convenio-casber',
+    tipo: 'noticia',
+    titulo: 'FASOR firma un convenio de colaboración con Casber',
+    estado: 'Convenio firmado',
+    fecha: 'Septiembre de 2026',
+    resumen:
+      'FASOR suma a Casber, centro de formación profesional brasileño especializado en seguridad laboral, emergencias y atención prehospitalaria, como primera entidad de su catálogo de entidades colaboradoras.',
+    enlace: '/colaboradores',
+  },
 ];
