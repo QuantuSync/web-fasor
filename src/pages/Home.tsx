@@ -7,6 +7,7 @@ import fasorLogo from '../assets/fasor.jpg';
 import Galon from '../components/Galon';
 import TituloSeccion from '../components/TituloSeccion';
 import BarraEstado from '../components/BarraEstado';
+import VideoIntervenciones from '../components/VideoIntervenciones';
 
 // Datos estructurados de la organización (JSON-LD, solo en la home)
 const DATOS_ORGANIZACION = JSON.stringify({
@@ -108,8 +109,34 @@ export default function Home() {
       {/* Barra de estado operativo */}
       <BarraEstado />
 
-      {/* Presentación */}
+      {/* Vídeo de intervenciones */}
       <section className="banda border-t-0">
+        <div className="content-container">
+          <div className="observe-me opacity-0 translate-y-8 flex flex-col items-center gap-10 md:flex-row">
+            <div className="w-full max-w-[400px] shrink-0 md:order-2">
+              <VideoIntervenciones />
+            </div>
+            <div className="max-w-xl md:order-1">
+              <p className="etiqueta mb-4">Sobre el terreno</p>
+              <h2 className="mb-4 font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone md:text-3xl">
+                Así se actúa
+              </h2>
+              <div className="linea-fade mb-4 max-w-xs" aria-hidden="true"></div>
+              <p className="text-fasor-sage leading-relaxed">
+                Un incendio forestal no espera. FASOR se forma y se equipa para llegar hasta donde
+                el fuego avanza y trabajar codo con codo junto a quienes ya están interviniendo.
+              </p>
+              <p className="mt-4 text-fasor-sage leading-relaxed">
+                Cada intervención exige disciplina, coordinación y un equipo que responde como uno
+                solo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Presentación */}
+      <section className="banda">
         <div className="content-container">
           <div className="observe-me opacity-0 translate-y-8 max-w-3xl space-y-5 leading-relaxed">
             <p className="text-lg text-fasor-bone">
