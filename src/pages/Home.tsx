@@ -116,20 +116,33 @@ export default function Home() {
             <div className="w-full max-w-[400px] shrink-0 md:order-2">
               <VideoIntervenciones />
             </div>
-            <div className="max-w-xl md:order-1">
+            <div className="max-w-md md:order-1">
               <p className="etiqueta mb-4">Sobre el terreno</p>
               <h2 className="mb-4 font-display text-2xl font-bold uppercase tracking-tight text-fasor-bone md:text-3xl">
                 Así se actúa
               </h2>
               <div className="linea-fade mb-4 max-w-xs" aria-hidden="true"></div>
-              <p className="text-fasor-sage leading-relaxed">
-                Un incendio forestal no espera. FASOR se forma y se equipa para llegar hasta donde
-                el fuego avanza y trabajar codo con codo junto a quienes ya están interviniendo.
-              </p>
-              <p className="mt-4 text-fasor-sage leading-relaxed">
-                Cada intervención exige disciplina, coordinación y un equipo que responde como uno
-                solo.
-              </p>
+              <div className="space-y-4 leading-relaxed">
+                <p className="text-lg text-fasor-bone">
+                  Un incendio no espera. Una crecida tampoco. Cada emergencia impone su propio
+                  terreno, su propio riesgo y su propio reloj, y ninguna avisa de cuál va a tocar.
+                </p>
+                <p className="text-fasor-sage">
+                  FASOR se forma y se equipa para responder en todos ellos, el monte que arde, el
+                  agua que oculta lo que hay que encontrar, la estructura que cede, el herido que no
+                  puede esperar. Seis unidades especializadas, una sola cadena de mando, y una vista
+                  desde el aire que ordena lo que abajo parece caos.
+                </p>
+                <p className="text-fasor-sage">
+                  Detrás de cada intervención hay meses de preparación, protocolos aprendidos hasta
+                  hacerlos reflejo y material revisado antes de salir. Nada de eso se improvisa
+                  cuando suena el aviso.
+                </p>
+                <p className="text-fasor-sage">
+                  Por eso el trabajo empieza mucho antes de la emergencia, y por eso se hace junto a
+                  quienes ya están interviniendo. Un equipo que responde como uno solo.
+                </p>
+              </div>
             </div>
           </div>
         </div>
