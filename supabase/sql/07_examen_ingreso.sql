@@ -529,7 +529,53 @@ revoke delete on public.examenes from authenticated;
 
 
 -- ============================================================================
--- 8. COMPROBACIONES
+-- 8. LA VISTA DE CORRECCIÓN, PARA QUE UN MANDO VEA ACIERTO Y FALLO AL REVISAR
+-- ============================================================================
+-- «Ven las respuestas» en la revisión significa algo más que ver qué opción
+-- marcó el aspirante, un mando necesita saber si acertó o falló para poder
+-- detectar una anomalía. Eso exige comparar contra `examen_clave`, que no
+-- tiene ningún permiso para `authenticated` (sección 2). La solución es la
+-- misma que ya usa la vista `directorio` de `03_buzon_mensajes.sql` para un
+-- problema parecido con `perfiles`, una vista propiedad de su dueño (no de
+-- quien la consulta), que por eso puede leer una tabla sin permisos para el
+-- rol autenticado, con un `where` que sí mira a quien pregunta de verdad.
+--
+-- La diferencia con el caso del bundle es importante y no es un hueco, esto
+-- NO expone la clave a cualquiera. Sale una fila por pregunta y por examen,
+-- solo para quien tiene sesión de teniente, capitán o comandante en ese
+-- momento (`mi_rango()` lee `auth.uid()`, así que sigue siendo la identidad
+-- real de quien pregunta, no la del dueño de la vista), y solo para exámenes
+-- que esa política ya dejaría ver. Un aspirante nunca ve esta vista, y nadie
+-- la ve para un examen ajeno a lo que `examenes_lectura` ya permite.
+drop view if exists public.examen_correccion;
+create view public.examen_correccion as
+  select
+    e.id as examen_id,
+    gs.numero::smallint as numero,
+    gs.respuesta::smallint as respuesta,
+    c.respuesta_correcta,
+    (gs.respuesta = c.respuesta_correcta) as acierto
+  from public.examenes e
+  cross join lateral unnest(e.respuestas) with ordinality as gs(respuesta, numero)
+  join public.examen_clave c on c.numero = gs.numero::smallint
+  where public.mi_rango() in ('teniente', 'capitan', 'comandante');
+
+do $$
+begin
+  begin
+    execute 'alter view public.examen_correccion set (security_invoker = false)';
+  exception when others then
+    raise notice 'FASOR: esta versión de PostgreSQL no admite security_invoker. La vista ya se evalúa con los permisos de su dueño, que es el comportamiento buscado.';
+  end;
+end
+$$;
+
+revoke all on public.examen_correccion from anon;
+grant select on public.examen_correccion to authenticated;
+
+
+-- ============================================================================
+-- 9. COMPROBACIONES
 -- ============================================================================
 -- Ejecútalas después del 07b (con la clave ya sembrada). El SQL Editor corre
 -- sin sesión, así que se simulan las claims del JWT igual que en los archivos
@@ -581,6 +627,31 @@ revoke delete on public.examenes from authenticated;
 --         json_build_object('sub','UUID-DE-UN-TENIENTE','role','authenticated')::text, true);
 --       -- Debe fallar con «permission denied for table examen_clave»
 --       select * from public.examen_clave;
+--     rollback;
+--
+-- ---------------------------------------------------------------------------
+-- (c-bis) Pero un teniente sí ve el acierto o fallo a través de la vista
+-- ---------------------------------------------------------------------------
+-- Necesita un examen ya enviado (el de (a), sin rollback, o uno real).
+--
+--     begin;
+--       set local role authenticated;
+--       select set_config('request.jwt.claims',
+--         json_build_object('sub','UUID-DE-UN-TENIENTE','role','authenticated')::text, true);
+--       -- Debe devolver 50 filas, con `acierto` en true o false
+--       select numero, respuesta, respuesta_correcta, acierto
+--         from public.examen_correccion
+--        where examen_id = 'UUID-DEL-EXAMEN'
+--        order by numero;
+--     rollback;
+--
+-- Y un aspirante, aunque sea el suyo, debe ver CERO filas:
+--
+--     begin;
+--       set local role authenticated;
+--       select set_config('request.jwt.claims',
+--         json_build_object('sub','UUID-DEL-ASPIRANTE','role','authenticated')::text, true);
+--       select count(*) from public.examen_correccion where examen_id = 'UUID-DEL-EXAMEN';
 --     rollback;
 --
 -- ---------------------------------------------------------------------------
@@ -700,7 +771,7 @@ revoke delete on public.examenes from authenticated;
 
 
 -- ============================================================================
--- 9. ADVERTENCIAS
+-- 10. ADVERTENCIAS
 -- ============================================================================
 -- 1. LA CLAVE DE RESPUESTAS VIVE EN 07b_examen_clave_secreta.sql, QUE NO SE
 --    COMMITEA. Sin ejecutarlo, `examen_clave` está vacía y cualquier examen

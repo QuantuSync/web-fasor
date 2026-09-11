@@ -9,11 +9,16 @@ import GestionMiembros from '../components/enlace/GestionMiembros';
 import GestionAspirantes from '../components/enlace/GestionAspirantes';
 import PantallaAspirante from '../components/enlace/PantallaAspirante';
 import ComunicadoExamen from '../components/enlace/ComunicadoExamen';
+import ExamenesPendientes from '../components/enlace/ExamenesPendientes';
 import { ALTO_CABECERA, Columna, Panel, Rotulo, BotonSalir } from '../components/enlace/Marco';
 import { escalafon } from '../data/escalafon';
 import { getSupabase } from '../lib/supabase';
 import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../lib/enlace-types';
-import { puedeGestionarMiembros, puedeGestionarAspirantes } from '../lib/enlace-gestion';
+import {
+  puedeGestionarMiembros,
+  puedeGestionarAspirantes,
+  puedeRevisarExamenes,
+} from '../lib/enlace-gestion';
 import { cargarMiExamen, marcarExamenVisto, type Examen } from '../lib/enlace-examen';
 
 /*
@@ -232,6 +237,8 @@ function Interior({ perfil }: { perfil: Perfil }) {
   const gestiona = puedeGestionarMiembros(perfil);
   // La de aspirantes es más estrecha, solo comandante, secretario y tesorero.
   const gestionaAspirantes = puedeGestionarAspirantes(perfil);
+  // La revisión de exámenes es la cadena operativa, no la Junta Directiva.
+  const revisaExamenes = puedeRevisarExamenes(perfil);
 
   return (
     // Siempre ancha: el buzón lo tienen todos los miembros, no solo los mandos.
@@ -292,6 +299,7 @@ function Interior({ perfil }: { perfil: Perfil }) {
       <Buzon perfil={perfil} />
       {gestiona && <GestionMiembros gestor={perfil} />}
       {gestionaAspirantes && <GestionAspirantes gestor={perfil} />}
+      {revisaExamenes && <ExamenesPendientes gestor={perfil} />}
     </Columna>
   );
 }

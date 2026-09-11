@@ -92,6 +92,17 @@ export function puedeGestionarAspirantes(perfil: Perfil): boolean {
   return perfil.rango === 'comandante' || esCargoJunta(perfil.rango);
 }
 
+/*
+ * Revisión de exámenes de ingreso. Teniente, capitán y comandante, nunca
+ * secretario ni tesorero: la normativa interna reserva la corrección a la
+ * cadena operativa, no al órgano de gobierno. La política de lectura de
+ * `examenes` en `07_examen_ingreso.sql` es la que autoriza de verdad; esto
+ * solo decide si se monta la sección.
+ */
+export function puedeRevisarExamenes(perfil: Perfil): boolean {
+  return perfil.rango === 'teniente' || perfil.rango === 'capitan' || perfil.rango === 'comandante';
+}
+
 /** ¿Este gestor ve a toda la entidad o solo a su unidad? */
 export function veTodaLaEntidad(gestor: Perfil): boolean {
   return gestor.rango !== 'capitan';

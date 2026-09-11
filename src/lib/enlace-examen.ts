@@ -38,6 +38,19 @@ export interface ExamenConAspirante extends Examen {
   aspirante: { id: string; nombre: string } | null;
 }
 
+/**
+ * Una fila de la vista `examen_correccion`, acierto o fallo de una pregunta.
+ * Solo la ven teniente, capitán y comandante (la política de la vista lo
+ * garantiza); un aspirante nunca la ve, ni siquiera para su propio examen.
+ */
+export interface CorreccionPregunta {
+  examen_id: string;
+  numero: number;
+  respuesta: number;
+  respuesta_correcta: number;
+  acierto: boolean;
+}
+
 const CAMPOS =
   'id, aspirante_id, orden_preferencia, respuestas, creado_en, estado, puntuacion_automatica, resultado_automatico, unidad_automatica, resultado_final, unidad_final, ratificado_por, ratificado_en, corregido_manualmente, motivo_correccion, visto_por_aspirante_en';
 
@@ -117,6 +130,22 @@ export async function listarExamenesPendientes(): Promise<ExamenConAspirante[]> 
 
   if (error) throw error;
   return (data ?? []) as unknown as ExamenConAspirante[];
+}
+
+/**
+ * Acierto o fallo de cada una de las 50 preguntas, para la revisión. Cruza
+ * con `src/data/examen.ts` por `numero` en el componente, esta función solo
+ * trae lo que la vista expone.
+ */
+export async function cargarCorreccion(examenId: string): Promise<CorreccionPregunta[]> {
+  const { data, error } = await getSupabase()
+    .from('examen_correccion')
+    .select('examen_id, numero, respuesta, respuesta_correcta, acierto')
+    .eq('examen_id', examenId)
+    .order('numero', { ascending: true });
+
+  if (error) throw error;
+  return (data ?? []) as CorreccionPregunta[];
 }
 
 export interface RatificacionExamen {
