@@ -5,6 +5,7 @@ import { RankDivisa } from '../components/RankInsignia';
 import SesionProvider from '../context/SesionContext';
 import { useSesion } from '../context/useSesion';
 import Buzon from '../components/enlace/Buzon';
+import CambiarContrasena from '../components/enlace/CambiarContrasena';
 import GestionMiembros from '../components/enlace/GestionMiembros';
 import GestionAspirantes from '../components/enlace/GestionAspirantes';
 import PantallaAspirante from '../components/enlace/PantallaAspirante';
@@ -294,6 +295,7 @@ function Interior({ perfil }: { perfil: Perfil }) {
           />
         )}
 
+        <CambiarContrasena />
         <BotonSalir />
       </Panel>
       <Buzon perfil={perfil} />

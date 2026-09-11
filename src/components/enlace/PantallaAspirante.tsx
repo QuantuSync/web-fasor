@@ -18,6 +18,7 @@ import {
   guardarProgresoExamen,
 } from '../../lib/enlace-examen-progreso';
 import { type Perfil } from '../../lib/enlace-types';
+import CambiarContrasena from './CambiarContrasena';
 import { Columna, Panel, Rotulo, BotonSalir } from './Marco';
 import OrdenUnidades from './OrdenUnidades';
 import PreguntaExamen from './PreguntaExamen';
@@ -406,6 +407,7 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
           </div>
         )}
 
+        <CambiarContrasena />
         <BotonSalir />
       </Panel>
     </Columna>
