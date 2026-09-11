@@ -185,6 +185,37 @@ export function puedeGestionar(
 }
 
 /**
+ * Quién puede eliminar de verdad a quién. Más estrecho que `puedeGestionar`,
+ * que sigue sirviendo para editar, dar de baja (ya en desuso) o restablecer
+ * contraseña: aquí solo comandante, secretario y tesorero, NUNCA capitán
+ * (aunque `puedeGestionar` le deje editar a los de su propia unidad, borrar
+ * es otra cosa y no le corresponde), y nadie se elimina a sí mismo, algo que
+ * `puedeGestionar` ni siquiera comprueba porque no conoce el id de quien
+ * pregunta. El resto de la jerarquía (comandante a cualquiera; secretario y
+ * tesorero a cualquiera salvo los tres cargos reservados) es la misma que
+ * `puedeGestionar`, no se repite aquí, se delega.
+ *
+ * Esta es la única comprobación real de «quién puede borrar»: no hay
+ * política de RLS que la respalde, el borrado pasa siempre por la clave de
+ * servicio (ver `eliminar-miembro`), así que esta función SÍ autoriza, a
+ * diferencia de `puedeGestionar`, que solo acompaña a las políticas.
+ */
+export function puedeEliminar(
+  gestor: Perfil,
+  objetivo: { id: string; rango: Rango; unidad: Unidad | null }
+): boolean {
+  if (objetivo.id === gestor.id) return false;
+  if (
+    gestor.rango !== 'comandante' &&
+    gestor.rango !== 'secretario' &&
+    gestor.rango !== 'tesorero'
+  ) {
+    return false;
+  }
+  return puedeGestionar(gestor, objetivo);
+}
+
+/**
  * Normaliza el identificador de acceso. Los miembros no usan correos reales:
  * si el valor no lleva arroba se le añade el dominio interno.
  */
