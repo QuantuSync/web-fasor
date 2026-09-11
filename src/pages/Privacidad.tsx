@@ -114,19 +114,22 @@ export default function Privacidad() {
             </p>
             <p>
               De cada cuenta tratamos un identificador interno de acceso, la contraseña (que se
-              guarda cifrada y no es legible ni para FASOR), el nombre del miembro, su rango, su
-              unidad si tiene una asignada y si el alta sigue activa. Todo ello sirve para dar
-              acceso a la zona interna y para saber quién entra.
+              guarda cifrada y no es legible ni para FASOR), el nombre del miembro, su rango y su
+              unidad si tiene una asignada. Todo ello sirve para dar acceso a la zona interna y para
+              saber quién entra.
             </p>
             <p>
               La base jurídica es tu relación con la entidad y el cumplimiento de los fines
               recogidos en los estatutos.
             </p>
             <p>
-              Las altas, las bajas y las credenciales las gestionan desde la propia zona interna los
-              cargos autorizados de la entidad, y cada uno alcanza solo a quien le corresponde, el
-              Comandante a todos los miembros y cada Capitán de Unidad a los de su unidad. Ese
-              límite no depende de lo que muestre la pantalla, lo aplica la propia base de datos.
+              Las altas y las credenciales las gestionan desde la propia zona interna los cargos
+              autorizados de la entidad, y cada uno alcanza solo a quien le corresponde, el
+              Comandante a todos los miembros y cada Capitán de Unidad a los de su unidad. Eliminar
+              una cuenta es una decisión más restringida, no la toma un Capitán, y ni el Secretario
+              ni el Tesorero pueden eliminar a un Comandante ni entre ellos; nadie puede eliminar su
+              propia cuenta. Ese límite no depende de lo que muestre la pantalla, lo aplica la
+              propia base de datos.
             </p>
             <p>
               El servicio de acceso y la base de datos están alojados en Supabase, que actúa como
@@ -166,10 +169,13 @@ export default function Privacidad() {
               Conservamos estos datos mientras dure tu condición de miembro, salvo lo que elimines
               antes. Los mensajes y los avisos se conservan mientras tanto, y archivar un mensaje lo
               aparta de la bandeja pero no lo borra, para eso está eliminar. Al causar baja, la
-              cuenta se desactiva y deja de dar acceso, pero no se borra, para poder reactivarla si
-              vuelves y para dejar constancia de quién ha formado parte de la entidad. Si nos pides
-              la supresión, la atendemos como se explica en el apartado de tus derechos, salvo lo
-              que haya que guardar por obligación legal.
+              cuenta se elimina de verdad, con tu perfil, tus mensajes, tus avisos de cadena de
+              mando y tus exámenes de ingreso, y no se puede recuperar ni reactivar después. Como un
+              mensaje es una sola fila compartida entre quien lo escribe y quien lo recibe, eliminar
+              una cuenta también hace desaparecer, de la bandeja de la otra persona, los mensajes
+              que hayáis cruzado. Si quieres pedir la eliminación de tu cuenta antes de que se
+              produzca la baja, se explica en el apartado de tus derechos, salvo lo que haya que
+              guardar por obligación legal.
             </p>
           </SeccionLegal>
 
