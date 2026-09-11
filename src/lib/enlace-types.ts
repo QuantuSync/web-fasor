@@ -5,13 +5,25 @@ import { unidades, type UnidadId } from '../data/unidades';
  */
 
 /*
- * Los cinco rangos del escalafón operativo (src/data/escalafon.ts) más los dos
+ * Los cinco rangos del escalafón operativo (src/data/escalafon.ts), los dos
  * cargos de la Junta Directiva, que son órgano de gobierno estatutario y NO
- * están en el escalafón: no son superiores ni inferiores de nadie, no tienen
- * unidad, no entran en la cadena de mando del buzón y no llevan distintivo.
+ * están en el escalafón (no son superiores ni inferiores de nadie, no tienen
+ * unidad, no entran en la cadena de mando del buzón y no llevan distintivo), y
+ * `aspirante`, quien está haciendo el proceso de ingreso y todavía no es
+ * miembro. Un aspirante está igual de fuera del escalafón que un cargo de
+ * Junta (sin nivel, sin unidad, sin cadena de mando), y además fuera del
+ * buzón y del directorio, cosas que a un cargo de Junta sí le tocan con
+ * normalidad. Ver `supabase/sql/06_aspirante.sql`.
  */
 export type Rango =
-  'comandante' | 'capitan' | 'teniente' | 'operador' | 'cadete' | 'secretario' | 'tesorero';
+  | 'comandante'
+  | 'capitan'
+  | 'teniente'
+  | 'operador'
+  | 'cadete'
+  | 'secretario'
+  | 'tesorero'
+  | 'aspirante';
 
 /** Los dos cargos de Junta Directiva, para no repetir la pareja por ahí suelta. */
 export const CARGOS_JUNTA: Rango[] = ['secretario', 'tesorero'];
@@ -126,6 +138,7 @@ export const ETIQUETA_RANGO: Record<Rango, string> = {
   // rango, ellos leen SECRETARIO y TESORERO.
   secretario: 'Secretario',
   tesorero: 'Tesorero',
+  aspirante: 'Aspirante',
 };
 
 /*

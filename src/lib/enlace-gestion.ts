@@ -79,6 +79,19 @@ export function puedeGestionarMiembros(perfil: Perfil): boolean {
   return perfil.rango === 'comandante' || perfil.rango === 'capitan' || esCargoJunta(perfil.rango);
 }
 
+/*
+ * Gestión de aspirantes, apartado propio y separado del listado general de
+ * miembros. Solo comandante, secretario y tesorero lo ven: son los únicos que
+ * pueden dar de alta a un aspirante (ver `puede_gestionar()` en
+ * `06_aspirante.sql`, que ya lo permite sin cambios porque `aspirante` no es
+ * uno de los rangos reservados al comandante). Teniente y capitán sí pueden
+ * LEER la ficha de un aspirante (para revisar su examen), pero no gestionarla,
+ * así que no ven esta sección aunque la fila les sea visible.
+ */
+export function puedeGestionarAspirantes(perfil: Perfil): boolean {
+  return perfil.rango === 'comandante' || esCargoJunta(perfil.rango);
+}
+
 /** ¿Este gestor ve a toda la entidad o solo a su unidad? */
 export function veTodaLaEntidad(gestor: Perfil): boolean {
   return gestor.rango !== 'capitan';
@@ -180,11 +193,35 @@ const CAMPOS = 'id, nombre, rango, unidad, activo';
  * Lista de miembros. No lleva filtro de unidad a propósito: el recorte lo hace
  * la política de lectura, así que el comandante recibe a todos y el capitán
  * solo su unidad sin que el cliente tenga que pedirlo (ni pueda evitarlo).
+ *
+ * Excluye a los aspirantes, que tienen su propio apartado (`listarAspirantes`)
+ * separado de este listado general, aunque para comandante, secretario o
+ * tesorero la política de lectura también los alcanzaría.
  */
 export async function listarMiembros(): Promise<Perfil[]> {
   const { data, error } = await getSupabase()
     .from('perfiles')
     .select(CAMPOS)
+    .neq('rango', 'aspirante')
+    .order('nombre', { ascending: true });
+
+  if (error) throw error;
+  return (data ?? []) as Perfil[];
+}
+
+/**
+ * Lista de aspirantes, para el apartado propio de Gestión de Aspirantes. La
+ * política de lectura ya deja verlos a comandante, secretario y tesorero (y
+ * también a teniente y capitán, para la revisión de exámenes), pero esta
+ * función la usa solo la sección que de verdad los gestiona; `puede_gestionar`
+ * en base de datos rechaza igual cualquier intento de un teniente o un
+ * capitán de editarlos.
+ */
+export async function listarAspirantes(): Promise<Perfil[]> {
+  const { data, error } = await getSupabase()
+    .from('perfiles')
+    .select(CAMPOS)
+    .eq('rango', 'aspirante')
     .order('nombre', { ascending: true });
 
   if (error) throw error;

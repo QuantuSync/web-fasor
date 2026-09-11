@@ -15,12 +15,21 @@
 import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2';
 
 /*
- * Los cinco rangos del escalafón operativo más los dos cargos de Junta
- * Directiva, que no están en el escalafón: no mandan sobre nadie por cargo ni
- * nadie manda sobre ellos, y no llevan unidad.
+ * Los cinco rangos del escalafón operativo, los dos cargos de Junta
+ * Directiva, que no están en el escalafón (no mandan sobre nadie por cargo ni
+ * nadie manda sobre ellos, y no llevan unidad), y `aspirante`, quien está
+ * haciendo el proceso de ingreso y todavía no es miembro (tampoco lleva
+ * unidad). Ver `supabase/sql/06_aspirante.sql`.
  */
 export type Rango =
-  'comandante' | 'capitan' | 'teniente' | 'operador' | 'cadete' | 'secretario' | 'tesorero';
+  | 'comandante'
+  | 'capitan'
+  | 'teniente'
+  | 'operador'
+  | 'cadete'
+  | 'secretario'
+  | 'tesorero'
+  | 'aspirante';
 
 export type Unidad =
   'buceadores' | 'drones' | 'forestal' | 'terrestres' | 'sanitario' | 'comunicaciones';
@@ -33,6 +42,7 @@ export const RANGOS: Rango[] = [
   'cadete',
   'secretario',
   'tesorero',
+  'aspirante',
 ];
 
 /*

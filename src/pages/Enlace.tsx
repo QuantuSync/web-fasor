@@ -8,10 +8,11 @@ import SesionProvider from '../context/SesionContext';
 import { useSesion } from '../context/useSesion';
 import Buzon from '../components/enlace/Buzon';
 import GestionMiembros from '../components/enlace/GestionMiembros';
+import GestionAspirantes from '../components/enlace/GestionAspirantes';
 import { escalafon } from '../data/escalafon';
 import { getSupabase } from '../lib/supabase';
 import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../lib/enlace-types';
-import { puedeGestionarMiembros } from '../lib/enlace-gestion';
+import { puedeGestionarMiembros, puedeGestionarAspirantes } from '../lib/enlace-gestion';
 
 /*
  * Zona interna de FASOR (/enlace). Acceso, buzón y gestión de miembros.
@@ -279,6 +280,8 @@ function Interior({ perfil }: { perfil: Perfil }) {
   // La sección de gestión solo se monta para el comandante, el capitán y los
   // cargos de Junta: los demás ni la ven ni piden la lista de miembros.
   const gestiona = puedeGestionarMiembros(perfil);
+  // La de aspirantes es más estrecha, solo comandante, secretario y tesorero.
+  const gestionaAspirantes = puedeGestionarAspirantes(perfil);
 
   return (
     // Siempre ancha: el buzón lo tienen todos los miembros, no solo los mandos.
@@ -331,6 +334,7 @@ function Interior({ perfil }: { perfil: Perfil }) {
       </Panel>
       <Buzon perfil={perfil} />
       {gestiona && <GestionMiembros gestor={perfil} />}
+      {gestionaAspirantes && <GestionAspirantes gestor={perfil} />}
     </Columna>
   );
 }
