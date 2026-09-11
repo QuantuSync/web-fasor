@@ -186,8 +186,9 @@ export default function RevisionExamen({ examen, gestor, onResuelto, onCancelar 
                     {pregunta.enunciado}
                   </p>
                   <p className="mt-1 text-xs text-fasor-sage">
-                    Respondió, {pregunta.opciones[fila.respuesta]}
-                    {fila.acierto ? ' (correcta)' : ' (incorrecta)'}
+                    {fila.respuesta === null
+                      ? 'No respondió a esta pregunta.'
+                      : `Respondió, ${pregunta.opciones[fila.respuesta]}${fila.acierto ? ' (correcta)' : ' (incorrecta)'}`}
                   </p>
                 </li>
               );

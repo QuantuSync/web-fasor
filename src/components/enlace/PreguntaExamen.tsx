@@ -22,7 +22,10 @@ export default function PreguntaExamen({
   const nombreGrupo = `pregunta-${pregunta.numero}`;
 
   return (
-    <fieldset className="rounded-sm border border-fasor-gold/25 bg-fasor-surface p-4 sm:p-5">
+    <fieldset
+      id={nombreGrupo}
+      className="rounded-sm border border-fasor-gold/25 bg-fasor-surface p-4 sm:p-5"
+    >
       <legend className="px-1 text-sm leading-relaxed text-fasor-bone">
         <span className="mr-2 font-mono text-xs text-fasor-gold">{pregunta.numero}.</span>
         {pregunta.enunciado}

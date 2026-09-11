@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ShieldAlert } from 'lucide-react';
+import { ArrowDown, ShieldAlert } from 'lucide-react';
 import { unidades, type UnidadId } from '../../data/unidades';
 import { preguntasExamen } from '../../data/examen';
 import {
@@ -42,6 +42,7 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
     Array(preguntasExamen.length).fill(null)
   );
   const [enviando, setEnviando] = useState(false);
+  const [confirmandoEnvio, setConfirmandoEnvio] = useState(false);
 
   const recargar = useCallback(async () => {
     setCargando(true);
@@ -64,6 +65,7 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
     setOrden(unidades.map((u) => u.id));
     setRespuestas(Array(preguntasExamen.length).fill(null));
     setPaso('orden');
+    setConfirmandoEnvio(false);
     setTomando(true);
   };
 
@@ -84,22 +86,44 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
   };
 
   const handleEnviar = async () => {
-    if (respuestas.some((r) => r === null)) return;
     setEnviando(true);
     setError('');
     try {
       const nuevo = await enviarExamen({
         aspiranteId: perfil.id,
         ordenPreferencia: orden,
-        respuestas: respuestas as number[],
+        respuestas,
       });
       setExamen(nuevo);
       setTomando(false);
+      setConfirmandoEnvio(false);
     } catch (e) {
       setError(mensajeDeErrorExamen(e, 'No se ha podido enviar el examen.'));
     } finally {
       setEnviando(false);
     }
+  };
+
+  // Con las 50 respondidas se envía directo; si quedan huecos, pide
+  // confirmación primero (cuántas quedan, y que no se podrá modificar después).
+  const intentarEnviar = () => {
+    if (respuestas.every((r) => r !== null)) {
+      void handleEnviar();
+    } else {
+      setConfirmandoEnvio(true);
+    }
+  };
+
+  // Salta a la primera pregunta sin responder, para quien se haya dejado
+  // alguna sin querer. Toca `document`, así que solo se llama desde un
+  // manejador de evento, nunca durante el render.
+  const irALaPrimeraSinResponder = () => {
+    const indice = respuestas.findIndex((r) => r === null);
+    if (indice === -1) return;
+    const numero = preguntasExamen[indice].numero;
+    const elemento = document.getElementById(`pregunta-${numero}`);
+    elemento?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    elemento?.querySelector('input')?.focus();
   };
 
   if (cargando) {
@@ -117,7 +141,8 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
 
   // ---- Tomando el examen ---------------------------------------------------
   if (tomando) {
-    const todasRespondidas = respuestas.every((r) => r !== null);
+    const sinResponder = respuestas.filter((r) => r === null).length;
+    const todasRespondidas = sinResponder === 0;
 
     return (
       <Columna ancho="max-w-2xl">
@@ -170,28 +195,62 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
                 )}
               </div>
 
-              <div className="flex flex-col gap-2 border-t border-fasor-line pt-4 sm:flex-row">
-                <button
-                  type="button"
-                  className="btn-solido w-full sm:w-auto"
-                  onClick={() => void handleEnviar()}
-                  disabled={!todasRespondidas || enviando}
-                >
-                  {enviando ? 'Enviando' : 'Enviar examen'}
-                </button>
-                <button
-                  type="button"
-                  className="btn-contorno w-full sm:w-auto"
-                  onClick={() => setPaso('orden')}
-                  disabled={enviando}
-                >
-                  Volver al orden de unidades
-                </button>
-              </div>
-              {!todasRespondidas && (
-                <p className="text-xs text-fasor-sage">
-                  Te quedan {respuestas.filter((r) => r === null).length} preguntas por responder.
-                </p>
+              {confirmandoEnvio ? (
+                <div className="border-t border-fasor-line pt-4">
+                  <p className="text-sm leading-relaxed text-fasor-bone">
+                    Vas a enviar el examen con {sinResponder}{' '}
+                    {sinResponder === 1 ? 'pregunta sin responder' : 'preguntas sin responder'}.
+                    Cuentan como fallo y no podrás modificar el examen después de enviarlo.
+                  </p>
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      className="btn-solido w-full sm:w-auto"
+                      onClick={() => void handleEnviar()}
+                      disabled={enviando}
+                    >
+                      {enviando ? 'Enviando' : 'Confirmar envío'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-contorno w-full sm:w-auto"
+                      onClick={() => setConfirmandoEnvio(false)}
+                      disabled={enviando}
+                    >
+                      Volver a revisar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 border-t border-fasor-line pt-4 sm:flex-row">
+                  <button
+                    type="button"
+                    className="btn-solido w-full sm:w-auto"
+                    onClick={intentarEnviar}
+                    disabled={enviando}
+                  >
+                    {enviando ? 'Enviando' : 'Enviar examen'}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-contorno w-full sm:w-auto"
+                    onClick={() => setPaso('orden')}
+                    disabled={enviando}
+                  >
+                    Volver al orden de unidades
+                  </button>
+                </div>
+              )}
+              {!todasRespondidas && !confirmandoEnvio && (
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-xs text-fasor-sage">
+                    Te quedan {sinResponder} preguntas por responder.
+                  </p>
+                  <button type="button" className="btn-contorno" onClick={irALaPrimeraSinResponder}>
+                    <ArrowDown className="h-4 w-4" aria-hidden="true" />
+                    Ir a la primera sin responder
+                  </button>
+                </div>
               )}
             </div>
           )}

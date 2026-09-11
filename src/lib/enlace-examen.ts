@@ -18,7 +18,8 @@ export interface Examen {
   id: string;
   aspirante_id: string;
   orden_preferencia: UnidadId[];
-  respuestas: number[];
+  /** Una por pregunta, en su posición fija; `null` es una pregunta sin responder. */
+  respuestas: Array<number | null>;
   creado_en: string;
   estado: 'enviado' | 'corregido';
   puntuacion_automatica: number | null;
@@ -42,13 +43,17 @@ export interface ExamenConAspirante extends Examen {
  * Una fila de la vista `examen_correccion`, acierto o fallo de una pregunta.
  * Solo la ven teniente, capitán y comandante (la política de la vista lo
  * garantiza); un aspirante nunca la ve, ni siquiera para su propio examen.
+ *
+ * `respuesta` y `acierto` pueden ser `null`, una pregunta sin responder no
+ * tiene opción elegida ni cuenta como acierto ni como fallo, se distingue de
+ * las dos cosas.
  */
 export interface CorreccionPregunta {
   examen_id: string;
   numero: number;
-  respuesta: number;
+  respuesta: number | null;
   respuesta_correcta: number;
-  acierto: boolean;
+  acierto: boolean | null;
 }
 
 const CAMPOS =
@@ -87,7 +92,8 @@ export async function cargarMiExamen(aspiranteId: string): Promise<Examen | null
 export async function enviarExamen(datos: {
   aspiranteId: string;
   ordenPreferencia: UnidadId[];
-  respuestas: number[];
+  /** Una por pregunta, en su posición fija; `null` es una pregunta sin responder. */
+  respuestas: Array<number | null>;
 }): Promise<Examen> {
   const { data, error } = await getSupabase()
     .from('examenes')
