@@ -173,7 +173,35 @@ export default function Privacidad() {
             </p>
           </SeccionLegal>
 
-          <SeccionLegal numero="07" titulo="Tus derechos">
+          <SeccionLegal numero="07" titulo="El examen de ingreso">
+            <p>
+              Dentro de la zona interna, quien está en proceso de ingreso hace un examen de ingreso.
+              Tratamos el orden de preferencia que das a las unidades, tus respuestas, la puntuación
+              y el resultado automático que calcula el sistema, y el resultado final con quién lo
+              ratifica y cuándo. La finalidad es esa y ninguna otra, valorar tu idoneidad para el
+              ingreso.
+            </p>
+            <p>
+              La base jurídica es la misma que la del resto de la zona interna, tu relación con la
+              entidad durante el proceso de selección y el cumplimiento de los fines recogidos en
+              los estatutos.
+            </p>
+            <p>
+              Tus respuestas nunca se comparan con la solución delante de ti, ni siquiera después de
+              corregirse, ves solo el resultado final. Quien revisa tu examen (un mando de la cadena
+              operativa, nunca la Junta Directiva) sí ve tus respuestas junto a si acertaste o
+              fallaste, la puntuación, la banda y la unidad que propone el sistema. Nadie más tiene
+              acceso a ese contenido.
+            </p>
+            <p>
+              Conservamos estos datos mientras dure el proceso de selección. Si ingresas, pasan a
+              formar parte de tu expediente como miembro; si no resultas apto, se conservan mientras
+              tu cuenta de aspirante siga abierta, salvo que nos pidas su supresión como se explica
+              en el siguiente apartado.
+            </p>
+          </SeccionLegal>
+
+          <SeccionLegal numero="08" titulo="Tus derechos">
             <p>
               Puedes pedirnos acceso a tus datos, corregirlos, suprimirlos, oponerte a su
               tratamiento, limitarlo o llevártelos (portabilidad). Basta con escribir a{' '}
@@ -185,7 +213,7 @@ export default function Privacidad() {
             </p>
           </SeccionLegal>
 
-          <SeccionLegal numero="08" titulo="Menores">
+          <SeccionLegal numero="09" titulo="Menores">
             <p>
               El formulario de ingreso está reservado a mayores de 18 años; por eso te pedimos que
               lo declares antes de enviarlo.
