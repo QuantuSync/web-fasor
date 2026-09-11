@@ -523,9 +523,16 @@ with check (aspirante_id = auth.uid());
 
 -- Sin política de DELETE. Un examen no se borra.
 
-revoke all on public.examenes from anon;
+-- `revoke all` a los DOS roles, no solo a `anon`. Supabase concede por
+-- defecto todos los privilegios de tabla (incluidos `references`, `trigger`
+-- y `truncate`, y en una vista sin joins hasta `insert`/`update`/`delete`)
+-- a `anon` y a `authenticated` en cuanto se crea la relación, así que un
+-- `revoke ... from anon` seguido de un `grant` estrecho a `authenticated`
+-- dejaba esos privilegios de sobra sin revocar. Verificado al aplicar este
+-- archivo, `examenes` quedaba con `references, trigger, truncate` de más
+-- hasta corregir esto.
+revoke all on public.examenes from anon, authenticated;
 grant select, insert, update on public.examenes to authenticated;
-revoke delete on public.examenes from authenticated;
 
 
 -- ============================================================================
@@ -570,7 +577,11 @@ begin
 end
 $$;
 
-revoke all on public.examen_correccion from anon;
+-- Mismo motivo que en `examenes`, `revoke all` a los dos roles, o la
+-- concesión por defecto de Supabase deja `insert`/`update`/`delete` de sobra
+-- en una vista, aunque no lleguen a poder ejecutarse de verdad (esta vista
+-- no es actualizable, por el `join`), no tiene sentido dejarlos concedidos.
+revoke all on public.examen_correccion from anon, authenticated;
 grant select on public.examen_correccion to authenticated;
 
 
@@ -788,3 +799,18 @@ grant select on public.examen_correccion to authenticated;
 --    reabrirlo a alguien concreto, la vía es el SQL Editor (por ejemplo,
 --    borrando o corrigiendo a mano su último examen), mismo principio que ya
 --    usa el proyecto para el último comandante en 02_blindaje_rango_propio.sql.
+--
+-- 4. `REVOKE ALL` VA SIEMPRE A `anon, authenticated`, NUNCA SOLO A `anon`.
+--    Al aplicar este archivo por primera vez (11 de septiembre de 2026) se
+--    comprobó que Supabase concede por defecto todos los privilegios de
+--    tabla a los dos roles en cuanto se crea la relación (`references`,
+--    `trigger` y `truncate` en cualquier tabla, y en una vista simple hasta
+--    `insert`/`update`/`delete`), así que un `revoke all ... from anon`
+--    seguido de un `grant` estrecho a `authenticated` no los retira, solo
+--    añade el privilegio nuevo encima. `examenes` y `examen_correccion` se
+--    corrigieron para revocar a los dos roles antes de conceder. Las tablas
+--    y vistas de los archivos `01` a `05` (`perfiles`, `mensajes`,
+--    `avisos_cadena`, `directorio`) siguen con el patrón antiguo y arrastran
+--    el mismo exceso; no se tocan aquí porque son de otro archivo y su RLS
+--    ya está `to authenticated` (así que `anon` no tiene ninguna política
+--    que le aplique y queda bloqueado igual), pero conviene revisarlo aparte.
