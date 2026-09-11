@@ -9,6 +9,11 @@ import {
   mensajeDeErrorExamen,
   type Examen,
 } from '../../lib/enlace-examen';
+import {
+  borrarProgresoExamen,
+  cargarProgresoExamen,
+  guardarProgresoExamen,
+} from '../../lib/enlace-examen-progreso';
 import { type Perfil } from '../../lib/enlace-types';
 import { Columna, Panel, Rotulo, BotonSalir } from './Marco';
 import OrdenUnidades from './OrdenUnidades';
@@ -22,10 +27,14 @@ import ComunicadoExamen from './ComunicadoExamen';
  * según el estado de su proceso, un botón para examinarse, un aviso de que
  * está pendiente de corrección, o el comunicado del resultado.
  *
- * El examen en sí (orden de preferencia y las 50 respuestas) vive solo en el
+ * El examen en sí (orden de preferencia y las 50 respuestas) vive en el
  * estado de este componente mientras se responde, no se guarda nada en la
- * base de datos hasta pulsar «Enviar examen»; si se recarga la página a
- * medias, se empieza de nuevo.
+ * base de datos hasta pulsar «Enviar examen». Ese estado, sin embargo, SÍ
+ * tiene una copia de seguridad en `localStorage` (`enlace-examen-progreso.ts`),
+ * así que una recarga de página, un cambio de pestaña o una navegación a otra
+ * ruta y vuelta no lo pierden; se restaura solo, con un aviso, la primera vez
+ * que se comprueba el examen (`recargar`, más abajo). Se borra al enviar el
+ * examen y al cerrar sesión, nunca antes.
  */
 
 type Paso = 'orden' | 'preguntas';
@@ -43,12 +52,40 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
   );
   const [enviando, setEnviando] = useState(false);
   const [confirmandoEnvio, setConfirmandoEnvio] = useState(false);
+  // Se ha restaurado un progreso guardado en este navegador. Solo informa,
+  // no cambia nada del envío ni de la corrección.
+  const [recuperado, setRecuperado] = useState(false);
 
   const recargar = useCallback(async () => {
     setCargando(true);
     setError('');
     try {
-      setExamen(await cargarMiExamen(perfil.id));
+      const actual = await cargarMiExamen(perfil.id);
+      setExamen(actual);
+
+      /*
+       * Restaura el progreso guardado, pero solo si no hay un examen de
+       * verdad con prioridad sobre él, uno ya enviado y pendiente de
+       * corrección, o un resultado que todavía no se ha visto. En esos dos
+       * casos la pantalla de reposo tiene que mandar, y un progreso viejo
+       * (por ejemplo, de un intento anterior que se abandonó sin enviar) se
+       * queda donde está, en `localStorage`, hasta que vuelva a tocar, sin
+       * mostrarse por encima.
+       */
+      const hayAlgoConPrioridad =
+        actual?.estado === 'enviado' ||
+        (actual?.estado === 'corregido' && !actual.visto_por_aspirante_en);
+
+      if (!hayAlgoConPrioridad) {
+        const progreso = cargarProgresoExamen(perfil.id);
+        if (progreso) {
+          setOrden(progreso.orden);
+          setRespuestas(progreso.respuestas);
+          setPaso(progreso.paso);
+          setRecuperado(true);
+          setTomando(true);
+        }
+      }
     } catch (e) {
       setError(mensajeDeErrorExamen(e, 'No se ha podido comprobar tu examen.'));
     } finally {
@@ -60,12 +97,22 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
     void recargar();
   }, [recargar]);
 
+  // Guarda el progreso en cuanto cambia algo, mientras se está tomando el
+  // examen. Así sobrevive a una recarga, un cambio de pestaña o una
+  // navegación a otra ruta y vuelta, sin depender de que React no se
+  // desmonte por el camino.
+  useEffect(() => {
+    if (!tomando) return;
+    guardarProgresoExamen(perfil.id, { paso, orden, respuestas });
+  }, [tomando, paso, orden, respuestas, perfil.id]);
+
   const iniciarExamen = () => {
     setError('');
     setOrden(unidades.map((u) => u.id));
     setRespuestas(Array(preguntasExamen.length).fill(null));
     setPaso('orden');
     setConfirmandoEnvio(false);
+    setRecuperado(false);
     setTomando(true);
   };
 
@@ -97,6 +144,9 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
       setExamen(nuevo);
       setTomando(false);
       setConfirmandoEnvio(false);
+      // El examen ya existe de verdad en el servidor; el progreso local ya
+      // no representa nada, se borra.
+      borrarProgresoExamen(perfil.id);
     } catch (e) {
       setError(mensajeDeErrorExamen(e, 'No se ha podido enviar el examen.'));
     } finally {
@@ -148,6 +198,19 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
       <Columna ancho="max-w-2xl">
         <Panel>
           <Rotulo titulo="Examen de ingreso" />
+
+          {recuperado && (
+            <p className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-sm border border-fasor-gold/25 bg-fasor-surface2 p-3 text-sm leading-relaxed text-fasor-bone">
+              <span>Se ha recuperado tu progreso guardado en este navegador.</span>
+              <button
+                type="button"
+                className="btn-contorno shrink-0"
+                onClick={() => setRecuperado(false)}
+              >
+                Entendido
+              </button>
+            </p>
+          )}
 
           {paso === 'orden' && (
             <div className="mt-6">
