@@ -40,6 +40,34 @@ export interface ExamenConAspirante extends Examen {
 }
 
 /**
+ * Autorización del comandante para que un aspirante repita el examen pese a
+ * su resultado anterior. Ligada a un examen concreto (`examen_id`), nunca al
+ * aspirante en general, así que desbloquea exactamente un examen nuevo.
+ */
+export interface AutorizacionExamen {
+  id: string;
+  aspirante_id: string;
+  examen_id: string;
+  autorizado_por: string;
+  autorizado_en: string;
+  motivo: string;
+  visto_por_aspirante_en: string | null;
+}
+
+/**
+ * Cuántos exámenes lleva hechos un aspirante y cómo quedó el último, para que
+ * quien decide autorizar una repetición lo sepa. Solo la calcula quien puede
+ * leer todos los exámenes (comandante); `listarResumenExamenes` devuelve un
+ * resumen vacío si no hay permiso, no lanza.
+ */
+export interface ResumenExamenAspirante {
+  total: number;
+  ultimoExamenId: string | null;
+  ultimoEstado: 'enviado' | 'corregido' | null;
+  ultimoResultado: ResultadoExamen | null;
+}
+
+/**
  * Una fila de la vista `examen_correccion`, acierto o fallo de una pregunta.
  * Solo la ven teniente, capitán y comandante (la política de la vista lo
  * garantiza); un aspirante nunca la ve, ni siquiera para su propio examen.
@@ -120,6 +148,120 @@ export async function marcarExamenVisto(id: string): Promise<Examen> {
 
   if (error) throw error;
   return data as Examen;
+}
+
+const CAMPOS_AUTORIZACION =
+  'id, aspirante_id, examen_id, autorizado_por, autorizado_en, motivo, visto_por_aspirante_en';
+
+/**
+ * La última autorización del propio aspirante, o `null` si nunca se le ha
+ * concedido ninguna. Solo importa si `examen_id` coincide con el examen
+ * actual (`cargarMiExamen`), lo decide quien la usa, no esta función.
+ */
+export async function cargarMiUltimaAutorizacion(
+  aspiranteId: string
+): Promise<AutorizacionExamen | null> {
+  const { data, error } = await getSupabase()
+    .from('examen_autorizaciones')
+    .select(CAMPOS_AUTORIZACION)
+    .eq('aspirante_id', aspiranteId)
+    .order('autorizado_en', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as AutorizacionExamen | null;
+}
+
+/** Marca vista la autorización, una sola vez (el trigger rechaza la segunda). */
+export async function marcarAutorizacionVista(id: string): Promise<AutorizacionExamen> {
+  const { data, error } = await getSupabase()
+    .from('examen_autorizaciones')
+    .update({ visto_por_aspirante_en: new Date().toISOString() })
+    .eq('id', id)
+    .select(CAMPOS_AUTORIZACION)
+    .single();
+
+  if (error) throw error;
+  return data as AutorizacionExamen;
+}
+
+// ---------------------------------------------------------------------------
+// Autorización de un nuevo examen (solo comandante, ver 11_autorizar_nuevo_examen.sql)
+// ---------------------------------------------------------------------------
+
+/**
+ * Autoriza a un aspirante a repetir el examen. Solo manda `aspirante_id` y
+ * `motivo`; `examen_id` (el último examen corregido de ese aspirante),
+ * `autorizado_por` y `autorizado_en` los resuelve el trigger, nunca lo que
+ * mande el cliente. Que el llamante sea comandante lo exige la base de
+ * datos, no esta función.
+ */
+export async function autorizarNuevoExamen(
+  aspiranteId: string,
+  motivo: string
+): Promise<AutorizacionExamen> {
+  const { data, error } = await getSupabase()
+    .from('examen_autorizaciones')
+    .insert({ aspirante_id: aspiranteId, motivo })
+    .select(CAMPOS_AUTORIZACION)
+    .single();
+
+  if (error) throw error;
+  return data as AutorizacionExamen;
+}
+
+/**
+ * Cuántos exámenes lleva cada aspirante y cómo quedó el último, para la
+ * Gestión de Aspirantes. Si quien pregunta no puede leer `examenes` (RLS lo
+ * limita a teniente, capitán y comandante), simplemente no llegan filas, así
+ * que devuelve un mapa vacío en vez de lanzar; el llamante decide si pedirlo.
+ */
+export async function listarResumenExamenes(
+  aspiranteIds: string[]
+): Promise<Record<string, ResumenExamenAspirante>> {
+  if (aspiranteIds.length === 0) return {};
+
+  const { data, error } = await getSupabase()
+    .from('examenes')
+    .select('id, aspirante_id, estado, resultado_final, creado_en')
+    .in('aspirante_id', aspiranteIds)
+    .order('creado_en', { ascending: true });
+
+  if (error) throw error;
+
+  const resumen: Record<string, ResumenExamenAspirante> = {};
+  for (const fila of data ?? []) {
+    const actual = resumen[fila.aspirante_id] ?? {
+      total: 0,
+      ultimoExamenId: null,
+      ultimoEstado: null,
+      ultimoResultado: null,
+    };
+    actual.total += 1;
+    actual.ultimoExamenId = fila.id;
+    actual.ultimoEstado = fila.estado;
+    actual.ultimoResultado = fila.resultado_final;
+    resumen[fila.aspirante_id] = actual;
+  }
+  return resumen;
+}
+
+/**
+ * De esta lista de exámenes, cuáles ya tienen una autorización (como mucho
+ * una por examen, lo exige la base de datos). Para no ofrecer «Permitir un
+ * nuevo examen» sobre uno que ya la tiene y que solo puede rebotar.
+ */
+export async function listarExamenesYaAutorizados(examenIds: string[]): Promise<Set<string>> {
+  if (examenIds.length === 0) return new Set();
+
+  const { data, error } = await getSupabase()
+    .from('examen_autorizaciones')
+    .select('examen_id')
+    .in('examen_id', examenIds);
+
+  if (error) throw error;
+  return new Set((data ?? []).map((fila) => fila.examen_id as string));
 }
 
 // ---------------------------------------------------------------------------

@@ -10,6 +10,13 @@ import {
   mensajeDeError,
   restablecerContrasena,
 } from '../../lib/enlace-gestion';
+import {
+  autorizarNuevoExamen,
+  listarExamenesYaAutorizados,
+  listarResumenExamenes,
+  mensajeDeErrorExamen,
+  type ResumenExamenAspirante,
+} from '../../lib/enlace-examen';
 import TarjetaAspirante from './TarjetaAspirante';
 import FormularioAspirante, { type DatosAltaAspirante } from './FormularioAspirante';
 
@@ -32,17 +39,37 @@ export default function GestionAspirantes({ gestor }: { gestor: Perfil }) {
   const [enviandoAlta, setEnviandoAlta] = useState(false);
   const [aviso, setAviso] = useState('');
 
+  // Cuántos exámenes lleva cada aspirante y si su último ya tiene una
+  // autorización pendiente de usarse. Solo el comandante puede leerlo (RLS de
+  // `examenes` y de `examen_autorizaciones`), y es el único que puede
+  // autorizar, así que a nadie más le hace falta pedirlo.
+  const esComandante = gestor.rango === 'comandante';
+  const [resumenes, setResumenes] = useState<Record<string, ResumenExamenAspirante>>({});
+  const [yaAutorizados, setYaAutorizados] = useState<Set<string>>(new Set());
+
   const recargar = useCallback(async () => {
     setCargando(true);
     setError('');
     try {
-      setAspirantes(await listarAspirantes());
+      const lista = await listarAspirantes();
+      setAspirantes(lista);
+
+      if (esComandante && lista.length > 0) {
+        const ids = lista.map((a) => a.id);
+        const resumen = await listarResumenExamenes(ids);
+        setResumenes(resumen);
+
+        const examenIds = Object.values(resumen)
+          .map((r) => r.ultimoExamenId)
+          .filter((id): id is string => id !== null);
+        setYaAutorizados(await listarExamenesYaAutorizados(examenIds));
+      }
     } catch (e) {
       setError(mensajeDeError(e, 'No se ha podido cargar la lista de aspirantes.'));
     } finally {
       setCargando(false);
     }
-  }, []);
+  }, [esComandante]);
 
   useEffect(() => {
     void recargar();
@@ -84,6 +111,19 @@ export default function GestionAspirantes({ gestor }: { gestor: Perfil }) {
       setAviso('Contraseña cambiada. Comunícasela al aspirante.');
     } catch (e) {
       setError(mensajeDeError(e, 'No se ha podido cambiar la contraseña.'));
+      throw e;
+    }
+  };
+
+  const handleAutorizar = async (id: string, motivo: string) => {
+    setError('');
+    setAviso('');
+    try {
+      const autorizacion = await autorizarNuevoExamen(id, motivo);
+      setYaAutorizados((previos) => new Set(previos).add(autorizacion.examen_id));
+      setAviso('Nuevo examen autorizado.');
+    } catch (e) {
+      setError(mensajeDeErrorExamen(e, 'No se ha podido autorizar el nuevo examen.'));
       throw e;
     }
   };
@@ -156,16 +196,24 @@ export default function GestionAspirantes({ gestor }: { gestor: Perfil }) {
           <p className="text-sm text-fasor-sage">Todavía no hay aspirantes que mostrar.</p>
         )}
 
-        {aspirantes.map((aspirante) => (
-          <TarjetaAspirante
-            key={aspirante.id}
-            aspirante={aspirante}
-            gestor={gestor}
-            onRenombrar={handleRenombrar}
-            onCambiarAlta={handleCambiarAlta}
-            onRestablecer={handleRestablecer}
-          />
-        ))}
+        {aspirantes.map((aspirante) => {
+          const resumenExamen = resumenes[aspirante.id];
+          return (
+            <TarjetaAspirante
+              key={aspirante.id}
+              aspirante={aspirante}
+              gestor={gestor}
+              onRenombrar={handleRenombrar}
+              onCambiarAlta={handleCambiarAlta}
+              onRestablecer={handleRestablecer}
+              resumenExamen={esComandante ? resumenExamen : undefined}
+              yaAutorizado={
+                !!resumenExamen && yaAutorizados.has(resumenExamen.ultimoExamenId ?? '')
+              }
+              onAutorizar={esComandante ? handleAutorizar : undefined}
+            />
+          );
+        })}
       </div>
     </section>
   );

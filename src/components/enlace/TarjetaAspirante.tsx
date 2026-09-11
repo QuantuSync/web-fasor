@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { KeyRound, Lock, Pencil, UserCheck, UserMinus } from 'lucide-react';
+import { KeyRound, Lock, Pencil, RotateCcw, UserCheck, UserMinus } from 'lucide-react';
 import { type Perfil } from '../../lib/enlace-types';
 import { puedeGestionar } from '../../lib/enlace-gestion';
+import { type ResumenExamenAspirante } from '../../lib/enlace-examen';
 import FormularioAspirante from './FormularioAspirante';
 
 /*
@@ -9,9 +10,16 @@ import FormularioAspirante from './FormularioAspirante';
  * tabla, confirmación en dos pasos dentro de la propia tarjeta), pero sin
  * rango ni unidad que mostrar o cambiar, porque un aspirante no tiene ninguna
  * de las dos cosas.
+ *
+ * «Permitir un nuevo examen» es aparte, solo para el comandante
+ * (`resumenExamen`/`onAutorizar` llegan `undefined` para cualquier otro, y
+ * entonces ni se calcula ni se muestra), y solo tiene sentido sobre un
+ * examen ya corregido. La autorización de verdad la exige la base de datos
+ * (`11_autorizar_nuevo_examen.sql`); esto solo oculta el botón cuando no
+ * procede o cuando ya hay una vigente para el último examen.
  */
 
-type Panel = 'ninguno' | 'editar' | 'baja' | 'contrasena';
+type Panel = 'ninguno' | 'editar' | 'baja' | 'contrasena' | 'autorizar';
 
 interface Props {
   aspirante: Perfil;
@@ -19,6 +27,12 @@ interface Props {
   onRenombrar: (id: string, nombre: string) => Promise<void>;
   onCambiarAlta: (id: string, activo: boolean) => Promise<void>;
   onRestablecer: (id: string, contrasena: string) => Promise<void>;
+  /** Solo si `gestor` es comandante; para cualquier otro rango, `undefined`. */
+  resumenExamen?: ResumenExamenAspirante;
+  /** Si el último examen de `resumenExamen` ya tiene una autorización sin usar. */
+  yaAutorizado?: boolean;
+  /** Solo si `gestor` es comandante; para cualquier otro rango, `undefined`. */
+  onAutorizar?: (id: string, motivo: string) => Promise<void>;
 }
 
 export default function TarjetaAspirante({
@@ -27,14 +41,24 @@ export default function TarjetaAspirante({
   onRenombrar,
   onCambiarAlta,
   onRestablecer,
+  resumenExamen,
+  yaAutorizado = false,
+  onAutorizar,
 }: Props) {
   const [panel, setPanel] = useState<Panel>('ninguno');
   const [enviando, setEnviando] = useState(false);
   const [contrasena, setContrasena] = useState('');
+  const [motivoAutorizacion, setMotivoAutorizacion] = useState('');
 
   // Lo que este gestor puede hacer con este aspirante. Solo oculta botones; la
   // autorización de verdad está en la política de la base de datos.
   const gestionable = puedeGestionar(gestor, aspirante);
+
+  // Solo tiene sentido ofrecer «Permitir un nuevo examen» sobre un examen ya
+  // corregido; uno sin examinar o con uno pendiente no procede, y uno con una
+  // autorización sin consumir no necesita otra.
+  const puedeAutorizar =
+    !!onAutorizar && resumenExamen?.ultimoEstado === 'corregido' && !yaAutorizado;
 
   const ejecutar = async (accion: () => Promise<void>) => {
     setEnviando(true);
@@ -65,6 +89,15 @@ export default function TarjetaAspirante({
         </span>
       </div>
 
+      {resumenExamen && (
+        <p className="mt-1 text-xs text-fasor-sage">
+          {resumenExamen.total === 1
+            ? 'Ha hecho 1 examen'
+            : `Ha hecho ${resumenExamen.total} exámenes`}
+          {yaAutorizado && ', con un nuevo examen ya autorizado'}
+        </p>
+      )}
+
       {!gestionable && (
         <p className="mt-4 flex items-start gap-2 border-t border-fasor-line pt-4 text-xs leading-relaxed text-fasor-sage">
           <Lock className="mt-0.5 h-4 w-4 shrink-0 text-fasor-gold" aria-hidden="true" />
@@ -81,6 +114,13 @@ export default function TarjetaAspirante({
             rotulo={aspirante.activo ? 'Dar de baja' : 'Reactivar'}
             onClick={() => setPanel('baja')}
           />
+          {puedeAutorizar && (
+            <Accion
+              icono={RotateCcw}
+              rotulo="Permitir un nuevo examen"
+              onClick={() => setPanel('autorizar')}
+            />
+          )}
         </div>
       )}
 
@@ -162,6 +202,54 @@ export default function TarjetaAspirante({
               onClick={() => {
                 setPanel('ninguno');
                 setContrasena('');
+              }}
+              disabled={enviando}
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      )}
+
+      {panel === 'autorizar' && onAutorizar && (
+        <form
+          className="form-tactico mt-4 border-t border-fasor-line pt-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void ejecutar(async () => {
+              await onAutorizar(aspirante.id, motivoAutorizacion);
+              setMotivoAutorizacion('');
+            });
+          }}
+        >
+          <p className="etiqueta">Permitir un nuevo examen</p>
+          <p className="text-sm leading-relaxed text-fasor-bone">
+            Vas a autorizar a {aspirante.nombre} a presentarse otra vez, pese al resultado de su
+            último examen. Ese examen no se borra ni se modifica, queda tal cual; el nuevo será uno
+            aparte. Quedará constancia de que lo autorizas tú, cuándo y por qué.
+          </p>
+          <div>
+            <label htmlFor={`motivo-autorizacion-${aspirante.id}`}>Motivo</label>
+            <textarea
+              id={`motivo-autorizacion-${aspirante.id}`}
+              required
+              rows={3}
+              value={motivoAutorizacion}
+              onChange={(e) => setMotivoAutorizacion(e.target.value)}
+              disabled={enviando}
+              className="!text-base"
+            />
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <button type="submit" className="btn-solido w-full sm:w-auto" disabled={enviando}>
+              {enviando ? 'Autorizando' : 'Confirmar autorización'}
+            </button>
+            <button
+              type="button"
+              className="btn-contorno w-full sm:w-auto"
+              onClick={() => {
+                setPanel('ninguno');
+                setMotivoAutorizacion('');
               }}
               disabled={enviando}
             >

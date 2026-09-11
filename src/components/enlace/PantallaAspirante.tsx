@@ -4,9 +4,12 @@ import { unidades, type UnidadId } from '../../data/unidades';
 import { preguntasExamen } from '../../data/examen';
 import {
   cargarMiExamen,
+  cargarMiUltimaAutorizacion,
   enviarExamen,
+  marcarAutorizacionVista,
   marcarExamenVisto,
   mensajeDeErrorExamen,
+  type AutorizacionExamen,
   type Examen,
 } from '../../lib/enlace-examen';
 import {
@@ -42,6 +45,7 @@ type Paso = 'orden' | 'preguntas';
 export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
   const [cargando, setCargando] = useState(true);
   const [examen, setExamen] = useState<Examen | null>(null);
+  const [autorizacion, setAutorizacion] = useState<AutorizacionExamen | null>(null);
   const [error, setError] = useState('');
 
   const [tomando, setTomando] = useState(false);
@@ -62,6 +66,7 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
     try {
       const actual = await cargarMiExamen(perfil.id);
       setExamen(actual);
+      setAutorizacion(await cargarMiUltimaAutorizacion(perfil.id));
 
       /*
        * Restaura el progreso guardado, pero solo si no hay un examen de
@@ -130,6 +135,15 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
       await handleVisto();
     }
     iniciarExamen();
+  };
+
+  const handleVistoAutorizacion = async () => {
+    if (!autorizacion) return;
+    try {
+      setAutorizacion(await marcarAutorizacionVista(autorizacion.id));
+    } catch (e) {
+      setError(mensajeDeErrorExamen(e, 'No se ha podido actualizar la autorización.'));
+    }
   };
 
   const handleEnviar = async () => {
@@ -325,10 +339,19 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
   // ---- Estados de reposo, según el último examen ---------------------------
   const examenPendiente = examen?.estado === 'enviado';
   const bannerPendiente = examen?.estado === 'corregido' && !examen.visto_por_aspirante_en;
+  /*
+   * La autorización solo cuenta si es para el examen actual (el comandante la
+   * concede sobre el último examen corregido de ese momento; si desde
+   * entonces se hubiera enviado otro, esa autorización vieja ya no cubre
+   * nada, el trigger de la base de datos lo exige así).
+   */
+  const autorizacionVigente =
+    autorizacion && examen && autorizacion.examen_id === examen.id ? autorizacion : null;
+  const autorizacionSinVer = !!autorizacionVigente && !autorizacionVigente.visto_por_aspirante_en;
   const puedeIniciar =
     !examenPendiente &&
     !bannerPendiente &&
-    (!examen || examen.resultado_final === 'no_apto_provisional');
+    (!examen || examen.resultado_final === 'no_apto_provisional' || !!autorizacionVigente);
 
   return (
     <Columna>
@@ -354,6 +377,19 @@ export default function PantallaAspirante({ perfil }: { perfil: Perfil }) {
             onVisto={() => void handleVisto()}
             onRepetir={() => void handleRepetir()}
           />
+        )}
+
+        {!examenPendiente && !bannerPendiente && autorizacionSinVer && (
+          <p className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-sm border border-fasor-gold/25 bg-fasor-surface2 p-3 text-sm leading-relaxed text-fasor-bone">
+            <span>Se te ha autorizado a presentarte a una nueva convocatoria.</span>
+            <button
+              type="button"
+              className="btn-contorno shrink-0"
+              onClick={() => void handleVistoAutorizacion()}
+            >
+              Entendido
+            </button>
+          </p>
         )}
 
         {!examenPendiente && !bannerPendiente && (
