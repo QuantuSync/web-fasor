@@ -1,0 +1,94 @@
+-- ============================================================================
+-- FASOR, zona interna (/enlace)
+-- Quita la política de lectura suelta "ver perfiles activos" de `perfiles`.
+--
+-- Dónde se ejecuta: Supabase Dashboard, SQL Editor del proyecto (o la CLI de
+-- Supabase, `supabase db query --linked --file supabase/sql/09_quitar_politica_suelta.sql`).
+-- No depende de ningún archivo anterior y no modifica ninguno. Es idempotente,
+-- `drop policy if exists` no falla si ya no está.
+--
+-- ----------------------------------------------------------------------------
+-- QUÉ ERA Y POR QUÉ SE QUITA
+-- ----------------------------------------------------------------------------
+-- Al inventariar `perfiles` para `08_endurecer_grants.sql` apareció una
+-- política de lectura, `to authenticated`, `using (activo)`, que no está en
+-- ningún archivo `01` a `06`, resto de una versión anterior del esquema (de
+-- cuando el buzón todavía no existía). Como las políticas permisivas de un
+-- mismo comando se combinan con OR, mientras siguiera ahí cualquier miembro
+-- activo, cadete incluido, podía leer el perfil completo de cualquier otro
+-- miembro activo directamente de `perfiles`, sin pasar por el recorte de
+-- `perfiles_lectura` (comandante ve a todos, capitán solo su unidad, teniente
+-- y capitán solo a los aspirantes además de sí mismos, el resto solo a sí
+-- mismos). La jerarquía de visibilidad quedaba en letra muerta.
+--
+-- ----------------------------------------------------------------------------
+-- DE QUÉ DEPENDE, Y POR QUÉ QUITARLA ES SEGURO
+-- ----------------------------------------------------------------------------
+-- Repasado antes de tocar nada, todo lo que lee `perfiles`:
+--
+--   * La vista `directorio` NO depende de esta política ni de ninguna otra de
+--     `perfiles`. Al no declarar `security_invoker`, se evalúa con los
+--     permisos de su DUEÑO sobre la tabla base, que es justo el mecanismo por
+--     el que ya bypassea a propósito la lectura estrecha (ver
+--     `03_buzon_mensajes.sql`, sección 4, y el hallazgo de
+--     `08_endurecer_grants.sql`). Quitar una política de `perfiles` no le
+--     afecta en absoluto.
+--   * `listarMiembros()` y `listarAspirantes()` (`src/lib/enlace-gestion.ts`)
+--     consultan `perfiles` directamente y dependen ENTERAMENTE de RLS para
+--     recortar por rango, sin filtro de unidad en el cliente. Con la política
+--     suelta, un capitán recibía HOY a toda la entidad activa, no solo a su
+--     unidad, el efecto contrario al que describe la propia gestión de
+--     miembros en el brief. Quitarla no rompe nada, corrige exactamente esto.
+--   * `SesionProvider` lee el propio perfil con `id = auth.uid()`, cubierto
+--     por la primera cláusula de `perfiles_lectura` con independencia de esta
+--     política.
+--   * El `embed` de `perfiles!aspirante_id(id, nombre)` en
+--     `listarExamenesPendientes()` (`src/lib/enlace-examen.ts`) necesita que
+--     teniente, capitán o comandante puedan leer la fila del aspirante; los
+--     tres ya lo tienen cubierto por sus propias cláusulas de
+--     `perfiles_lectura` (la de `06_aspirante.sql` para teniente y capitán, y
+--     las de siempre para comandante), sin depender de esta política.
+--
+-- Conclusión, nada legítimo depende de "ver perfiles activos", solo concedía
+-- de más en cada uno de los cuatro casos. Se quita.
+-- ============================================================================
+
+drop policy if exists "ver perfiles activos" on public.perfiles;
+
+
+-- ============================================================================
+-- COMPROBACIONES
+-- ============================================================================
+-- (a) La política ya no existe
+-- ---------------------------------------------------------------------------
+--     select policyname from pg_policies
+--      where schemaname = 'public' and tablename = 'perfiles';
+--
+--   Deben quedar exactamente tres, `perfiles_alta`, `perfiles_edicion` y
+--   `perfiles_lectura`. Ninguna más.
+--
+-- (b) Cada uno sigue viendo lo que le corresponde
+-- ---------------------------------------------------------------------------
+-- Probado de verdad con las tres cuentas reales que existen hoy (comandante,
+-- secretario, tesorero), cada una con su UUID resuelto de antemano y sin
+-- cambiar de rol (la primera vez se probó con una subconsulta que buscaba el
+-- UUID ya bajo `role authenticated` sin el JWT puesto todavía, así que
+-- `auth.uid()` salía nulo y el recuento daba 0 para las tres; no era una
+-- regresión, era el guion de prueba). Resultado, confirmado:
+--
+--   comandante  ve 3 (toda la entidad)
+--   secretario  se ve a sí mismo («Matias Nahuel Pintos») y ve 3
+--   tesorero    se ve a sí mismo («Noelia Barrio Barrio») y ve 3
+--
+-- Los tres seguían viendo exactamente lo mismo que antes de quitar la
+-- política, porque sus cláusulas de `perfiles_lectura` nunca dependieron de
+-- ella.
+--
+-- El recorte de un capitán a su propia unidad, y de un teniente/operador/
+-- cadete a solo sí mismo, no se ha podido probar con una cuenta real de esos
+-- rangos porque todavía no existe ninguna (`perfiles.id` exige una fila real
+-- en `auth.users`, no se ha creado una de prueba para esto). Queda garantizado
+-- por la propia definición de `perfiles_lectura`, que no tiene ninguna
+-- cláusula que dé a esos rangos más que su propia fila (y, para teniente y
+-- capitán, las de aspirante). En cuanto exista una cuenta real de cada rango,
+-- conviene repetir esta comprobación con ellas.
