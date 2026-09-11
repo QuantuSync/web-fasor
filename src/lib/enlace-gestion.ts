@@ -79,6 +79,22 @@ export function puedeGestionarMiembros(perfil: Perfil): boolean {
   return perfil.rango === 'comandante' || perfil.rango === 'capitan' || esCargoJunta(perfil.rango);
 }
 
+/**
+ * Quién puede eliminar de verdad a quién. Más estrecho que `puedeGestionar`,
+ * misma copia exacta que `puedeEliminar` del módulo Edge compartido (ver
+ * `supabase/functions/_compartido/autorizacion.ts`): solo comandante,
+ * secretario y tesorero, nunca capitán, y nadie se elimina a sí mismo. Solo
+ * oculta el botón; la autorización de verdad la aplica la función Edge.
+ */
+export function puedeEliminar(
+  gestor: Perfil,
+  objetivo: { id: string; rango: Rango; unidad: Unidad | null }
+): boolean {
+  if (objetivo.id === gestor.id) return false;
+  if (gestor.rango !== 'comandante' && !esCargoJunta(gestor.rango)) return false;
+  return puedeGestionar(gestor, objetivo);
+}
+
 /*
  * Gestión de aspirantes, apartado propio y separado del listado general de
  * miembros. Solo comandante, secretario y tesorero lo ven: son los únicos que
@@ -255,17 +271,19 @@ export async function editarMiembro(
   return data as Perfil;
 }
 
-/** Baja y reactivación. Nunca se borra la cuenta, solo cambia `activo`. */
-export async function cambiarAlta(id: string, activo: boolean): Promise<Perfil> {
-  const { data, error } = await getSupabase()
-    .from('perfiles')
-    .update({ activo })
-    .eq('id', id)
-    .select(CAMPOS)
-    .single();
+/**
+ * Elimina de verdad la cuenta (cuenta, perfil, mensajes, avisos de cadena y
+ * exámenes). Pasa por función Edge porque borrar exige la clave de servicio;
+ * quién puede eliminar a quién se recalcula siempre en servidor a partir del
+ * JWT (`puedeEliminar` en el módulo compartido), esto solo oculta el botón.
+ */
+export async function eliminarMiembro(id: string): Promise<void> {
+  const { data, error } = await getSupabase().functions.invoke('eliminar-miembro', {
+    body: { id },
+  });
 
-  if (error) throw error;
-  return data as Perfil;
+  const fallo = await mensajeDeFuncion(error, data, 'No se ha podido eliminar la cuenta.');
+  if (fallo) throw new Error(fallo);
 }
 
 /** Alta completa (cuenta y perfil). Pasa por función Edge, ver supabase/. */

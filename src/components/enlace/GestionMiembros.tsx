@@ -3,9 +3,9 @@ import { ShieldAlert, UserPlus } from 'lucide-react';
 import Galon from '../Galon';
 import { type Perfil } from '../../lib/enlace-types';
 import {
-  cambiarAlta,
   crearMiembro,
   editarMiembro,
+  eliminarMiembro,
   listarMiembros,
   mensajeDeError,
   restablecerContrasena,
@@ -67,15 +67,15 @@ export default function GestionMiembros({ gestor }: { gestor: Perfil }) {
     }
   };
 
-  const handleCambiarAlta = async (id: string, activo: boolean) => {
+  const handleEliminar = async (id: string) => {
     setError('');
     setAviso('');
     try {
-      const actualizado = await cambiarAlta(id, activo);
-      reemplazar(actualizado);
-      setAviso(activo ? 'Miembro reactivado.' : 'Miembro dado de baja.');
+      await eliminarMiembro(id);
+      setMiembros((previos) => previos.filter((m) => m.id !== id));
+      setAviso('Miembro eliminado.');
     } catch (e) {
-      setError(mensajeDeError(e, 'No se ha podido cambiar el alta.'));
+      setError(mensajeDeError(e, 'No se ha podido eliminar la cuenta.'));
       throw e;
     }
   };
@@ -168,7 +168,7 @@ export default function GestionMiembros({ gestor }: { gestor: Perfil }) {
             miembro={miembro}
             gestor={gestor}
             onEditar={handleEditar}
-            onCambiarAlta={handleCambiarAlta}
+            onEliminar={handleEliminar}
             onRestablecer={handleRestablecer}
           />
         ))}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { KeyRound, Lock, Pencil, RotateCcw, UserCheck, UserMinus } from 'lucide-react';
+import { KeyRound, Lock, Pencil, RotateCcw, Trash2 } from 'lucide-react';
 import { type Perfil } from '../../lib/enlace-types';
-import { puedeGestionar } from '../../lib/enlace-gestion';
+import { puedeEliminar, puedeGestionar } from '../../lib/enlace-gestion';
 import { type ResumenExamenAspirante } from '../../lib/enlace-examen';
 import FormularioAspirante from './FormularioAspirante';
 
@@ -19,13 +19,13 @@ import FormularioAspirante from './FormularioAspirante';
  * procede o cuando ya hay una vigente para el último examen.
  */
 
-type Panel = 'ninguno' | 'editar' | 'baja' | 'contrasena' | 'autorizar';
+type Panel = 'ninguno' | 'editar' | 'eliminar' | 'contrasena' | 'autorizar';
 
 interface Props {
   aspirante: Perfil;
   gestor: Perfil;
   onRenombrar: (id: string, nombre: string) => Promise<void>;
-  onCambiarAlta: (id: string, activo: boolean) => Promise<void>;
+  onEliminar: (id: string) => Promise<void>;
   onRestablecer: (id: string, contrasena: string) => Promise<void>;
   /** Solo si `gestor` es comandante; para cualquier otro rango, `undefined`. */
   resumenExamen?: ResumenExamenAspirante;
@@ -39,7 +39,7 @@ export default function TarjetaAspirante({
   aspirante,
   gestor,
   onRenombrar,
-  onCambiarAlta,
+  onEliminar,
   onRestablecer,
   resumenExamen,
   yaAutorizado = false,
@@ -53,6 +53,8 @@ export default function TarjetaAspirante({
   // Lo que este gestor puede hacer con este aspirante. Solo oculta botones; la
   // autorización de verdad está en la política de la base de datos.
   const gestionable = puedeGestionar(gestor, aspirante);
+  // Solo comandante, secretario y tesorero eliminan, y nadie a sí mismo.
+  const puedeEliminarEste = puedeEliminar(gestor, aspirante);
 
   // Solo tiene sentido ofrecer «Permitir un nuevo examen» sobre un examen ya
   // corregido; uno sin examinar o con uno pendiente no procede, y uno con una
@@ -73,21 +75,9 @@ export default function TarjetaAspirante({
 
   return (
     <article className="rounded-sm border border-fasor-gold/25 bg-fasor-surface p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="min-w-0 break-words font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
-          {aspirante.nombre}
-        </h3>
-
-        <span
-          className={`shrink-0 rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${
-            aspirante.activo
-              ? 'border-fasor-gold/40 text-fasor-gold'
-              : 'border-fasor-line text-fasor-sage'
-          }`}
-        >
-          {aspirante.activo ? 'Activo' : 'De baja'}
-        </span>
-      </div>
+      <h3 className="break-words font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+        {aspirante.nombre}
+      </h3>
 
       {resumenExamen && (
         <p className="mt-1 text-xs text-fasor-sage">
@@ -109,11 +99,9 @@ export default function TarjetaAspirante({
         <div className="mt-4 flex flex-wrap gap-2 border-t border-fasor-line pt-4">
           <Accion icono={Pencil} rotulo="Renombrar" onClick={() => setPanel('editar')} />
           <Accion icono={KeyRound} rotulo="Contraseña" onClick={() => setPanel('contrasena')} />
-          <Accion
-            icono={aspirante.activo ? UserMinus : UserCheck}
-            rotulo={aspirante.activo ? 'Dar de baja' : 'Reactivar'}
-            onClick={() => setPanel('baja')}
-          />
+          {puedeEliminarEste && (
+            <Accion icono={Trash2} rotulo="Eliminar" onClick={() => setPanel('eliminar')} />
+          )}
           {puedeAutorizar && (
             <Accion
               icono={RotateCcw}
@@ -133,25 +121,20 @@ export default function TarjetaAspirante({
         />
       )}
 
-      {panel === 'baja' && (
+      {panel === 'eliminar' && (
         <div className="mt-4 border-t border-fasor-line pt-4">
           <p className="text-sm leading-relaxed text-fasor-bone">
-            {aspirante.activo
-              ? `Vas a dar de baja a ${aspirante.nombre}. Perderá el acceso a la zona interna, pero su cuenta no se borra y puede reactivarse.`
-              : `Vas a reactivar a ${aspirante.nombre}. Recuperará el acceso a la zona interna.`}
+            Vas a eliminar a {aspirante.nombre}. Su cuenta, su perfil y sus exámenes desaparecen por
+            completo y no se pueden recuperar.
           </p>
           <div className="mt-4 flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
               className="btn-solido w-full sm:w-auto"
-              onClick={() => void ejecutar(() => onCambiarAlta(aspirante.id, !aspirante.activo))}
+              onClick={() => void ejecutar(() => onEliminar(aspirante.id))}
               disabled={enviando}
             >
-              {enviando
-                ? 'Aplicando'
-                : aspirante.activo
-                  ? 'Confirmar baja'
-                  : 'Confirmar reactivación'}
+              {enviando ? 'Aplicando' : 'Confirmar eliminación'}
             </button>
             <button
               type="button"

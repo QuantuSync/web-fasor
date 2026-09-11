@@ -1,24 +1,24 @@
 import { useState } from 'react';
-import { KeyRound, Lock, Pencil, UserCheck, UserMinus } from 'lucide-react';
+import { KeyRound, Lock, Pencil, Trash2 } from 'lucide-react';
 import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../../lib/enlace-types';
-import { puedeGestionar } from '../../lib/enlace-gestion';
+import { puedeEliminar, puedeGestionar } from '../../lib/enlace-gestion';
 import FormularioMiembro, { type DatosMiembro } from './FormularioMiembro';
 
 /*
  * Un miembro, en tarjeta. Nunca en tabla: a 360px una tabla se rompe o exige
  * scroll lateral, y aquí hay que poder leer y actuar con el pulgar.
  *
- * Las acciones destructivas (baja y contraseña) no se ejecutan al primer toque:
- * abren su propia confirmación dentro de la tarjeta.
+ * Las acciones destructivas (eliminar y contraseña) no se ejecutan al primer
+ * toque: abren su propia confirmación dentro de la tarjeta.
  */
 
-type Panel = 'ninguno' | 'editar' | 'baja' | 'contrasena';
+type Panel = 'ninguno' | 'editar' | 'eliminar' | 'contrasena';
 
 interface Props {
   miembro: Perfil;
   gestor: Perfil;
   onEditar: (id: string, datos: DatosMiembro) => Promise<void>;
-  onCambiarAlta: (id: string, activo: boolean) => Promise<void>;
+  onEliminar: (id: string) => Promise<void>;
   onRestablecer: (id: string, contrasena: string) => Promise<void>;
 }
 
@@ -26,7 +26,7 @@ export default function TarjetaMiembro({
   miembro,
   gestor,
   onEditar,
-  onCambiarAlta,
+  onEliminar,
   onRestablecer,
 }: Props) {
   const [panel, setPanel] = useState<Panel>('ninguno');
@@ -47,8 +47,8 @@ export default function TarjetaMiembro({
    * y el trigger de la base de datos rechaza cualquier otra columna.
    */
   const editable = gestionable || esUnoMismo;
-  // Nadie se da de baja a sí mismo. El servidor lo impide igual, con un trigger.
-  const puedeCambiarAlta = gestionable && !esUnoMismo;
+  // Solo comandante, secretario y tesorero eliminan, y nadie a sí mismo.
+  const puedeEliminarEste = puedeEliminar(gestor, miembro);
 
   const ejecutar = async (accion: () => Promise<void>) => {
     setEnviando(true);
@@ -63,37 +63,25 @@ export default function TarjetaMiembro({
 
   return (
     <article className="rounded-sm border border-fasor-gold/25 bg-fasor-surface p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="break-words font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
-            {miembro.nombre}
-          </h3>
-          <p className="mt-1 flex items-start gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
-            <span>{ETIQUETA_RANGO[miembro.rango] ?? miembro.rango}</span>
-            {emblema && (
-              <img
-                src={emblema}
-                alt=""
-                aria-hidden="true"
-                title={nombreUnidad ?? undefined}
-                width={24}
-                height={24}
-                className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
-              />
-            )}
-          </p>
-          <p className="mt-1 text-sm text-fasor-sage">{nombreUnidad ?? 'Sin unidad'}</p>
-        </div>
-
-        <span
-          className={`shrink-0 rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-widest ${
-            miembro.activo
-              ? 'border-fasor-gold/40 text-fasor-gold'
-              : 'border-fasor-line text-fasor-sage'
-          }`}
-        >
-          {miembro.activo ? 'Activo' : 'De baja'}
-        </span>
+      <div className="min-w-0">
+        <h3 className="break-words font-display text-lg font-bold uppercase tracking-tight text-fasor-bone">
+          {miembro.nombre}
+        </h3>
+        <p className="mt-1 flex items-start gap-2 font-mono text-xs uppercase tracking-widest text-fasor-gold">
+          <span>{ETIQUETA_RANGO[miembro.rango] ?? miembro.rango}</span>
+          {emblema && (
+            <img
+              src={emblema}
+              alt=""
+              aria-hidden="true"
+              title={nombreUnidad ?? undefined}
+              width={24}
+              height={24}
+              className="h-6 w-6 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
+            />
+          )}
+        </p>
+        <p className="mt-1 text-sm text-fasor-sage">{nombreUnidad ?? 'Sin unidad'}</p>
       </div>
 
       {/* Ficha bloqueada. Un cargo de Junta ve al comandante y no lo toca, y un
@@ -112,12 +100,8 @@ export default function TarjetaMiembro({
           {gestionable && (
             <Accion icono={KeyRound} rotulo="Contraseña" onClick={() => setPanel('contrasena')} />
           )}
-          {puedeCambiarAlta && (
-            <Accion
-              icono={miembro.activo ? UserMinus : UserCheck}
-              rotulo={miembro.activo ? 'Dar de baja' : 'Reactivar'}
-              onClick={() => setPanel('baja')}
-            />
+          {puedeEliminarEste && (
+            <Accion icono={Trash2} rotulo="Eliminar" onClick={() => setPanel('eliminar')} />
           )}
         </div>
       )}
@@ -132,16 +116,12 @@ export default function TarjetaMiembro({
         />
       )}
 
-      {panel === 'baja' && (
+      {panel === 'eliminar' && (
         <Confirmacion
-          pregunta={
-            miembro.activo
-              ? `Vas a dar de baja a ${miembro.nombre}. Perderá el acceso a la zona interna, pero su cuenta no se borra y puede reactivarse.`
-              : `Vas a reactivar a ${miembro.nombre}. Recuperará el acceso a la zona interna.`
-          }
-          rotulo={miembro.activo ? 'Confirmar baja' : 'Confirmar reactivación'}
+          pregunta={`Vas a eliminar a ${miembro.nombre}. Su cuenta, su perfil, sus mensajes, sus avisos de cadena y sus exámenes desaparecen por completo y no se pueden recuperar.`}
+          rotulo="Confirmar eliminación"
           enviando={enviando}
-          onConfirmar={() => void ejecutar(() => onCambiarAlta(miembro.id, !miembro.activo))}
+          onConfirmar={() => void ejecutar(() => onEliminar(miembro.id))}
           onCancelar={() => setPanel('ninguno')}
         />
       )}
