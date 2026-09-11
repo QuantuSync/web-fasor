@@ -31,3 +31,6 @@ CLAUDE.md
 # Temporales del CLI de Supabase (las funciones Edge sí se versionan)
 supabase/.temp/
 supabase/.branches/
+
+# Clave de respuestas del examen de ingreso (nunca se commitea, ver CLAUDE.md)
+supabase/sql/*_clave_secreta.sql
