@@ -1,18 +1,20 @@
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { ClientOnly } from 'vite-react-ssg';
-import { LogIn, LogOut, ShieldAlert } from 'lucide-react';
-import fasorLogo from '../assets/fasor.jpg';
-import Galon from '../components/Galon';
+import { LogIn, ShieldAlert } from 'lucide-react';
 import { RankDivisa } from '../components/RankInsignia';
 import SesionProvider from '../context/SesionContext';
 import { useSesion } from '../context/useSesion';
 import Buzon from '../components/enlace/Buzon';
 import GestionMiembros from '../components/enlace/GestionMiembros';
 import GestionAspirantes from '../components/enlace/GestionAspirantes';
+import PantallaAspirante from '../components/enlace/PantallaAspirante';
+import ComunicadoExamen from '../components/enlace/ComunicadoExamen';
+import { ALTO_CABECERA, Columna, Panel, Rotulo, BotonSalir } from '../components/enlace/Marco';
 import { escalafon } from '../data/escalafon';
 import { getSupabase } from '../lib/supabase';
 import { ETIQUETA_RANGO, emblemaUnidad, etiquetaUnidad, type Perfil } from '../lib/enlace-types';
 import { puedeGestionarMiembros, puedeGestionarAspirantes } from '../lib/enlace-gestion';
+import { cargarMiExamen, marcarExamenVisto, type Examen } from '../lib/enlace-examen';
 
 /*
  * Zona interna de FASOR (/enlace). Acceso, buzón y gestión de miembros.
@@ -31,84 +33,6 @@ import { puedeGestionarMiembros, puedeGestionarAspirantes } from '../lib/enlace-
 const ERROR_CREDENCIALES = 'Usuario o contraseña incorrectos.';
 // El fallo de red sí se separa, porque no dice nada sobre la cuenta.
 const ERROR_RED = 'No se ha podido conectar. Inténtalo de nuevo en unos minutos.';
-
-// Alto del sello y, por tanto, del distintivo de rango que lo acompaña
-const ALTO_CABECERA = 48;
-
-/*
- * Columna que centra el contenido. Usa `m-auto` en lugar de `items-center` en
- * el contenedor: con centrado por alineación, un contenido más alto que la
- * ventana se recorta por arriba y deja parte inalcanzable, y la lista de
- * miembros puede ser larga. Los márgenes automáticos no tienen ese problema.
- *
- * El interior va a max-w-2xl, porque lleva el buzón y puede llevar la lista de
- * miembros; el acceso y los avisos de cuenta siguen en max-w-md.
- */
-function Columna({ children, ancho = 'max-w-md' }: { children: ReactNode; ancho?: string }) {
-  return <div className={`m-auto w-full ${ancho}`}>{children}</div>;
-}
-
-// Panel común a todos los estados. Superficie con filete dorado de 1px, radio
-// de 4px, sin sombras ni brillos. A 360px ocupa el ancho disponible.
-//
-// La fila superior lleva el sello a la izquierda y, cuando hay rango que
-// mostrar, su distintivo a la derecha. Ambos con `shrink-0`, para que en
-// pantallas estrechas repartan el hueco sin comprimirse.
-function Panel({ children, distintivo }: { children: ReactNode; distintivo?: ReactNode }) {
-  return (
-    <div className="w-full rounded-sm border border-fasor-gold/40 bg-fasor-surface p-6 sm:p-8">
-      <div className="mb-5 flex items-center justify-between gap-4">
-        <img
-          src={fasorLogo}
-          alt=""
-          width={ALTO_CABECERA}
-          height={ALTO_CABECERA}
-          className="h-12 w-12 shrink-0 rounded-full border border-fasor-gold/40 object-cover"
-        />
-        {distintivo}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-/*
- * Rótulo de la zona, común al acceso y al interior.
- *
- * `derecha` es el hueco de la columna derecha, a la altura del titular. En el
- * interior lo ocupa el rango, que así queda justo debajo del distintivo de la
- * fila superior y alineado con el nombre, pero en el lado opuesto.
- *
- * La fila es `flex-wrap` con `items-baseline`, y lo de la derecha lleva
- * `ml-auto` y `shrink-0`: mientras caben, nombre y rango comparten línea de
- * base; cuando no caben, el rango baja a su propia línea y sigue pegado a la
- * derecha, sin comprimirse ni solaparse con el nombre. El galón va `self-center`
- * para que no sea él quien marque la línea de base de la fila.
- */
-function Rotulo({
-  titulo,
-  derecha,
-  children,
-}: {
-  titulo: string;
-  derecha?: ReactNode;
-  children?: ReactNode;
-}) {
-  return (
-    <>
-      <p className="etiqueta mb-2">Zona interna</p>
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="flex min-w-0 items-baseline gap-3 font-display text-3xl font-bold uppercase tracking-tight text-fasor-bone">
-          <Galon count={2} className="h-4 w-3 shrink-0 self-center" />
-          <span className="break-words">{titulo}</span>
-        </h1>
-        {derecha}
-      </div>
-      <div className="linea-fade mt-4" aria-hidden="true"></div>
-      {children}
-    </>
-  );
-}
 
 // Estado de espera, mientras se resuelve la sesión (y en el HTML pre-renderizado)
 function Cargando() {
@@ -229,17 +153,6 @@ function Acceso() {
   );
 }
 
-// Botón de salida, compartido por el interior y por los avisos de cuenta
-function BotonSalir() {
-  const { salir } = useSesion();
-  return (
-    <button type="button" className="btn-contorno mt-8 w-full" onClick={() => void salir()}>
-      <LogOut className="h-4 w-4" aria-hidden="true" />
-      Salir
-    </button>
-  );
-}
-
 // Aviso de cuenta sin perfil o desactivada. Ninguna de las dos situaciones es
 // culpa del miembro, así que se explica y se ofrece la salida.
 function AvisoCuenta({ mensaje }: { mensaje: string }) {
@@ -260,6 +173,43 @@ function AvisoCuenta({ mensaje }: { mensaje: string }) {
 // Pantalla interior. Saluda al miembro con su rango y su unidad, y debajo monta
 // el buzón (todos) y la gestión de miembros (solo comandante y capitán).
 function Interior({ perfil }: { perfil: Perfil }) {
+  /*
+   * Comunicado del examen de ingreso pendiente de ver, para quien acaba de
+   * ascender a Cadete al ser declarado apto. Se comprueba para cualquier
+   * rango que no sea aspirante (que tiene su propio banner en
+   * `PantallaAspirante`), aunque en la práctica solo va a haber algo que
+   * mostrar justo después de una promoción. Los hooks van antes que el
+   * `return` condicional de más abajo, nunca después, para no romper las
+   * reglas de los hooks si algún día `perfil.rango` cambiara entre renders.
+   */
+  const [examenReciente, setExamenReciente] = useState<Examen | null>(null);
+
+  useEffect(() => {
+    if (perfil.rango === 'aspirante') return;
+    let vigente = true;
+    void cargarMiExamen(perfil.id).then((examen) => {
+      if (vigente) setExamenReciente(examen);
+    });
+    return () => {
+      vigente = false;
+    };
+  }, [perfil.id, perfil.rango]);
+
+  /*
+   * Un aspirante está fuera de todo lo operativo, así que su pantalla no es
+   * una variación de la de un miembro, es otra cosa por completo, sin rango,
+   * sin unidad, sin Buzón y sin Gestión. `PantallaAspirante` la sustituye
+   * entera.
+   */
+  if (perfil.rango === 'aspirante') {
+    return <PantallaAspirante perfil={perfil} />;
+  }
+
+  const bannerExamen =
+    examenReciente?.estado === 'corregido' && !examenReciente.visto_por_aspirante_en
+      ? examenReciente
+      : null;
+
   const rango = ETIQUETA_RANGO[perfil.rango] ?? perfil.rango;
   const unidad = perfil.unidad ? etiquetaUnidad(perfil.unidad) : null;
   const emblema = perfil.unidad ? emblemaUnidad(perfil.unidad) : null;
@@ -329,6 +279,13 @@ function Interior({ perfil }: { perfil: Perfil }) {
         <p className="mt-6 text-sm leading-relaxed text-fasor-sage">
           Esta es la vía oficial de comunicación de la entidad. Debajo tienes tu buzón interno.
         </p>
+
+        {bannerExamen && (
+          <ComunicadoExamen
+            examen={bannerExamen}
+            onVisto={() => void marcarExamenVisto(bannerExamen.id).then(setExamenReciente)}
+          />
+        )}
 
         <BotonSalir />
       </Panel>
